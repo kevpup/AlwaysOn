@@ -361,7 +361,7 @@ export function Dashboard() {
     const nextScenarioIndex = isLastScenario ? scenarioIndex : scenarioIndex + 1
 
     setSavedRows(nextRows)
-    persistRowsToFile(nextRows)
+    persistRowsToFile(scenarioRows)
 
     if (isLastScenario) {
       setStep("complete")
@@ -376,6 +376,7 @@ export function Dashboard() {
     if (!participant || !sessionId) return
 
     let nextRows = savedRows
+    let rowsToPersist: ScenarioDecisionRow[] = []
 
     if (currentScenario && scenarioView === "workspace") {
       const scenarioRows = buildScenarioRows(currentScenario, zones)
@@ -383,10 +384,13 @@ export function Dashboard() {
         ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
         ...scenarioRows,
       ]
+      rowsToPersist = scenarioRows
       setSavedRows(nextRows)
     }
 
-    persistRowsToFile(nextRows)
+    if (rowsToPersist.length > 0) {
+      persistRowsToFile(rowsToPersist)
+    }
     setStep("complete")
   }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, savedRows, scenarioView, sessionId, zones])
 
@@ -395,11 +399,13 @@ export function Dashboard() {
       <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
         <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card/70 p-6 shadow-2xl md:p-8">
           <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Participatory Design Demo</p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight">Participant Intake</h1>
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
+              Student-athlete wearable research - participatory design
+            </p>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              Start a session by capturing participant details, then move through the fixed scenario sequence. The
-              dashboard state carries forward from one scenario to the next.
+              Welcome to the participatory design. You will be presented with different scenarios that you might face,
+              or have faced as a student-athlete. During those times you will be asked to select what kind of data
+              from a wearable device you would want to share with your coaching staff.
             </p>
           </div>
 
@@ -413,13 +419,13 @@ export function Dashboard() {
                 value={participantForm.name}
                 onChange={(event) => setParticipantForm((current) => ({ ...current, name: event.target.value }))}
                 className="rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
-                placeholder="Jordan Rivera"
+                placeholder="Required"
                 autoComplete="name"
                 required
               />
             </label>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="pt-2">
               <button
                 type="submit"
                 className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
@@ -427,9 +433,6 @@ export function Dashboard() {
                 Start Session
                 <ChevronRight className="h-4 w-4" />
               </button>
-              <p className="text-xs text-muted-foreground">
-                Sessions are kept intentionally lightweight for rapid prototyping.
-              </p>
             </div>
           </form>
         </div>
@@ -440,27 +443,13 @@ export function Dashboard() {
   if (step === "complete") {
     return (
       <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
-        <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card/70 p-6 shadow-2xl md:p-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Session Complete</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">Results Ready</h1>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            The scenario decisions have been sent to your Google Sheet and can also be reviewed there after the session.
+        <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card/70 p-6 text-center shadow-2xl md:p-8">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Thank You</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight">Thank you for participating</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
+            Your responses have been recorded. Thank you for taking the time to share your perspective on wearable
+            data and coaching.
           </p>
-
-          <div className="mt-6 grid gap-3 rounded-2xl border border-border bg-background/60 p-4 text-sm text-muted-foreground md:grid-cols-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.16em]">Participant</p>
-              <p className="mt-1 text-foreground">{participant?.name}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.16em]">Scenarios Saved</p>
-              <p className="mt-1 text-foreground">{scenarios.length}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.16em]">CSV Rows</p>
-              <p className="mt-1 text-foreground">{savedRows.length}</p>
-            </div>
-          </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <button
