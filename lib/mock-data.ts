@@ -129,6 +129,191 @@ export const stepCountData = [
   { day: "Sun", steps: 11530 },
 ]
 
+export const restingHeartRateData = [
+  { day: "Mon", value: 49 },
+  { day: "Tue", value: 50 },
+  { day: "Wed", value: 48 },
+  { day: "Thu", value: 51 },
+  { day: "Fri", value: 50 },
+  { day: "Sat", value: 49 },
+  { day: "Sun", value: 48 },
+]
+
+export const stressMonitorData = [
+  { time: "06:00", value: 18 },
+  { time: "08:00", value: 34 },
+  { time: "10:00", value: 52 },
+  { time: "12:00", value: 41 },
+  { time: "14:00", value: 67 },
+  { time: "16:00", value: 58 },
+  { time: "18:00", value: 39 },
+  { time: "20:00", value: 29 },
+  { time: "22:00", value: 22 },
+]
+
+export const strainRecoveryTrendData = [
+  { day: "Mon", strain: 13.4, recovery: 69 },
+  { day: "Tue", strain: 15.8, recovery: 61 },
+  { day: "Wed", strain: 10.2, recovery: 78 },
+  { day: "Thu", strain: 16.1, recovery: 58 },
+  { day: "Fri", strain: 14.7, recovery: 71 },
+  { day: "Sat", strain: 12.3, recovery: 74 },
+  { day: "Sun", strain: 11.5, recovery: 76 },
+]
+
+export const respiratoryRateData = [
+  { day: "Mon", value: 14.1 },
+  { day: "Tue", value: 14.3 },
+  { day: "Wed", value: 14.0 },
+  { day: "Thu", value: 14.4 },
+  { day: "Fri", value: 14.2 },
+  { day: "Sat", value: 14.1 },
+  { day: "Sun", value: 13.9 },
+]
+
+export const averageDailyHeartRateData = [
+  { day: "Mon", value: 71 },
+  { day: "Tue", value: 74 },
+  { day: "Wed", value: 69 },
+  { day: "Thu", value: 76 },
+  { day: "Fri", value: 73 },
+  { day: "Sat", value: 70 },
+  { day: "Sun", value: 68 },
+]
+
+export const heartZoneDistributionData = [
+  { label: "Z1", minutes: 148, color: "hsl(160, 60%, 45%)" },
+  { label: "Z2", minutes: 96, color: "hsl(190, 68%, 52%)" },
+  { label: "Z3", minutes: 74, color: "hsl(35, 90%, 55%)" },
+  { label: "Z4", minutes: 41, color: "hsl(12, 84%, 58%)" },
+  { label: "Z5", minutes: 19, color: "hsl(0, 72%, 51%)" },
+]
+
+export const leanBodyMassData = [
+  { month: "Jan", value: 146.2 },
+  { month: "Feb", value: 146.5 },
+  { month: "Mar", value: 147.1 },
+  { month: "Apr", value: 147.4 },
+]
+
+export const restorativeSleepData = [
+  { day: "Mon", percent: 34, hours: 2.5 },
+  { day: "Tue", percent: 36, hours: 2.9 },
+  { day: "Wed", percent: 31, hours: 2.1 },
+  { day: "Thu", percent: 39, hours: 3.0 },
+  { day: "Fri", percent: 37, hours: 2.8 },
+  { day: "Sat", percent: 41, hours: 3.2 },
+  { day: "Sun", percent: 38, hours: 2.9 },
+]
+
+export const sleepConsistencyData = [
+  { day: "Mon", value: 83 },
+  { day: "Tue", value: 86 },
+  { day: "Wed", value: 78 },
+  { day: "Thu", value: 81 },
+  { day: "Fri", value: 76 },
+  { day: "Sat", value: 88 },
+  { day: "Sun", value: 84 },
+]
+
+export const sleepEfficiencyData = [
+  { day: "Mon", value: 91 },
+  { day: "Tue", value: 93 },
+  { day: "Wed", value: 88 },
+  { day: "Thu", value: 92 },
+  { day: "Fri", value: 90 },
+  { day: "Sat", value: 94 },
+  { day: "Sun", value: 92 },
+]
+
+export const sleepNeededData = [
+  { day: "Mon", hours: 8.4 },
+  { day: "Tue", hours: 8.1 },
+  { day: "Wed", hours: 8.8 },
+  { day: "Thu", hours: 8.3 },
+  { day: "Fri", hours: 8.2 },
+  { day: "Sat", hours: 7.9 },
+  { day: "Sun", hours: 8.0 },
+]
+
+export const timeInBedData = [
+  { day: "Mon", hours: 7.9 },
+  { day: "Tue", hours: 8.6 },
+  { day: "Wed", hours: 7.4 },
+  { day: "Thu", hours: 8.1 },
+  { day: "Fri", hours: 8.5 },
+  { day: "Sat", hours: 8.0 },
+  { day: "Sun", hours: 8.2 },
+]
+
+export const vo2MaxData = [
+  { month: "Nov", value: 52.1 },
+  { month: "Dec", value: 52.6 },
+  { month: "Jan", value: 53.0 },
+  { month: "Feb", value: 53.4 },
+  { month: "Mar", value: 53.8 },
+]
+
+export const weightData = [
+  { month: "Nov", value: 178.4 },
+  { month: "Dec", value: 177.9 },
+  { month: "Jan", value: 178.1 },
+  { month: "Feb", value: 177.6 },
+  { month: "Mar", value: 177.2 },
+]
+
+export const sleepScoreData = [
+  { day: "Mon", value: 81 },
+  { day: "Tue", value: 86 },
+  { day: "Wed", value: 74 },
+  { day: "Thu", value: 83 },
+  { day: "Fri", value: 88 },
+  { day: "Sat", value: 84 },
+  { day: "Sun", value: 87 },
+]
+
+export const healthMonitorData = [
+  { label: "Respiratory Rate", status: "In range", value: "13.9 rpm" },
+  { label: "Blood Oxygen", status: "In range", value: "97%" },
+  { label: "Resting HR", status: "In range", value: "48 bpm" },
+  { label: "Skin Temp", status: "Out of range", value: "+0.4 F" },
+  { label: "HRV", status: "In range", value: "65 ms" },
+]
+
+export const dailyActivitiesData = [
+  { label: "Walk", duration: "42 min", energy: "246 cal" },
+  { label: "Lift", duration: "51 min", energy: "412 cal" },
+  { label: "Mobility", duration: "23 min", energy: "118 cal" },
+  { label: "Run", duration: "34 min", energy: "368 cal" },
+]
+
+export const bedtimeData = [
+  { day: "Mon", value: "10:42 PM" },
+  { day: "Tue", value: "10:55 PM" },
+  { day: "Wed", value: "11:18 PM" },
+  { day: "Thu", value: "10:48 PM" },
+  { day: "Fri", value: "11:06 PM" },
+  { day: "Sat", value: "10:39 PM" },
+  { day: "Sun", value: "10:51 PM" },
+]
+
+export const journalSummaryData = [
+  { label: "Alcohol", count: 2 },
+  { label: "Late Meal", count: 1 },
+  { label: "Caffeine PM", count: 3 },
+  { label: "Meditation", count: 4 },
+]
+
+export const strengthActivityTimeData = [
+  { day: "Mon", minutes: 42 },
+  { day: "Tue", minutes: 0 },
+  { day: "Wed", minutes: 55 },
+  { day: "Thu", minutes: 30 },
+  { day: "Fri", minutes: 48 },
+  { day: "Sat", minutes: 0 },
+  { day: "Sun", minutes: 36 },
+]
+
 // Widget definitions
 export type WidgetId =
   | "heart-rate"
@@ -143,23 +328,30 @@ export type WidgetId =
   | "workout-log"
   | "calories"
   | "step-count"
+  | "resting-heart-rate"
+  | "stress-monitor"
+  | "strain-recovery-trend"
+  | "respiratory-rate"
+  | "average-daily-heart-rate"
+  | "heart-zones-all"
+  | "heart-zones-low"
+  | "heart-zones-high"
+  | "lean-body-mass"
+  | "restorative-sleep"
+  | "sleep-consistency"
+  | "sleep-efficiency"
+  | "sleep-needed"
+  | "time-in-bed"
+  | "vo2-max"
+  | "weight"
+  | "sleep-score"
+  | "health-monitor"
+  | "daily-activities"
+  | "bedtime"
+  | "journal"
+  | "strength-activity-time"
 
 export interface WidgetConfig {
   id: WidgetId
   title: string
 }
-
-export const defaultWidgets: WidgetConfig[] = [
-  { id: "recovery", title: "Recovery Score" },
-  { id: "strain", title: "Strain Score" },
-  { id: "sleep-hours", title: "Sleep Hours" },
-  { id: "sleep-debt", title: "Sleep Debt" },
-  { id: "hrv", title: "HRV" },
-  { id: "heart-rate", title: "Heart Rate" },
-  { id: "sleep-graph", title: "Sleep Stages" },
-  { id: "calories", title: "Calories Burned" },
-  { id: "workout-log", title: "Workout Log" },
-  { id: "bedtime-routine", title: "Bedtime Routine" },
-  { id: "alcohol", title: "Alcohol Consumption" },
-  { id: "step-count", title: "Step Count" },
-]

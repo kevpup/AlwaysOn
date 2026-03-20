@@ -23,9 +23,10 @@ import { ChevronRight, Eye, EyeOff, LayoutGrid, RotateCcw } from "lucide-react"
 
 import { DraggableBankItem } from "@/components/draggable-bank-item"
 import { SortableWidget } from "@/components/sortable-widget"
-import { WidgetRenderer } from "@/components/widget-renderer"
-import { defaultWidgets, type WidgetConfig, type WidgetId } from "@/lib/mock-data"
+import { WidgetRenderer } from "@/components/widgets/widget-renderer"
+import { type WidgetConfig, type WidgetId } from "@/lib/mock-data"
 import { scenarios, type Scenario } from "@/lib/scenarios"
+import { defaultWidgets } from "@/lib/widget-selection"
 
 type ZoneId = "undecided" | "share" | "do_not_share"
 type StudyStep = "intake" | "study" | "complete"

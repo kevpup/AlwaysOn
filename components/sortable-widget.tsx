@@ -3,7 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { type WidgetConfig } from "@/lib/mock-data"
-import { WidgetRenderer } from "@/components/widget-renderer"
+import { WidgetRenderer } from "@/components/widgets/widget-renderer"
 import { EyeOff, GripVertical } from "lucide-react"
 
 interface SortableWidgetProps {
