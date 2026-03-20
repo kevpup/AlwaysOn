@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo, useState, type FormEvent } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -19,7 +19,7 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable"
-import { ChevronRight, Download, Eye, EyeOff, LayoutGrid, RotateCcw } from "lucide-react"
+import { ChevronRight, Eye, EyeOff, LayoutGrid, RotateCcw } from "lucide-react"
 
 import { DraggableBankItem } from "@/components/draggable-bank-item"
 import { SortableWidget } from "@/components/sortable-widget"
@@ -48,8 +48,6 @@ interface ZonesState {
   share: WidgetConfig[]
   do_not_share: WidgetConfig[]
 }
-
-const STORAGE_KEY = "participatory-design-demo-session"
 
 const zoneContainerIds: Record<ZoneId, string> = {
   undecided: "zone-undecided",
@@ -103,6 +101,7 @@ export function Dashboard() {
   const [zones, setZones] = useState<ZonesState>(createInitialZones)
   const [savedRows, setSavedRows] = useState<ScenarioDecisionRow[]>([])
   const [activeId, setActiveId] = useState<WidgetId | null>(null)
+  const lastPersistedSnapshot = useRef<string | null>(null)
 
   const currentScenario = scenarios[scenarioIndex] ?? null
 
@@ -145,31 +144,8 @@ export function Dashboard() {
     return findZoneForWidget(activeId)
   }, [activeId, findZoneForWidget])
 
-  const persistSession = useCallback((
-    nextRows: ScenarioDecisionRow[],
-    nextStep: StudyStep,
-    nextScenarioIndex: number,
-    nextScenarioView: ScenarioView
-  ) => {
-    if (typeof window === "undefined" || !participant || !sessionId) return
-
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        sessionId,
-        participant,
-        step: nextStep,
-        scenarioIndex: nextScenarioIndex,
-        scenarioView: nextScenarioView,
-        savedRows: nextRows,
-        zones,
-        updatedAt: new Date().toISOString(),
-      })
-    )
-  }, [participant, sessionId, zones])
-
   const buildScenarioRows = useCallback((scenario: Scenario, currentZones: ZonesState) => {
-    if (!participant || !sessionId) return []
+    if (!participant) return []
 
     const allRows: ScenarioDecisionRow[] = []
 
@@ -204,7 +180,7 @@ export function Dashboard() {
     })
 
     return allRows
-  }, [participant, sessionId])
+  }, [participant])
 
   const downloadCsv = useCallback((rows: ScenarioDecisionRow[] = savedRows) => {
     if (typeof window === "undefined" || rows.length === 0) return
@@ -244,10 +220,7 @@ export function Dashboard() {
     setZones(createInitialZones())
     setSavedRows([])
     setActiveId(null)
-
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem(STORAGE_KEY)
-    }
+    lastPersistedSnapshot.current = null
   }, [])
 
   const handleStartSession = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -268,10 +241,7 @@ export function Dashboard() {
     setSavedRows([])
     setActiveId(null)
     setStep("study")
-
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem(STORAGE_KEY)
-    }
+    lastPersistedSnapshot.current = null
   }, [participantForm.name])
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -301,6 +271,26 @@ export function Dashboard() {
       }
     })
   }, [])
+
+  const persistRowsToFile = useCallback(async (rows: ScenarioDecisionRow[]) => {
+    if (!participant || !sessionId) return
+
+    try {
+      await fetch("/api/scenarios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sessionId,
+          participantName: participant.name,
+          rows,
+        }),
+      })
+    } catch (error) {
+      console.error("Failed to persist scenario rows", error)
+    }
+  }, [participant, sessionId])
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const activeWidgetId = event.active.id as WidgetId
@@ -372,10 +362,9 @@ export function Dashboard() {
     const isLastScenario = scenarioIndex === scenarios.length - 1
     const nextStep: StudyStep = isLastScenario ? "complete" : "study"
     const nextScenarioIndex = isLastScenario ? scenarioIndex : scenarioIndex + 1
-    const nextScenarioView: ScenarioView = isLastScenario ? "workspace" : "intro"
 
     setSavedRows(nextRows)
-    persistSession(nextRows, nextStep, nextScenarioIndex, nextScenarioView)
+    persistRowsToFile(nextRows)
 
     if (isLastScenario) {
       setStep("complete")
@@ -384,7 +373,48 @@ export function Dashboard() {
 
     setScenarioIndex(nextScenarioIndex)
     setScenarioView("intro")
-  }, [buildScenarioRows, currentScenario, participant, persistSession, savedRows, scenarioIndex, sessionId, zones])
+  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, savedRows, scenarioIndex, sessionId, zones])
+
+  const handleSkipToFinish = useCallback(() => {
+    if (!participant || !sessionId) return
+
+    let nextRows = savedRows
+
+    if (currentScenario && scenarioView === "workspace") {
+      const scenarioRows = buildScenarioRows(currentScenario, zones)
+      nextRows = [
+        ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
+        ...scenarioRows,
+      ]
+      setSavedRows(nextRows)
+    }
+
+    persistRowsToFile(nextRows)
+    setStep("complete")
+  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, savedRows, scenarioView, sessionId, zones])
+
+  const liveRows = useMemo(() => {
+    if (!currentScenario) return savedRows
+
+    if (step === "study" && scenarioView === "workspace") {
+      return [
+        ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
+        ...buildScenarioRows(currentScenario, zones),
+      ]
+    }
+
+    return savedRows
+  }, [buildScenarioRows, currentScenario, savedRows, scenarioView, step, zones])
+
+  useEffect(() => {
+    if (!participant || !sessionId || step !== "study" || scenarioView !== "workspace") return
+
+    const snapshot = JSON.stringify(liveRows)
+    if (snapshot === lastPersistedSnapshot.current) return
+
+    lastPersistedSnapshot.current = snapshot
+    void persistRowsToFile(liveRows)
+  }, [liveRows, participant, persistRowsToFile, scenarioView, sessionId, step])
 
   if (step === "intake") {
     return (
@@ -440,7 +470,7 @@ export function Dashboard() {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Session Complete</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">Results Ready</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            The scenario decisions have been captured in browser storage and are ready for CSV export.
+            The scenario decisions have been written to the local `scenarios` folder and can also be downloaded as a CSV.
           </p>
 
           <div className="mt-6 grid gap-3 rounded-2xl border border-border bg-background/60 p-4 text-sm text-muted-foreground md:grid-cols-3">
@@ -459,13 +489,6 @@ export function Dashboard() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <button
-              onClick={() => downloadCsv()}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              <Download className="h-4 w-4" />
-              Download CSV
-            </button>
             <button
               onClick={resetSession}
               className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
@@ -495,13 +518,21 @@ export function Dashboard() {
             </p>
 
             <div className="mt-10 flex justify-center">
-              <button
-                onClick={() => setScenarioView("workspace")}
-                className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Build Dashboard
-                <ChevronRight className="h-4 w-4" />
-              </button>
+              <div className="flex flex-wrap justify-center gap-3">
+                <button
+                  onClick={() => setScenarioView("workspace")}
+                  className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Build Dashboard
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={handleSkipToFinish}
+                  className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                >
+                  Skip to Finish
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -529,13 +560,19 @@ export function Dashboard() {
             </div>
 
             <div className="flex shrink-0 rounded-2xl border border-border bg-background/60 p-4 xl:min-w-[220px] xl:justify-center">
-              <div className="flex w-full xl:max-w-[180px]">
+              <div className="flex w-full flex-col gap-3 xl:max-w-[180px]">
                 <button
                   onClick={handleSaveScenario}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
                   {scenarioIndex === scenarios.length - 1 ? "Save and Finish" : "Next Scenario"}
                   <ChevronRight className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={handleSkipToFinish}
+                  className="inline-flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                >
+                  Skip to Finish
                 </button>
               </div>
             </div>
