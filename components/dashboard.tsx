@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react"
+import { useCallback, useMemo, useState, type FormEvent } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -101,7 +101,6 @@ export function Dashboard() {
   const [zones, setZones] = useState<ZonesState>(createInitialZones)
   const [savedRows, setSavedRows] = useState<ScenarioDecisionRow[]>([])
   const [activeId, setActiveId] = useState<WidgetId | null>(null)
-  const lastPersistedSnapshot = useRef<string | null>(null)
 
   const currentScenario = scenarios[scenarioIndex] ?? null
 
@@ -220,7 +219,6 @@ export function Dashboard() {
     setZones(createInitialZones())
     setSavedRows([])
     setActiveId(null)
-    lastPersistedSnapshot.current = null
   }, [])
 
   const handleStartSession = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -241,7 +239,6 @@ export function Dashboard() {
     setSavedRows([])
     setActiveId(null)
     setStep("study")
-    lastPersistedSnapshot.current = null
   }, [participantForm.name])
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -393,29 +390,6 @@ export function Dashboard() {
     setStep("complete")
   }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, savedRows, scenarioView, sessionId, zones])
 
-  const liveRows = useMemo(() => {
-    if (!currentScenario) return savedRows
-
-    if (step === "study" && scenarioView === "workspace") {
-      return [
-        ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
-        ...buildScenarioRows(currentScenario, zones),
-      ]
-    }
-
-    return savedRows
-  }, [buildScenarioRows, currentScenario, savedRows, scenarioView, step, zones])
-
-  useEffect(() => {
-    if (!participant || !sessionId || step !== "study" || scenarioView !== "workspace") return
-
-    const snapshot = JSON.stringify(liveRows)
-    if (snapshot === lastPersistedSnapshot.current) return
-
-    lastPersistedSnapshot.current = snapshot
-    void persistRowsToFile(liveRows)
-  }, [liveRows, participant, persistRowsToFile, scenarioView, sessionId, step])
-
   if (step === "intake") {
     return (
       <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
@@ -470,7 +444,7 @@ export function Dashboard() {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Session Complete</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">Results Ready</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            The scenario decisions have been written to the local `scenarios` folder and can also be downloaded as a CSV.
+            The scenario decisions have been sent to your Google Sheet and can also be reviewed there after the session.
           </p>
 
           <div className="mt-6 grid gap-3 rounded-2xl border border-border bg-background/60 p-4 text-sm text-muted-foreground md:grid-cols-3">

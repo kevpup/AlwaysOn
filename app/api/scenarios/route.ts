@@ -1,6 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises"
-import path from "node:path"
-
 import { NextResponse } from "next/server"
 
 interface ScenarioDecisionRow {
@@ -17,38 +14,8 @@ interface PersistRequestBody {
   rows: ScenarioDecisionRow[]
 }
 
-function sanitizeFilePart(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-}
-
-function escapeCsvValue(value: string | number | boolean) {
-  const text = String(value)
-  if (text.includes(",") || text.includes('"') || text.includes("\n")) {
-    return `"${text.replace(/"/g, '""')}"`
-  }
-  return text
-}
-
-function buildCsv(rows: ScenarioDecisionRow[]) {
-  const headers = ["participantName", "scenarioId", "widgetTitle", "shared", "rank"]
-
-  return [
-    headers.join(","),
-    ...rows.map((row) =>
-      [
-        escapeCsvValue(row.participantName),
-        escapeCsvValue(row.scenarioId),
-        escapeCsvValue(row.widgetTitle),
-        escapeCsvValue(row.shared),
-        escapeCsvValue(row.rank),
-      ].join(",")
-    ),
-  ].join("\n")
-}
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxQhibrsN32hk95XQgxqBCM1_r_iHtK8HoOY6QbE1KgZb9H5UnP5pEmXChgdEYZ_k9X/exec"
 
 export async function POST(request: Request) {
   try {
@@ -61,17 +28,41 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing participant name or session id." }, { status: 400 })
     }
 
-    const scenariosDir = path.join(process.cwd(), "scenarios")
-    await mkdir(scenariosDir, { recursive: true })
+    const payload = {
+      sessionId,
+      participantName,
+      rows: rows.map((row) => ({
+        timestamp: new Date().toISOString(),
+        sessionId,
+        participantName: row.participantName,
+        scenarioId: row.scenarioId,
+        widgetTitle: row.widgetTitle,
+        shared: row.shared,
+        rank: row.rank,
+      })),
+    }
 
-    const fileName = `${sanitizeFilePart(participantName) || "participant"}-${sanitizeFilePart(sessionId)}.csv`
-    const filePath = path.join(scenariosDir, fileName)
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      cache: "no-store",
+    })
 
-    await writeFile(filePath, buildCsv(rows), "utf8")
+    const responseText = await response.text()
 
-    return NextResponse.json({ ok: true, fileName })
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: "Google Sheet request failed.", details: responseText },
+        { status: 502 }
+      )
+    }
+
+    return NextResponse.json({ ok: true, upstream: responseText })
   } catch (error) {
-    console.error("Failed to persist scenario CSV", error)
-    return NextResponse.json({ error: "Failed to persist scenario CSV." }, { status: 500 })
+    console.error("Failed to persist scenario rows to Google Sheets", error)
+    return NextResponse.json({ error: "Failed to persist scenario rows." }, { status: 500 })
   }
 }
