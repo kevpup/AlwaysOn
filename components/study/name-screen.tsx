@@ -15,12 +15,11 @@ export function NameScreen({ name, onNameChange, onSubmit }: NameScreenProps) {
       <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card/70 p-6 shadow-2xl md:p-8">
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
-            Student-athlete wearable research - participatory design
+            Student-athlete wearable research - demo branch
           </p>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            Welcome to the participatory design. You will be presented with different scenarios that you might face,
-            or have faced as a student-athlete. During those times you will be asked to select what kind of data
-            from a wearable device you would want to share with your coaching staff.
+            Welcome to the demo version. This intro text was changed on the demo branch so you can practice
+            committing, pushing, and switching between branches while watching the content update in the app.
           </p>
         </div>
 
