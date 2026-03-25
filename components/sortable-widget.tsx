@@ -9,13 +9,13 @@ import { EyeOff, GripVertical } from "lucide-react"
 interface SortableWidgetProps {
   widget: WidgetConfig
   disableSorting?: boolean
-  onMoveToDoNotShare?: () => void
+  onMoveToNotDisplayed?: () => void
 }
 
 export function SortableWidget({
   widget,
   disableSorting = false,
-  onMoveToDoNotShare,
+  onMoveToNotDisplayed,
 }: SortableWidgetProps) {
   const {
     attributes,
@@ -54,14 +54,14 @@ export function SortableWidget({
           )}
           <h3 className="text-sm font-semibold text-foreground">{widget.title}</h3>
         </div>
-        {onMoveToDoNotShare && (
+        {onMoveToNotDisplayed && (
           <button
             type="button"
-            onClick={onMoveToDoNotShare}
+            onClick={onMoveToNotDisplayed}
             className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <EyeOff className="h-3 w-3" />
-            Do Not Share
+            Hide from Coach
           </button>
         )}
       </div>

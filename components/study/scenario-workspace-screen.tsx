@@ -1,0 +1,241 @@
+"use client"
+
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useDroppable,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core"
+import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import { ChevronLeft, ChevronRight, Eye, EyeOff, LayoutGrid } from "lucide-react"
+
+import { zoneContainerIds, zoneDescriptions, zoneTitles } from "@/components/study/constants"
+import { type WidgetConfig, type WidgetId } from "@/components/study/types"
+import { DraggableBankItem } from "@/components/draggable-bank-item"
+import { SortableWidget } from "@/components/sortable-widget"
+import { WidgetRenderer } from "@/components/widgets/widget-renderer"
+import { type Scenario } from "@/lib/scenarios"
+
+interface ScenarioWorkspaceScreenProps {
+  activeWidget: WidgetConfig | null
+  activeZone: "not_displayed" | "share" | null
+  canGoBack: boolean
+  onBack: () => void
+  onDragCancel: () => void
+  onDragEnd: (event: DragEndEvent) => void
+  onDragStart: (event: DragStartEvent) => void
+  onMoveToNotDisplayed: (id: WidgetId) => void
+  onReviewCoachView: () => void
+  onSkipToFinish: () => void
+  scenario: Scenario
+  scenarioIndex: number
+  totalScenarios: number
+  zones: {
+    not_displayed: WidgetConfig[]
+    share: WidgetConfig[]
+  }
+}
+
+export function ScenarioWorkspaceScreen({
+  activeWidget,
+  activeZone,
+  canGoBack,
+  onBack,
+  onDragCancel,
+  onDragEnd,
+  onDragStart,
+  onMoveToNotDisplayed,
+  onReviewCoachView,
+  onSkipToFinish,
+  scenario,
+  scenarioIndex,
+  totalScenarios,
+  zones,
+}: ScenarioWorkspaceScreenProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  )
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onDragCancel={onDragCancel}
+    >
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="border-b border-border bg-card/60 backdrop-blur-sm">
+          <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-4 py-5 md:px-6 xl:flex-row xl:items-start xl:justify-between">
+            <div className="max-w-4xl">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
+                Scenario {scenarioIndex + 1} of {totalScenarios}
+              </p>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight">{scenario.title}</h1>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">{scenario.prompt}</p>
+            </div>
+
+            <div className="flex shrink-0 rounded-2xl border border-border bg-background/60 p-4 xl:min-w-[220px] xl:justify-center">
+              <div className="flex w-full flex-col gap-3 xl:max-w-[180px]">
+                {canGoBack ? (
+                  <button
+                    onClick={onBack}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Back
+                  </button>
+                ) : null}
+                <button
+                  onClick={onReviewCoachView}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Review Coach View
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={onSkipToFinish}
+                  className="inline-flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                >
+                  Skip to Finish
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-auto grid max-w-[1600px] gap-4 px-4 py-6 md:px-6 xl:grid-cols-[280px_minmax(0,1fr)]">
+          <WidgetListZone zoneId="not_displayed" widgets={zones.not_displayed} />
+          <ShareZone widgets={zones.share} onMoveToNotDisplayed={onMoveToNotDisplayed} />
+        </div>
+      </div>
+
+      <DragOverlay>
+        {activeWidget ? (
+          <div
+            className="rounded-xl border border-primary/40 bg-card p-4 shadow-2xl opacity-95"
+            style={{
+              width: activeZone === "share" ? 280 : 240,
+              height: activeZone === "share" ? 232 : 56,
+            }}
+          >
+            {activeZone === "share" ? (
+              <>
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="cursor-grab text-muted-foreground/50">
+                    <LayoutGrid className="h-4 w-4" />
+                  </span>
+                  <h3 className="text-sm font-semibold text-foreground">{activeWidget.title}</h3>
+                </div>
+                <div className="h-[calc(100%-2.25rem)] opacity-60">
+                  <WidgetRenderer id={activeWidget.id} />
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-3">
+                <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-foreground">{activeWidget.title}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
+  )
+}
+
+function WidgetListZone({ zoneId, widgets }: { zoneId: "not_displayed"; widgets: WidgetConfig[] }) {
+  const { setNodeRef, isOver } = useDroppable({ id: zoneContainerIds[zoneId] })
+
+  return (
+    <section
+      ref={setNodeRef}
+      className={`rounded-2xl border bg-card/50 transition-colors ${
+        isOver ? "border-primary bg-primary/5" : "border-border"
+      }`}
+    >
+      <div className="border-b border-border px-4 py-4">
+        <div className="flex items-center gap-2">
+          <EyeOff className="h-4 w-4 text-primary" />
+          <h2 className="text-sm font-semibold text-foreground">{zoneTitles[zoneId]}</h2>
+        </div>
+        <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions[zoneId]}</p>
+      </div>
+
+      <div className="min-h-[440px] p-3">
+        {widgets.length === 0 ? (
+          <div className="flex h-full min-h-[400px] items-center justify-center rounded-xl border border-dashed border-border px-6 text-center text-sm text-muted-foreground">
+            Drop widgets here when they should not appear on the coach view.
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {widgets.map((widget) => (
+              <DraggableBankItem key={widget.id} widget={widget} />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function ShareZone({
+  widgets,
+  onMoveToNotDisplayed,
+}: {
+  widgets: WidgetConfig[]
+  onMoveToNotDisplayed: (id: WidgetId) => void
+}) {
+  const { setNodeRef, isOver } = useDroppable({ id: zoneContainerIds.share })
+
+  return (
+    <section
+      ref={setNodeRef}
+      className={`rounded-2xl border bg-card/50 transition-colors ${
+        isOver ? "border-primary bg-primary/5" : "border-border"
+      }`}
+    >
+      <div className="border-b border-border px-5 py-4">
+        <div className="flex items-center gap-2">
+          <Eye className="h-4 w-4 text-primary" />
+          <h2 className="text-sm font-semibold text-foreground">{zoneTitles.share}</h2>
+        </div>
+        <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions.share}</p>
+      </div>
+
+      <div className="min-h-[680px] p-5">
+        {widgets.length === 0 ? (
+          <div className="flex h-full min-h-[620px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border px-8 text-center">
+            <Eye className="h-8 w-8 text-muted-foreground" />
+            <h3 className="mt-4 text-lg font-semibold text-foreground">No Shared Widgets Yet</h3>
+            <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+              Drag widgets here when you want the coach to have view-only access during this scenario.
+            </p>
+          </div>
+        ) : (
+          <SortableContext items={widgets.map((widget) => widget.id)} strategy={rectSortingStrategy}>
+            <div className="grid content-start grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {widgets.map((widget, index) => (
+                <div key={widget.id}>
+                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                    Rank {index + 1}
+                  </p>
+                  <SortableWidget widget={widget} onMoveToNotDisplayed={() => onMoveToNotDisplayed(widget.id)} />
+                </div>
+              ))}
+            </div>
+          </SortableContext>
+        )}
+      </div>
+    </section>
+  )
+}
