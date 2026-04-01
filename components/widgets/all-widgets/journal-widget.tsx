@@ -10,10 +10,10 @@ export function JournalWidget() {
       <div className="mb-3 flex items-center justify-between">
         <div>
           <p className="text-3xl font-bold text-foreground">{totalEntries}</p>
-          <p className="text-sm text-muted-foreground">journal entries this week</p>
+          <p className="text-sm text-muted-foreground">notes this week</p>
         </div>
         <span className="rounded-md bg-sky-500/15 px-2 py-1 text-xs font-medium uppercase tracking-[0.14em] text-sky-300">
-          habits
+          reflections
         </span>
       </div>
 
@@ -26,7 +26,7 @@ export function JournalWidget() {
             >
               <div className="min-w-0">
                 <span className="block truncate text-base font-medium text-foreground">{item.label}</span>
-                <span className="text-sm text-muted-foreground">logged this week</span>
+                <span className="text-sm text-muted-foreground">captured this week</span>
               </div>
               <span className="rounded-md bg-sky-500/15 px-2 py-0.5 text-xs font-medium text-sky-300">
                 {item.count}x

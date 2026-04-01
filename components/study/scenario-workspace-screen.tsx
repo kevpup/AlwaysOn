@@ -113,7 +113,7 @@ export function ScenarioWorkspaceScreen({
           </div>
         </div>
 
-        <div className="mx-auto grid max-w-[1600px] gap-5 px-4 py-6 md:px-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+        <div className="mx-auto grid max-w-[1600px] gap-5 px-4 py-6 md:px-6 xl:grid-cols-[248px_minmax(0,1fr)]">
           <WidgetListZone
             title={selectionTitle}
             zoneId="not_displayed"
@@ -133,8 +133,8 @@ export function ScenarioWorkspaceScreen({
           <div
             className="rounded-xl border border-primary/40 bg-card p-4 shadow-2xl opacity-95"
             style={{
-              width: activeZone === "share" ? 280 : 240,
-              height: activeZone === "share" ? 232 : 56,
+              width: activeZone === "share" ? 280 : 320,
+              height: activeZone === "share" ? 232 : 210,
             }}
           >
             {activeZone === "share" ? (
@@ -150,12 +150,17 @@ export function ScenarioWorkspaceScreen({
                 </div>
               </>
             ) : (
-              <div className="flex items-center gap-3">
-                <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-                <div className="min-w-0">
-                  <p className="truncate text-base font-medium text-foreground">{activeWidget.title}</p>
+              <>
+                <div className="mb-3 flex items-center gap-2">
+                  <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+                  <p className="text-base font-semibold text-muted-foreground">{activeWidget.title}</p>
                 </div>
-              </div>
+                <div className="h-[calc(100%-2rem)] overflow-hidden rounded-xl opacity-70 saturate-75 brightness-90">
+                  <div className="pointer-events-none h-[168px] w-[200%] origin-top-left scale-50">
+                    <WidgetRenderer id={activeWidget.id} />
+                  </div>
+                </div>
+              </>
             )}
           </div>
         ) : null}
@@ -178,7 +183,7 @@ function WidgetListZone({
   return (
     <section
       ref={setNodeRef}
-      className={`rounded-2xl border bg-card/50 transition-colors ${
+      className={`flex flex-col rounded-2xl border bg-card/50 transition-colors ${
         isOver ? "border-primary bg-primary/5" : "border-border"
       }`}
     >
@@ -189,13 +194,13 @@ function WidgetListZone({
         </div>
       </div>
 
-      <div className="min-h-[440px] p-3">
+      <div className="min-h-[440px] p-3 xl:h-[680px] xl:overflow-y-auto">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[400px] items-center justify-center rounded-xl border border-dashed border-border px-6 text-center text-lg leading-8 text-muted-foreground">
             Drag a card back here when it should not be included in this audience view.
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {widgets.map((widget) => (
               <DraggableBankItem key={widget.id} widget={widget} />
             ))}

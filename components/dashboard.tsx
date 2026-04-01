@@ -49,7 +49,7 @@ export function Dashboard() {
         canGoBack={session.canGoBack}
         onBack={session.goBack}
         onBuildDashboard={session.openWorkspace}
-        onContinueLabel={session.step === "athlete_intro" ? "Athlete Build" : "Coach Build"}
+        onContinueLabel={session.step === "coach_intro" ? "Coach Build" : "Athlete Build"}
         scenario={session.currentScenario}
         scenarioIndex={session.scenarioIndex}
         totalScenarios={session.totalScenarios}
@@ -62,7 +62,7 @@ export function Dashboard() {
       activeWidget={session.activeWidget}
       activeZone={session.activeZone}
       canGoBack={session.canGoBack}
-      continueLabel={session.step === "athlete_workspace" ? "Continue to Coach Scenario" : "Continue to Review"}
+      continueLabel={session.step === "coach_workspace" ? "Continue to Athlete Scenario" : "Continue to Review"}
       onBack={session.goBack}
       onContinue={session.advanceFromWorkspace}
       onDragCancel={session.handleDragCancel}
@@ -72,8 +72,8 @@ export function Dashboard() {
       removeLabel="Remove"
       scenario={session.currentScenario}
       scenarioIndex={session.scenarioIndex}
-      selectedTitle={session.step === "athlete_workspace" ? "Shared" : "Requested"}
-      selectionTitle={session.step === "athlete_workspace" ? "Not Shared" : "Not Requested"}
+      selectedTitle={session.step === "coach_workspace" ? "Requested" : "Shared"}
+      selectionTitle={session.step === "coach_workspace" ? "Not Requested" : "Not Shared"}
       totalScenarios={session.totalScenarios}
       zones={session.activeZones}
     />

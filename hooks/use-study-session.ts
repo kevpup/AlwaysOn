@@ -32,11 +32,11 @@ export function useStudySession() {
   const [navigationHistory, setNavigationHistory] = useState<NavigationSnapshot[]>([])
   const [highlightSupportedWidgets, setHighlightSupportedWidgets] = useState(false)
 
-  const scenarioIndex = step === "coach_intro" || step === "coach_workspace" ? 1 : 0
+  const scenarioIndex = step === "athlete_intro" || step === "athlete_workspace" ? 1 : 0
   const currentScenario =
-    step === "athlete_intro" || step === "athlete_workspace"
+    step === "coach_intro" || step === "coach_workspace"
       ? scenarios[0]
-      : step === "coach_intro" || step === "coach_workspace"
+      : step === "athlete_intro" || step === "athlete_workspace"
         ? scenarios[1]
         : null
 
@@ -102,12 +102,12 @@ export function useStudySession() {
 
   const startDemo = useCallback(() => {
     pushNavigationSnapshot()
-    setStep("athlete_intro")
+    setStep("coach_intro")
   }, [pushNavigationSnapshot])
 
   const openWorkspace = useCallback(() => {
     pushNavigationSnapshot()
-    setStep((current) => (current === "athlete_intro" ? "athlete_workspace" : "coach_workspace"))
+    setStep((current) => (current === "coach_intro" ? "coach_workspace" : "athlete_workspace"))
   }, [pushNavigationSnapshot])
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -223,7 +223,7 @@ export function useStudySession() {
 
   const advanceFromWorkspace = useCallback(() => {
     pushNavigationSnapshot()
-    setStep((current) => (current === "athlete_workspace" ? "coach_intro" : "review"))
+    setStep((current) => (current === "coach_workspace" ? "athlete_intro" : "review"))
   }, [pushNavigationSnapshot])
 
   const openConclusion = useCallback(() => {

@@ -7,7 +7,7 @@ export const allWidgets: WidgetConfig[] = [
   { id: "sleep-debt", title: "Sleep Debt" },
   { id: "hrv", title: "HRV" },
   { id: "heart-rate", title: "Heart Rate Chart" },
-  { id: "sleep-graph", title: "Sleep Stages" },
+  { id: "sleep-graph", title: "Sleep Chart" },
   { id: "calories", title: "Calories Burned" },
   { id: "workout-log", title: "Workout Log" },
   { id: "bedtime-routine", title: "Bedtime Routine" },
@@ -33,20 +33,16 @@ export const allWidgets: WidgetConfig[] = [
   { id: "health-monitor", title: "Health Monitor" },
   { id: "daily-activities", title: "Daily Activities" },
   { id: "bedtime", title: "Bedtime" },
-  { id: "journal", title: "Journal" },
+  { id: "journal", title: "Notes" },
   { id: "strength-activity-time", title: "Strength Activity Time" },
 ]
 
-// The study currently uses the original 12 widgets.
-// Uncomment newer entries here when you want to turn them on.
 export const ENABLED_WIDGET_IDS: WidgetId[] = [
   "recovery",
   "strain",
-  "sleep-hours",
   "resting-heart-rate",
-  "calories",
   "heart-rate",
-  "step-count",
+  "sleep-graph",
   "workout-log",
   "journal",
 ]
@@ -59,9 +55,8 @@ export const defaultWidgets = getEnabledWidgets()
 export const WHOOP_UNITE_DEMO_WIDGET_IDS: WidgetId[] = [
   "recovery",
   "strain",
-  "sleep-hours",
   "resting-heart-rate",
-  "calories",
   "heart-rate",
+  "sleep-graph",
   "workout-log",
 ]
