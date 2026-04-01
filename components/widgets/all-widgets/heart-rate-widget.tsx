@@ -15,9 +15,9 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-border bg-card px-3 py-2 shadow-md">
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-sm font-semibold text-foreground">
-          {payload[0].value} <span className="text-xs font-normal text-muted-foreground">bpm</span>
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="text-base font-semibold text-foreground">
+          {payload[0].value} <span className="text-sm font-normal text-muted-foreground">bpm</span>
         </p>
       </div>
     )
@@ -34,10 +34,10 @@ export function HeartRateWidget() {
     <div className="flex h-full flex-col">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-foreground">{currentHr}</span>
-          <span className="text-xs text-muted-foreground">bpm current</span>
+          <span className="text-3xl font-bold text-foreground">{currentHr}</span>
+          <span className="text-sm text-muted-foreground">bpm current</span>
         </div>
-        <div className="flex gap-3 text-xs text-muted-foreground">
+        <div className="flex gap-3 text-sm text-muted-foreground">
           <span>
             Low <span className="font-medium text-chart-2">{minHr}</span>
           </span>
@@ -51,14 +51,14 @@ export function HeartRateWidget() {
           <LineChart data={heartRateData} margin={{ top: 5, right: 5, bottom: 5, left: -10 }}>
             <XAxis
               dataKey="time"
-              tick={{ fontSize: 10, fill: "hsl(215, 12%, 55%)" }}
+              tick={{ fontSize: 12, fill: "hsl(215, 12%, 55%)" }}
               tickLine={false}
               axisLine={false}
               interval={15}
             />
             <YAxis
               domain={[40, 200]}
-              tick={{ fontSize: 10, fill: "hsl(215, 12%, 55%)" }}
+              tick={{ fontSize: 12, fill: "hsl(215, 12%, 55%)" }}
               tickLine={false}
               axisLine={false}
               width={30}

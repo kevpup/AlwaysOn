@@ -11,8 +11,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-jetbrains-mono)', 'monospace'],
+        sans: ["Arial", "Helvetica", "system-ui", "sans-serif"],
+        mono: ["SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
       },
       colors: {
         background: 'hsl(var(--background))',

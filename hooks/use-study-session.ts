@@ -1,24 +1,21 @@
 "use client"
 
-import { useCallback, useMemo, useState, type FormEvent } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { type DragEndEvent, type DragStartEvent } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
 
 import { zoneContainerIds } from "@/components/study/constants"
 import {
+  type Audience,
   type NavigationSnapshot,
-  type ParticipantFormState,
-  type ParticipantInfo,
-  type ScenarioDecisionRow,
-  type ScenarioView,
   type StudyStep,
   type WidgetConfig,
   type WidgetId,
   type ZoneId,
   type ZonesState,
 } from "@/components/study/types"
-import { type Scenario, scenarios } from "@/lib/scenarios"
-import { defaultWidgets } from "@/lib/widget-selection"
+import { scenarios } from "@/lib/scenarios"
+import { WHOOP_UNITE_DEMO_WIDGET_IDS, defaultWidgets } from "@/lib/widget-selection"
 
 function createInitialZones(): ZonesState {
   return {
@@ -27,230 +24,90 @@ function createInitialZones(): ZonesState {
   }
 }
 
-function cloneZones(zones: ZonesState): ZonesState {
-  return {
-    not_displayed: [...zones.not_displayed],
-    share: [...zones.share],
-  }
-}
-
 export function useStudySession() {
-  const [step, setStep] = useState<StudyStep>("name")
-  const [scenarioView, setScenarioView] = useState<ScenarioView>("intro")
-  const [participantForm, setParticipantForm] = useState<ParticipantFormState>({
-    name: "",
-    deviceType: null,
-  })
-  const [participant, setParticipant] = useState<ParticipantInfo | null>(null)
-  const [sessionId, setSessionId] = useState<string | null>(null)
-  const [scenarioIndex, setScenarioIndex] = useState(0)
-  const [zones, setZones] = useState<ZonesState>(createInitialZones)
-  const [savedRows, setSavedRows] = useState<ScenarioDecisionRow[]>([])
+  const [step, setStep] = useState<StudyStep>("title")
+  const [athleteZones, setAthleteZones] = useState<ZonesState>(createInitialZones)
+  const [coachZones, setCoachZones] = useState<ZonesState>(createInitialZones)
   const [activeId, setActiveId] = useState<WidgetId | null>(null)
   const [navigationHistory, setNavigationHistory] = useState<NavigationSnapshot[]>([])
+  const [highlightSupportedWidgets, setHighlightSupportedWidgets] = useState(false)
 
-  const currentScenario = scenarios[scenarioIndex] ?? null
+  const scenarioIndex = step === "coach_intro" || step === "coach_workspace" ? 1 : 0
+  const currentScenario =
+    step === "athlete_intro" || step === "athlete_workspace"
+      ? scenarios[0]
+      : step === "coach_intro" || step === "coach_workspace"
+        ? scenarios[1]
+        : null
 
-  const findZoneForWidget = useCallback((id: WidgetId, currentZones: ZonesState = zones): ZoneId | null => {
+  const currentAudience: Audience | null =
+    step === "athlete_workspace" ? "athlete" : step === "coach_workspace" ? "coach" : null
+
+  const activeZones = currentAudience === "coach" ? coachZones : athleteZones
+
+  const findZoneForWidget = useCallback((id: WidgetId, currentZones: ZonesState): ZoneId | null => {
     if (currentZones.not_displayed.some((widget) => widget.id === id)) return "not_displayed"
     if (currentZones.share.some((widget) => widget.id === id)) return "share"
     return null
-  }, [zones])
+  }, [])
 
-  const getWidgetById = useCallback((id: WidgetId, currentZones: ZonesState = zones) => {
+  const getWidgetById = useCallback((id: WidgetId, currentZones: ZonesState) => {
     return (
       currentZones.not_displayed.find((widget) => widget.id === id) ||
       currentZones.share.find((widget) => widget.id === id) ||
       null
     )
-  }, [zones])
+  }, [])
 
-  const resolveTargetZone = useCallback((overId: string, currentZones: ZonesState = zones): ZoneId | null => {
+  const resolveTargetZone = useCallback((overId: string, currentZones: ZonesState): ZoneId | null => {
     const matchedZone = (
       Object.entries(zoneContainerIds).find(([, containerId]) => containerId === overId)?.[0] ?? null
     ) as ZoneId | null
 
     if (matchedZone) return matchedZone
     return findZoneForWidget(overId as WidgetId, currentZones)
-  }, [findZoneForWidget, zones])
+  }, [findZoneForWidget])
 
   const activeWidget = useMemo(() => {
-    if (!activeId) return null
-    return getWidgetById(activeId)
-  }, [activeId, getWidgetById])
+    if (!activeId || !currentAudience) return null
+    return getWidgetById(activeId, activeZones)
+  }, [activeId, activeZones, currentAudience, getWidgetById])
 
   const activeZone = useMemo(() => {
-    if (!activeId) return null
-    return findZoneForWidget(activeId)
-  }, [activeId, findZoneForWidget])
-
-  const buildScenarioRows = useCallback((scenario: Scenario, currentZones: ZonesState) => {
-    if (!participant) return []
-
-    const allRows: ScenarioDecisionRow[] = []
-
-    currentZones.not_displayed.forEach((widget) => {
-      allRows.push({
-        participantName: participant.name,
-        deviceType: participant.deviceType,
-        scenarioId: scenario.id,
-        widgetTitle: widget.title,
-        shared: false,
-        rank: "",
-      })
-    })
-
-    currentZones.share.forEach((widget, index) => {
-      allRows.push({
-        participantName: participant.name,
-        deviceType: participant.deviceType,
-        scenarioId: scenario.id,
-        widgetTitle: widget.title,
-        shared: true,
-        rank: index + 1,
-      })
-    })
-
-    return allRows
-  }, [participant])
-
-  const buildZonesFromSavedScenario = useCallback((targetScenarioId: string): ZonesState => {
-    const scenarioRows = savedRows.filter((row) => row.scenarioId === targetScenarioId)
-
-    if (scenarioRows.length === 0) {
-      return createInitialZones()
-    }
-
-    const widgetByTitle = new Map(defaultWidgets.map((widget) => [widget.title, widget]))
-    const sharedRows = scenarioRows
-      .filter((row) => row.shared)
-      .sort((a, b) => {
-        const aRank = typeof a.rank === "number" ? a.rank : Number.MAX_SAFE_INTEGER
-        const bRank = typeof b.rank === "number" ? b.rank : Number.MAX_SAFE_INTEGER
-        return aRank - bRank
-      })
-
-    const sharedTitles = new Set(sharedRows.map((row) => row.widgetTitle))
-
-    return {
-      not_displayed: defaultWidgets.filter((widget) => !sharedTitles.has(widget.title)),
-      share: sharedRows
-        .map((row) => widgetByTitle.get(row.widgetTitle))
-        .filter((widget): widget is WidgetConfig => Boolean(widget)),
-    }
-  }, [savedRows])
+    if (!activeId || !currentAudience) return null
+    return findZoneForWidget(activeId, activeZones)
+  }, [activeId, activeZones, currentAudience, findZoneForWidget])
 
   const pushNavigationSnapshot = useCallback(() => {
-    setNavigationHistory((current) => [
-      ...current,
-      {
-        step,
-        scenarioView,
-        scenarioIndex,
-      },
-    ])
-  }, [scenarioIndex, scenarioView, step])
+    setNavigationHistory((current) => [...current, { step }])
+  }, [step])
 
   const goBack = useCallback(() => {
     if (navigationHistory.length === 0) return
 
     const previous = navigationHistory[navigationHistory.length - 1]
-
-    if (previous.step === "study" && scenarios[previous.scenarioIndex]) {
-      const targetScenario = scenarios[previous.scenarioIndex]
-
-      if (previous.scenarioIndex !== scenarioIndex) {
-        setZones(buildZonesFromSavedScenario(targetScenario.id))
-      } else {
-        setZones((currentZones) => cloneZones(currentZones))
-      }
-    }
-
     setActiveId(null)
     setStep(previous.step)
-    setScenarioView(previous.scenarioView)
-    setScenarioIndex(previous.scenarioIndex)
     setNavigationHistory((current) => current.slice(0, -1))
-  }, [buildZonesFromSavedScenario, navigationHistory, scenarioIndex])
-
-  const persistRowsToFile = useCallback(async (rows: ScenarioDecisionRow[]) => {
-    if (!participant || !sessionId) return
-
-    try {
-      await fetch("/api/scenarios", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sessionId,
-          participantName: participant.name,
-          deviceType: participant.deviceType,
-          rows,
-        }),
-      })
-    } catch (error) {
-      console.error("Failed to persist scenario rows", error)
-    }
-  }, [participant, sessionId])
+  }, [navigationHistory])
 
   const resetSession = useCallback(() => {
-    setStep("name")
-    setScenarioView("intro")
-    setParticipant(null)
-    setParticipantForm({ name: "", deviceType: null })
-    setSessionId(null)
-    setScenarioIndex(0)
-    setZones(createInitialZones())
-    setSavedRows([])
+    setStep("title")
+    setAthleteZones(createInitialZones())
+    setCoachZones(createInitialZones())
     setActiveId(null)
     setNavigationHistory([])
+    setHighlightSupportedWidgets(false)
   }, [])
 
-  const handleParticipantNameChange = useCallback((name: string) => {
-    setParticipantForm((current) => ({ ...current, name }))
-  }, [])
-
-  const handleDeviceTypeSelect = useCallback((deviceType: NonNullable<ParticipantFormState["deviceType"]>) => {
-    setParticipantForm((current) => ({ ...current, deviceType }))
-  }, [])
-
-  const submitName = useCallback((event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    const name = participantForm.name.trim()
-    if (!name) return
-
+  const startDemo = useCallback(() => {
     pushNavigationSnapshot()
-    setStep("device")
-  }, [participantForm.name, pushNavigationSnapshot])
-
-  const startSession = useCallback(() => {
-    const name = participantForm.name.trim()
-    const deviceType = participantForm.deviceType
-
-    if (!name || !deviceType) return
-
-    pushNavigationSnapshot()
-
-    setParticipant({ name, deviceType })
-    setSessionId(`session-${Date.now()}`)
-    setScenarioIndex(0)
-    setScenarioView("intro")
-    setZones(createInitialZones())
-    setSavedRows([])
-    setActiveId(null)
-    setStep("study")
-  }, [participantForm.deviceType, participantForm.name, pushNavigationSnapshot])
+    setStep("athlete_intro")
+  }, [pushNavigationSnapshot])
 
   const openWorkspace = useCallback(() => {
     pushNavigationSnapshot()
-    setScenarioView("workspace")
-  }, [pushNavigationSnapshot])
-
-  const openRecap = useCallback(() => {
-    pushNavigationSnapshot()
-    setScenarioView("recap")
+    setStep((current) => (current === "athlete_intro" ? "athlete_workspace" : "coach_workspace"))
   }, [pushNavigationSnapshot])
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -261,8 +118,19 @@ export function useStudySession() {
     setActiveId(null)
   }, [])
 
+  const updateZonesForAudience = useCallback((audience: Audience, updater: (current: ZonesState) => ZonesState) => {
+    if (audience === "athlete") {
+      setAthleteZones(updater)
+      return
+    }
+
+    setCoachZones(updater)
+  }, [])
+
   const moveWidgetToNotDisplayed = useCallback((widgetId: WidgetId) => {
-    setZones((currentZones) => {
+    if (!currentAudience) return
+
+    updateZonesForAudience(currentAudience, (currentZones) => {
       const widget =
         currentZones.not_displayed.find((item) => item.id === widgetId) ||
         currentZones.share.find((item) => item.id === widgetId) ||
@@ -278,18 +146,24 @@ export function useStudySession() {
         share: currentZones.share.filter((item) => item.id !== widgetId),
       }
     })
-  }, [])
+  }, [currentAudience, updateZonesForAudience])
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
+    if (!currentAudience) {
+      setActiveId(null)
+      return
+    }
+
+    const currentZones = currentAudience === "athlete" ? athleteZones : coachZones
     const activeWidgetId = event.active.id as WidgetId
-    const sourceZone = findZoneForWidget(activeWidgetId)
+    const sourceZone = findZoneForWidget(activeWidgetId, currentZones)
 
     setActiveId(null)
 
     if (!sourceZone || !event.over) return
 
     const overId = String(event.over.id)
-    const targetZone = resolveTargetZone(overId)
+    const targetZone = resolveTargetZone(overId, currentZones)
 
     if (!targetZone) return
 
@@ -298,26 +172,26 @@ export function useStudySession() {
         return
       }
 
-      const oldIndex = zones.share.findIndex((widget) => widget.id === activeWidgetId)
-      const newIndex = zones.share.findIndex((widget) => widget.id === overId)
+      const oldIndex = currentZones.share.findIndex((widget) => widget.id === activeWidgetId)
+      const newIndex = currentZones.share.findIndex((widget) => widget.id === overId)
 
       if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return
 
-      setZones((currentZones) => ({
-        ...currentZones,
-        share: arrayMove(currentZones.share, oldIndex, newIndex),
+      updateZonesForAudience(currentAudience, (zoneState) => ({
+        ...zoneState,
+        share: arrayMove(zoneState.share, oldIndex, newIndex),
       }))
 
       return
     }
 
-    const widget = getWidgetById(activeWidgetId)
+    const widget = getWidgetById(activeWidgetId, currentZones)
     if (!widget) return
 
-    setZones((currentZones) => {
+    updateZonesForAudience(currentAudience, (zoneState) => {
       const nextZones: ZonesState = {
-        not_displayed: currentZones.not_displayed.filter((item) => item.id !== activeWidgetId),
-        share: currentZones.share.filter((item) => item.id !== activeWidgetId),
+        not_displayed: zoneState.not_displayed.filter((item) => item.id !== activeWidgetId),
+        share: zoneState.share.filter((item) => item.id !== activeWidgetId),
       }
 
       if (targetZone === "share") {
@@ -337,84 +211,88 @@ export function useStudySession() {
 
       return nextZones
     })
-  }, [findZoneForWidget, getWidgetById, resolveTargetZone, zones.share])
+  }, [
+    athleteZones,
+    coachZones,
+    currentAudience,
+    findZoneForWidget,
+    getWidgetById,
+    resolveTargetZone,
+    updateZonesForAudience,
+  ])
 
-  const saveScenario = useCallback(() => {
-    if (!participant || !sessionId || !currentScenario) return
-
+  const advanceFromWorkspace = useCallback(() => {
     pushNavigationSnapshot()
+    setStep((current) => (current === "athlete_workspace" ? "coach_intro" : "review"))
+  }, [pushNavigationSnapshot])
 
-    const scenarioRows = buildScenarioRows(currentScenario, zones)
-    const nextRows = [
-      ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
-      ...scenarioRows,
-    ]
-    const isLastScenario = scenarioIndex === scenarios.length - 1
-    const nextScenarioIndex = isLastScenario ? scenarioIndex : scenarioIndex + 1
-
-    setSavedRows(nextRows)
-    persistRowsToFile(scenarioRows)
-
-    if (isLastScenario) {
-      setStep("complete")
-      return
-    }
-
-    setZones(createInitialZones())
-    setScenarioIndex(nextScenarioIndex)
-    setScenarioView("intro")
-  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, zones])
-
-  const skipToFinish = useCallback(() => {
-    if (!participant || !sessionId) return
-
+  const openConclusion = useCallback(() => {
     pushNavigationSnapshot()
+    setStep("conclusion")
+  }, [pushNavigationSnapshot])
 
-    let nextRows = savedRows
-    let rowsToPersist: ScenarioDecisionRow[] = []
+  const toggleHighlightSupportedWidgets = useCallback(() => {
+    setHighlightSupportedWidgets((current) => !current)
+  }, [])
 
-    if (currentScenario && (scenarioView === "workspace" || scenarioView === "recap")) {
-      const scenarioRows = buildScenarioRows(currentScenario, zones)
-      nextRows = [
-        ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
-        ...scenarioRows,
-      ]
-      rowsToPersist = scenarioRows
-      setSavedRows(nextRows)
+  const reviewColumns = useMemo(() => {
+    const athleteShared = new Set(athleteZones.share.map((widget) => widget.id))
+    const coachShared = new Set(coachZones.share.map((widget) => widget.id))
+
+    const columns = {
+      neither: [] as WidgetConfig[],
+      coachOnly: [] as WidgetConfig[],
+      athleteOnly: [] as WidgetConfig[],
+      both: [] as WidgetConfig[],
     }
 
-    if (rowsToPersist.length > 0) {
-      persistRowsToFile(rowsToPersist)
-    }
+    defaultWidgets.forEach((widget) => {
+      const athleteSelected = athleteShared.has(widget.id)
+      const coachSelected = coachShared.has(widget.id)
 
-    setStep("complete")
-  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioView, sessionId, zones])
+      if (athleteSelected && coachSelected) {
+        columns.both.push(widget)
+        return
+      }
+
+      if (athleteSelected) {
+        columns.athleteOnly.push(widget)
+        return
+      }
+
+      if (coachSelected) {
+        columns.coachOnly.push(widget)
+        return
+      }
+
+      columns.neither.push(widget)
+    })
+
+    return columns
+  }, [athleteZones.share, coachZones.share])
 
   return {
     activeWidget,
     activeZone,
+    activeZones,
+    advanceFromWorkspace,
     canGoBack: navigationHistory.length > 0,
     currentScenario,
     goBack,
-    handleDeviceTypeSelect,
     handleDragCancel,
     handleDragEnd,
     handleDragStart,
-    handleParticipantNameChange,
+    highlightSupportedWidgets,
     moveWidgetToNotDisplayed,
-    openRecap,
+    openConclusion,
     openWorkspace,
-    participant,
-    participantForm,
     resetSession,
-    saveScenario,
+    reviewColumns,
     scenarioIndex,
-    scenarioView,
-    skipToFinish,
-    startSession,
+    startDemo,
     step,
-    submitName,
+    supportedWidgetIds: WHOOP_UNITE_DEMO_WIDGET_IDS,
+    toggleHighlightSupportedWidgets,
     totalScenarios: scenarios.length,
-    zones,
   }
 }

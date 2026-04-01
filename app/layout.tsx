@@ -1,18 +1,14 @@
-import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import type { Metadata, Viewport } from "next"
 
-import './globals.css'
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono' })
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: 'Athlete Dashboard',
-  description: 'Wearable fitness platform dashboard for performance monitoring',
+  title: "Athlete Dashboard",
+  description: "Wearable fitness platform dashboard for performance monitoring",
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0f1318',
+  themeColor: "#0f1318",
 }
 
 export default function RootLayout({
@@ -22,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}>{children}</body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   )
 }

@@ -47,11 +47,11 @@ export function RecoveryWidget() {
           />
         </svg>
         <div className="absolute flex flex-col items-center">
-          <span className="text-3xl font-bold" style={{ color }}>{score}</span>
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">/ 100</span>
+          <span className="text-4xl font-bold" style={{ color }}>{score}</span>
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">/ 100</span>
         </div>
       </div>
-      <p className="mt-2 text-sm font-medium" style={{ color }}>
+      <p className="mt-2 text-base font-medium" style={{ color }}>
         {getLabel(score)}
       </p>
     </div>

@@ -9,10 +9,10 @@ export function JournalWidget() {
     <div className="flex h-full flex-col">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <p className="text-2xl font-bold text-foreground">{totalEntries}</p>
-          <p className="text-xs text-muted-foreground">journal entries this week</p>
+          <p className="text-3xl font-bold text-foreground">{totalEntries}</p>
+          <p className="text-sm text-muted-foreground">journal entries this week</p>
         </div>
-        <span className="rounded-md bg-sky-500/15 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-sky-300">
+        <span className="rounded-md bg-sky-500/15 px-2 py-1 text-xs font-medium uppercase tracking-[0.14em] text-sky-300">
           habits
         </span>
       </div>
@@ -25,10 +25,10 @@ export function JournalWidget() {
               className="flex items-center justify-between rounded-lg bg-secondary/50 px-3 py-2.5"
             >
               <div className="min-w-0">
-                <span className="block truncate text-sm font-medium text-foreground">{item.label}</span>
-                <span className="text-xs text-muted-foreground">logged this week</span>
+                <span className="block truncate text-base font-medium text-foreground">{item.label}</span>
+                <span className="text-sm text-muted-foreground">logged this week</span>
               </div>
-              <span className="rounded-md bg-sky-500/15 px-2 py-0.5 text-[10px] font-medium text-sky-300">
+              <span className="rounded-md bg-sky-500/15 px-2 py-0.5 text-xs font-medium text-sky-300">
                 {item.count}x
               </span>
             </div>

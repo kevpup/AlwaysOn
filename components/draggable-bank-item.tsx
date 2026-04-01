@@ -11,6 +11,7 @@ import {
   Flame,
   Activity,
   BookOpen,
+  NotebookPen,
   Wine,
   Dumbbell,
   Footprints,
@@ -28,6 +29,8 @@ const widgetIcons: Record<string, React.ReactNode> = {
   "workout-log": <Dumbbell className="h-4 w-4" />,
   "calories": <Flame className="h-4 w-4" />,
   "step-count": <Footprints className="h-4 w-4" />,
+  "resting-heart-rate": <Heart className="h-4 w-4" />,
+  journal: <NotebookPen className="h-4 w-4" />,
 }
 
 interface DraggableBankItemProps {
@@ -55,7 +58,7 @@ export function DraggableBankItem({ widget }: DraggableBankItemProps) {
         {widgetIcons[widget.id] || <Activity className="h-4 w-4" />}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-foreground">{widget.title}</p>
+        <p className="truncate text-base font-medium text-foreground">{widget.title}</p>
       </div>
     </div>
   )

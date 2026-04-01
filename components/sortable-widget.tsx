@@ -10,12 +10,14 @@ interface SortableWidgetProps {
   widget: WidgetConfig
   disableSorting?: boolean
   onMoveToNotDisplayed?: () => void
+  removeLabel?: string
 }
 
 export function SortableWidget({
   widget,
   disableSorting = false,
   onMoveToNotDisplayed,
+  removeLabel = "Remove",
 }: SortableWidgetProps) {
   const {
     attributes,
@@ -52,16 +54,16 @@ export function SortableWidget({
               <GripVertical className="h-4 w-4" />
             </button>
           )}
-          <h3 className="text-sm font-semibold text-foreground">{widget.title}</h3>
+          <h3 className="text-base font-semibold text-foreground">{widget.title}</h3>
         </div>
         {onMoveToNotDisplayed && (
           <button
             type="button"
             onClick={onMoveToNotDisplayed}
-            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <EyeOff className="h-3 w-3" />
-            Hide from Coach
+            {removeLabel}
           </button>
         )}
       </div>

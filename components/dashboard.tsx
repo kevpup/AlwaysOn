@@ -1,40 +1,39 @@
 "use client"
 
-import { CompletionScreen } from "@/components/study/completion-screen"
-import { CoachRecapScreen } from "@/components/study/coach-recap-screen"
-import { DeviceScreen } from "@/components/study/device-screen"
-import { NameScreen } from "@/components/study/name-screen"
+import { ConclusionScreen } from "@/components/study/conclusion-screen"
+import { ReviewScreen } from "@/components/study/review-screen"
 import { ScenarioIntroScreen } from "@/components/study/scenario-intro-screen"
 import { ScenarioWorkspaceScreen } from "@/components/study/scenario-workspace-screen"
+import { DemoTitleScreen } from "@/components/study/title-screen"
 import { useStudySession } from "@/hooks/use-study-session"
 
 export function Dashboard() {
   const session = useStudySession()
 
-  if (session.step === "name") {
-    return (
-      <NameScreen
-        name={session.participantForm.name}
-        onNameChange={session.handleParticipantNameChange}
-        onSubmit={session.submitName}
-      />
-    )
+  if (session.step === "title") {
+    return <DemoTitleScreen canGoBack={session.canGoBack} onBack={session.goBack} onStart={session.startDemo} />
   }
 
-  if (session.step === "device") {
+  if (session.step === "review") {
     return (
-      <DeviceScreen
-        selectedDeviceType={session.participantForm.deviceType}
-        onSelectDeviceType={session.handleDeviceTypeSelect}
+      <ReviewScreen
+        athleteOnlyWidgets={session.reviewColumns.athleteOnly}
+        bothWidgets={session.reviewColumns.both}
+        canGoBack={session.canGoBack}
+        coachOnlyWidgets={session.reviewColumns.coachOnly}
+        highlightSupportedWidgets={session.highlightSupportedWidgets}
+        neitherWidgets={session.reviewColumns.neither}
         onBack={session.goBack}
-        onContinue={session.startSession}
+        onContinue={session.openConclusion}
+        onToggleHighlightSupportedWidgets={session.toggleHighlightSupportedWidgets}
+        supportedWidgetIds={session.supportedWidgetIds}
       />
     )
   }
 
-  if (session.step === "complete") {
+  if (session.step === "conclusion") {
     return (
-      <CompletionScreen
+      <ConclusionScreen
         canGoBack={session.canGoBack}
         onBack={session.goBack}
         onResetSession={session.resetSession}
@@ -42,31 +41,17 @@ export function Dashboard() {
     )
   }
 
-  if (!session.currentScenario || !session.participant) return null
+  if (!session.currentScenario) return null
 
-  if (session.scenarioView === "intro") {
+  if (session.step === "athlete_intro" || session.step === "coach_intro") {
     return (
       <ScenarioIntroScreen
         canGoBack={session.canGoBack}
         onBack={session.goBack}
         onBuildDashboard={session.openWorkspace}
-        onSkipToFinish={session.skipToFinish}
+        onContinueLabel={session.step === "athlete_intro" ? "Athlete Build" : "Coach Build"}
         scenario={session.currentScenario}
         scenarioIndex={session.scenarioIndex}
-        totalScenarios={session.totalScenarios}
-      />
-    )
-  }
-
-  if (session.scenarioView === "recap") {
-    return (
-      <CoachRecapScreen
-        onBack={session.goBack}
-        onContinue={session.saveScenario}
-        onSkipToFinish={session.skipToFinish}
-        scenario={session.currentScenario}
-        scenarioIndex={session.scenarioIndex}
-        sharedWidgets={session.zones.share}
         totalScenarios={session.totalScenarios}
       />
     )
@@ -77,17 +62,20 @@ export function Dashboard() {
       activeWidget={session.activeWidget}
       activeZone={session.activeZone}
       canGoBack={session.canGoBack}
+      continueLabel={session.step === "athlete_workspace" ? "Continue to Coach Scenario" : "Continue to Review"}
       onBack={session.goBack}
+      onContinue={session.advanceFromWorkspace}
       onDragCancel={session.handleDragCancel}
       onDragEnd={session.handleDragEnd}
       onDragStart={session.handleDragStart}
       onMoveToNotDisplayed={session.moveWidgetToNotDisplayed}
-      onReviewCoachView={session.openRecap}
-      onSkipToFinish={session.skipToFinish}
+      removeLabel="Remove"
       scenario={session.currentScenario}
       scenarioIndex={session.scenarioIndex}
+      selectedTitle={session.step === "athlete_workspace" ? "Shared" : "Requested"}
+      selectionTitle={session.step === "athlete_workspace" ? "Not Shared" : "Not Requested"}
       totalScenarios={session.totalScenarios}
-      zones={session.zones}
+      zones={session.activeZones}
     />
   )
 }

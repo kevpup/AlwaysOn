@@ -8,7 +8,7 @@ interface ScenarioIntroScreenProps {
   canGoBack: boolean
   onBack: () => void
   onBuildDashboard: () => void
-  onSkipToFinish: () => void
+  onContinueLabel?: string
   scenario: Scenario
   scenarioIndex: number
   totalScenarios: number
@@ -18,29 +18,26 @@ export function ScenarioIntroScreen({
   canGoBack,
   onBack,
   onBuildDashboard,
-  onSkipToFinish,
+  onContinueLabel = "Selection",
   scenario,
   scenarioIndex,
   totalScenarios,
 }: ScenarioIntroScreenProps) {
   return (
     <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-4xl items-center justify-center">
-        <div className="w-full rounded-[2rem] border border-border bg-card/80 p-8 text-center shadow-2xl md:p-12">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
-            Scenario {scenarioIndex + 1} of {totalScenarios}
-          </p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">{scenario.title}</h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl items-center justify-center">
+        <div className="w-full rounded-[2.25rem] border border-border bg-card/90 p-10 text-center shadow-2xl md:p-16">
+          <h1 className="text-5xl font-semibold tracking-tight md:text-7xl">{scenario.title}</h1>
+          <p className="mx-auto mt-8 max-w-4xl text-2xl leading-tight text-muted-foreground md:text-4xl">
             {scenario.prompt}
           </p>
 
-          <div className="mt-10 flex justify-center">
-            <div className="flex flex-wrap justify-center gap-3">
+          <div className="mt-12 flex justify-center">
+            <div className="flex flex-wrap justify-center gap-4">
               {canGoBack ? (
                 <button
                   onClick={onBack}
-                  className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                  className="inline-flex items-center gap-3 rounded-2xl border border-border bg-background px-8 py-5 text-lg font-medium text-foreground transition-colors hover:bg-secondary md:text-xl"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Back
@@ -48,16 +45,10 @@ export function ScenarioIntroScreen({
               ) : null}
               <button
                 onClick={onBuildDashboard}
-                className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                className="inline-flex items-center gap-3 rounded-2xl bg-primary px-8 py-5 text-lg font-medium text-primary-foreground transition-colors hover:bg-primary/90 md:text-xl"
               >
-                Build Dashboard
+                {onContinueLabel}
                 <ChevronRight className="h-4 w-4" />
-              </button>
-              <button
-                onClick={onSkipToFinish}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-              >
-                Skip to Finish
               </button>
             </div>
           </div>

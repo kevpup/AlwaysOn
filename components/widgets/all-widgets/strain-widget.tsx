@@ -1,23 +1,20 @@
 "use client"
 
 export function StrainWidget() {
-  const strain = 14.2
-  const max = 21
-  const pct = (strain / max) * 100
+  const score = 68
 
   const getColor = (s: number) => {
-    if (s >= 18) return "hsl(0, 72%, 51%)"
-    if (s >= 14) return "hsl(35, 90%, 55%)"
-    if (s >= 10) return "hsl(45, 90%, 50%)"
+    if (s >= 75) return "hsl(0, 72%, 51%)"
+    if (s >= 55) return "hsl(35, 90%, 55%)"
+    if (s >= 35) return "hsl(45, 90%, 50%)"
     return "hsl(160, 60%, 45%)"
   }
 
-  const color = getColor(strain)
+  const color = getColor(score)
 
-  // Semicircular gauge
   const radius = 54
   const semicircumference = Math.PI * radius
-  const progress = (pct / 100) * semicircumference
+  const progress = (score / 100) * semicircumference
   const dashOffset = semicircumference - progress
 
   return (
@@ -43,20 +40,19 @@ export function StrainWidget() {
           />
         </svg>
         <div className="absolute bottom-0 flex flex-col items-center">
-          <span className="text-3xl font-bold" style={{ color }}>
-            {strain}
-          </span>
+          <span className="text-4xl font-bold" style={{ color }}>{score}</span>
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">/ 100</span>
         </div>
       </div>
-      <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+      <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
         <span>0</span>
         <div className="h-1 w-20 rounded-full bg-secondary">
           <div
             className="h-full rounded-full"
-            style={{ width: `${pct}%`, backgroundColor: color, transition: "width 0.6s ease" }}
+            style={{ width: `${score}%`, backgroundColor: color, transition: "width 0.6s ease" }}
           />
         </div>
-        <span>{max}</span>
+        <span>100</span>
       </div>
     </div>
   )

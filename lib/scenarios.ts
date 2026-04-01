@@ -9,20 +9,17 @@ export interface Scenario {
 // Replace these prompts with real scenarios once the study framing is finalized.
 export const scenarios: Scenario[] = [
   {
-    id: "1",
-    title: "TEST1",
+    id: "athlete",
+    title: "Scenario 1: Student-Athlete",
     prompt:
-      "Imagine a near-future coaching situation where sharing wearable data might help with training decisions. Which information would you choose to share with your coaching staff in this moment?",
-    facilitatorNotes:
-      "N/A",
+      "You are asked by your coaching staff to use a new wearable. What metrics would you feel comfortable sharing?",
   },
   {
-    id: "2",
-    title: "TEST2",
+    id: "coach",
+    title: "Scenario 2: Coach",
     prompt:
-      "Imagine a different context where your performance, recovery, and readiness data could be useful to support staff. Build the dashboard you would feel comfortable sharing for this case.",
+      "You buy the team platform. Which metrics do you want access to as a coach?",
     facilitatorNotes:
-      "NA.",
+      "Prompt for usefulness, oversight, and decision-making. The goal is to surface what staff would want to see.",
   },
-
 ]

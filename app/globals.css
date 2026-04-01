@@ -52,5 +52,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: Arial, Helvetica, system-ui, sans-serif;
   }
 }

@@ -3,28 +3,15 @@
 import { type WidgetConfig, type WidgetId } from "@/lib/mock-data"
 
 export type ZoneId = "not_displayed" | "share"
-export type StudyStep = "name" | "device" | "study" | "complete"
-export type ScenarioView = "intro" | "workspace" | "recap"
-export type DeviceType = "whoop" | "oura" | "apple-watch" | "garmin"
-
-export interface ParticipantInfo {
-  name: string
-  deviceType: DeviceType
-}
-
-export interface ParticipantFormState {
-  name: string
-  deviceType: DeviceType | null
-}
-
-export interface ScenarioDecisionRow {
-  participantName: string
-  deviceType: DeviceType
-  scenarioId: string
-  widgetTitle: string
-  shared: boolean
-  rank: number | ""
-}
+export type Audience = "athlete" | "coach"
+export type StudyStep =
+  | "title"
+  | "athlete_intro"
+  | "athlete_workspace"
+  | "coach_intro"
+  | "coach_workspace"
+  | "review"
+  | "conclusion"
 
 export interface ZonesState {
   not_displayed: WidgetConfig[]
@@ -33,8 +20,6 @@ export interface ZonesState {
 
 export interface NavigationSnapshot {
   step: StudyStep
-  scenarioView: ScenarioView
-  scenarioIndex: number
 }
 
 export type { WidgetConfig, WidgetId }
