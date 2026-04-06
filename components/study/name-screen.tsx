@@ -20,22 +20,22 @@ export function NameScreen({ name, onNameChange, onSubmit }: NameScreenProps) {
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             Welcome to the participatory design. You will be presented with different scenarios that you might face,
             or have faced as a student-athlete. During those times you will be asked to select what kind of data
-            from a wearable device you would want to share with your coaching staff.
+            from a wearable device you would want to share with your coaching staff. Enter your participant ID to begin.
           </p>
         </div>
 
         <form className="mt-8 grid gap-4" onSubmit={onSubmit}>
           <label className="flex flex-col gap-2 text-sm font-medium text-foreground">
             <span>
-              Participant Name <span className="text-destructive">*</span>
+              Participant ID <span className="text-destructive">*</span>
             </span>
             <input
               type="text"
               value={name}
               onChange={(event) => onNameChange(event.target.value)}
               className="rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
-              placeholder="Required"
-              autoComplete="name"
+              placeholder="Enter participant ID"
+              autoComplete="off"
               required
             />
           </label>
