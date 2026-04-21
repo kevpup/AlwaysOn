@@ -1,15 +1,16 @@
 "use client"
 
 import { type FormEvent } from "react"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, LayoutGrid } from "lucide-react"
 
 interface NameScreenProps {
   name: string
   onNameChange: (value: string) => void
+  onOpenWidgetDevelopment: () => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
 
-export function NameScreen({ name, onNameChange, onSubmit }: NameScreenProps) {
+export function NameScreen({ name, onNameChange, onOpenWidgetDevelopment, onSubmit }: NameScreenProps) {
   return (
     <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
       <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card/70 p-6 shadow-2xl md:p-8">
@@ -50,6 +51,17 @@ export function NameScreen({ name, onNameChange, onSubmit }: NameScreenProps) {
             </button>
           </div>
         </form>
+
+        <div className="mt-6 border-t border-border pt-5">
+          <button
+            type="button"
+            onClick={onOpenWidgetDevelopment}
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+          >
+            <LayoutGrid className="h-4 w-4" />
+            Widget Development Mode
+          </button>
+        </div>
       </div>
     </div>
   )

@@ -1,22 +1,7 @@
-// Heart rate data — 24-hour window, every 15 minutes
-export const heartRateData = Array.from({ length: 96 }, (_, i) => {
-  const hour = Math.floor(i / 4)
-  const minute = (i % 4) * 15
-  const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`
+import { defaultAppleWatchHrDataset } from "./apple-watch-hr-data"
 
-  let base: number
-  if (hour >= 0 && hour < 6) base = 52 + Math.random() * 8 // sleeping
-  else if (hour >= 6 && hour < 8) base = 70 + Math.random() * 15 // waking
-  else if (hour >= 8 && hour < 10) base = 130 + Math.random() * 55 // training
-  else if (hour >= 10 && hour < 12) base = 75 + Math.random() * 15 // recovery
-  else if (hour >= 12 && hour < 14) base = 80 + Math.random() * 10 // lunch
-  else if (hour >= 14 && hour < 16) base = 140 + Math.random() * 50 // afternoon training
-  else if (hour >= 16 && hour < 18) base = 85 + Math.random() * 10 // cool down
-  else if (hour >= 18 && hour < 20) base = 75 + Math.random() * 10 // dinner
-  else base = 60 + Math.random() * 10 // evening
-
-  return { time, hr: Math.round(base) }
-})
+// Heart rate data — hourly averages derived from one full Apple Watch HR day.
+export const heartRateData = defaultAppleWatchHrDataset.fullDayLine
 
 // Sleep stages data
 export const sleepStagesData = [
@@ -314,42 +299,49 @@ export const strengthActivityTimeData = [
   { day: "Sun", minutes: 36 },
 ]
 
+export const temperatureDeviationData = [
+  { day: "Mon", value: -0.2 },
+  { day: "Tue", value: 0.0 },
+  { day: "Wed", value: 0.1 },
+  { day: "Thu", value: 0.3 },
+  { day: "Fri", value: 0.4 },
+  { day: "Sat", value: 0.2 },
+  { day: "Sun", value: 0.1 },
+]
+
+export const bloodOxygenData = [
+  { day: "Mon", value: 98 },
+  { day: "Tue", value: 97 },
+  { day: "Wed", value: 98 },
+  { day: "Thu", value: 96 },
+  { day: "Fri", value: 97 },
+  { day: "Sat", value: 98 },
+  { day: "Sun", value: 97 },
+]
+
 // Widget definitions
 export type WidgetId =
-  | "heart-rate"
-  | "sleep-graph"
-  | "sleep-hours"
-  | "sleep-debt"
-  | "recovery"
-  | "strain"
-  | "hrv"
-  | "bedtime-routine"
-  | "alcohol"
-  | "workout-log"
-  | "calories"
-  | "step-count"
-  | "resting-heart-rate"
-  | "stress-monitor"
-  | "strain-recovery-trend"
-  | "respiratory-rate"
-  | "average-daily-heart-rate"
-  | "heart-zones-all"
-  | "heart-zones-low"
-  | "heart-zones-high"
-  | "lean-body-mass"
-  | "restorative-sleep"
-  | "sleep-consistency"
-  | "sleep-efficiency"
-  | "sleep-needed"
-  | "time-in-bed"
-  | "vo2-max"
+  | "steps"
+  | "full-day-hr"
+  | "activity-hr-graph"
+  | "activity-hr-zones"
+  | "resting-hr"
+  | "hrv-status"
+  | "calories-active-energy"
   | "weight"
+  | "vo2-max"
+  | "total-sleep-time"
+  | "sleep-hours"
+  | "sleep-stages-cycles"
   | "sleep-score"
-  | "health-monitor"
-  | "daily-activities"
-  | "bedtime"
-  | "journal"
-  | "strength-activity-time"
+  | "respiratory-rate"
+  | "training-load"
+  | "recovery-readiness"
+  | "cycle-tracking"
+  | "activity-workout-minutes"
+  | "full-workout-report"
+  | "temperature-deviation"
+  | "blood-oxygen"
 
 export interface WidgetConfig {
   id: WidgetId

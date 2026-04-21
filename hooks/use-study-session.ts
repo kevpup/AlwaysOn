@@ -11,18 +11,21 @@ import {
   type ParticipantInfo,
   type ScenarioDecisionRow,
   type ScenarioView,
+  type SportCategory,
   type StudyStep,
   type WidgetConfig,
   type WidgetId,
   type ZoneId,
   type ZonesState,
 } from "@/components/study/types"
-import { type Scenario, scenarios } from "@/lib/scenarios"
-import { defaultWidgets } from "@/lib/widget-selection"
+import { getScenariosForParticipant, type Scenario, scenarios } from "@/lib/scenarios"
+import { getWidgetsForSportCategory } from "@/lib/widget-selection"
 
-function createInitialZones(): ZonesState {
+function createInitialZones(sportCategory?: SportCategory | null): ZonesState {
+  const widgets = getWidgetsForSportCategory(sportCategory)
+
   return {
-    not_displayed: [...defaultWidgets],
+    not_displayed: [...widgets],
     share: [],
   }
 }
@@ -39,17 +42,19 @@ export function useStudySession() {
   const [scenarioView, setScenarioView] = useState<ScenarioView>("intro")
   const [participantForm, setParticipantForm] = useState<ParticipantFormState>({
     name: "",
+    sportCategory: null,
     deviceType: null,
   })
   const [participant, setParticipant] = useState<ParticipantInfo | null>(null)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [assignedScenarios, setAssignedScenarios] = useState<Scenario[]>([])
   const [scenarioIndex, setScenarioIndex] = useState(0)
   const [zones, setZones] = useState<ZonesState>(createInitialZones)
   const [savedRows, setSavedRows] = useState<ScenarioDecisionRow[]>([])
   const [activeId, setActiveId] = useState<WidgetId | null>(null)
   const [navigationHistory, setNavigationHistory] = useState<NavigationSnapshot[]>([])
 
-  const currentScenario = scenarios[scenarioIndex] ?? null
+  const currentScenario = assignedScenarios[scenarioIndex] ?? null
 
   const findZoneForWidget = useCallback((id: WidgetId, currentZones: ZonesState = zones): ZoneId | null => {
     if (currentZones.not_displayed.some((widget) => widget.id === id)) return "not_displayed"
@@ -92,6 +97,7 @@ export function useStudySession() {
     currentZones.not_displayed.forEach((widget) => {
       allRows.push({
         participantName: participant.name,
+        sportCategory: participant.sportCategory,
         deviceType: participant.deviceType,
         scenarioId: scenario.id,
         widgetTitle: widget.title,
@@ -103,6 +109,7 @@ export function useStudySession() {
     currentZones.share.forEach((widget, index) => {
       allRows.push({
         participantName: participant.name,
+        sportCategory: participant.sportCategory,
         deviceType: participant.deviceType,
         scenarioId: scenario.id,
         widgetTitle: widget.title,
@@ -118,10 +125,11 @@ export function useStudySession() {
     const scenarioRows = savedRows.filter((row) => row.scenarioId === targetScenarioId)
 
     if (scenarioRows.length === 0) {
-      return createInitialZones()
+      return createInitialZones(participant?.sportCategory)
     }
 
-    const widgetByTitle = new Map(defaultWidgets.map((widget) => [widget.title, widget]))
+    const availableWidgets = getWidgetsForSportCategory(participant?.sportCategory)
+    const widgetByTitle = new Map(availableWidgets.map((widget) => [widget.title, widget]))
     const sharedRows = scenarioRows
       .filter((row) => row.shared)
       .sort((a, b) => {
@@ -133,12 +141,12 @@ export function useStudySession() {
     const sharedTitles = new Set(sharedRows.map((row) => row.widgetTitle))
 
     return {
-      not_displayed: defaultWidgets.filter((widget) => !sharedTitles.has(widget.title)),
+      not_displayed: availableWidgets.filter((widget) => !sharedTitles.has(widget.title)),
       share: sharedRows
         .map((row) => widgetByTitle.get(row.widgetTitle))
         .filter((widget): widget is WidgetConfig => Boolean(widget)),
     }
-  }, [savedRows])
+  }, [participant?.sportCategory, savedRows])
 
   const pushNavigationSnapshot = useCallback(() => {
     setNavigationHistory((current) => [
@@ -156,8 +164,8 @@ export function useStudySession() {
 
     const previous = navigationHistory[navigationHistory.length - 1]
 
-    if (previous.step === "study" && scenarios[previous.scenarioIndex]) {
-      const targetScenario = scenarios[previous.scenarioIndex]
+    if (previous.step === "study" && assignedScenarios[previous.scenarioIndex]) {
+      const targetScenario = assignedScenarios[previous.scenarioIndex]
 
       if (previous.scenarioIndex !== scenarioIndex) {
         setZones(buildZonesFromSavedScenario(targetScenario.id))
@@ -171,7 +179,7 @@ export function useStudySession() {
     setScenarioView(previous.scenarioView)
     setScenarioIndex(previous.scenarioIndex)
     setNavigationHistory((current) => current.slice(0, -1))
-  }, [buildZonesFromSavedScenario, navigationHistory, scenarioIndex])
+  }, [assignedScenarios, buildZonesFromSavedScenario, navigationHistory, scenarioIndex])
 
   const persistRowsToFile = useCallback(async (rows: ScenarioDecisionRow[]) => {
     if (!participant || !sessionId) return
@@ -185,6 +193,7 @@ export function useStudySession() {
         body: JSON.stringify({
           sessionId,
           participantName: participant.name,
+          sportCategory: participant.sportCategory,
           deviceType: participant.deviceType,
           rows,
         }),
@@ -198,8 +207,9 @@ export function useStudySession() {
     setStep("name")
     setScenarioView("intro")
     setParticipant(null)
-    setParticipantForm({ name: "", deviceType: null })
+    setParticipantForm({ name: "", sportCategory: null, deviceType: null })
     setSessionId(null)
+    setAssignedScenarios([])
     setScenarioIndex(0)
     setZones(createInitialZones())
     setSavedRows([])
@@ -215,6 +225,10 @@ export function useStudySession() {
     setParticipantForm((current) => ({ ...current, deviceType }))
   }, [])
 
+  const handleSportCategorySelect = useCallback((sportCategory: NonNullable<ParticipantFormState["sportCategory"]>) => {
+    setParticipantForm((current) => ({ ...current, sportCategory }))
+  }, [])
+
   const submitName = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -222,26 +236,37 @@ export function useStudySession() {
     if (!name) return
 
     pushNavigationSnapshot()
-    setStep("device")
+    setStep("sport")
   }, [participantForm.name, pushNavigationSnapshot])
+
+  const submitSportCategory = useCallback(() => {
+    if (!participantForm.sportCategory) return
+
+    pushNavigationSnapshot()
+    setStep("device")
+  }, [participantForm.sportCategory, pushNavigationSnapshot])
 
   const startSession = useCallback(() => {
     const name = participantForm.name.trim()
+    const sportCategory = participantForm.sportCategory
     const deviceType = participantForm.deviceType
 
-    if (!name || !deviceType) return
+    if (!name || !sportCategory || !deviceType) return
 
     pushNavigationSnapshot()
 
-    setParticipant({ name, deviceType })
+    const selectedScenarios = getScenariosForParticipant(name)
+
+    setParticipant({ name, sportCategory, deviceType })
     setSessionId(`session-${Date.now()}`)
+    setAssignedScenarios(selectedScenarios)
     setScenarioIndex(0)
     setScenarioView("intro")
-    setZones(createInitialZones())
+    setZones(createInitialZones(sportCategory))
     setSavedRows([])
     setActiveId(null)
     setStep("study")
-  }, [participantForm.deviceType, participantForm.name, pushNavigationSnapshot])
+  }, [participantForm.deviceType, participantForm.name, participantForm.sportCategory, pushNavigationSnapshot])
 
   const openWorkspace = useCallback(() => {
     pushNavigationSnapshot()
@@ -251,6 +276,11 @@ export function useStudySession() {
   const openRecap = useCallback(() => {
     pushNavigationSnapshot()
     setScenarioView("recap")
+  }, [pushNavigationSnapshot])
+
+  const openWidgetDevelopment = useCallback(() => {
+    pushNavigationSnapshot()
+    setStep("widget-dev")
   }, [pushNavigationSnapshot])
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -349,7 +379,7 @@ export function useStudySession() {
       ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
       ...scenarioRows,
     ]
-    const isLastScenario = scenarioIndex === scenarios.length - 1
+    const isLastScenario = scenarioIndex === assignedScenarios.length - 1
     const nextScenarioIndex = isLastScenario ? scenarioIndex : scenarioIndex + 1
 
     setSavedRows(nextRows)
@@ -360,10 +390,10 @@ export function useStudySession() {
       return
     }
 
-    setZones(createInitialZones())
+    setZones(createInitialZones(participant.sportCategory))
     setScenarioIndex(nextScenarioIndex)
     setScenarioView("intro")
-  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, zones])
+  }, [assignedScenarios.length, buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, zones])
 
   const skipToFinish = useCallback(() => {
     if (!participant || !sessionId) return
@@ -401,8 +431,10 @@ export function useStudySession() {
     handleDragEnd,
     handleDragStart,
     handleParticipantNameChange,
+    handleSportCategorySelect,
     moveWidgetToNotDisplayed,
     openRecap,
+    openWidgetDevelopment,
     openWorkspace,
     participant,
     participantForm,
@@ -414,7 +446,8 @@ export function useStudySession() {
     startSession,
     step,
     submitName,
-    totalScenarios: scenarios.length,
+    submitSportCategory,
+    totalScenarios: assignedScenarios.length || scenarios.length,
     zones,
   }
 }

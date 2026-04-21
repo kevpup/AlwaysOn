@@ -5,6 +5,7 @@ import { AlcoholWidget } from "@/components/widgets/all-widgets/alcohol-widget"
 import { AverageDailyHeartRateWidget } from "@/components/widgets/all-widgets/average-daily-heart-rate-widget"
 import { BedtimeRoutineWidget } from "@/components/widgets/all-widgets/bedtime-routine-widget"
 import { BedtimeWidget } from "@/components/widgets/all-widgets/bedtime-widget"
+import { BloodOxygenWidget } from "@/components/widgets/all-widgets/blood-oxygen-widget"
 import { CaloriesWidget } from "@/components/widgets/all-widgets/calories-widget"
 import { DailyActivitiesWidget } from "@/components/widgets/all-widgets/daily-activities-widget"
 import { HealthMonitorWidget } from "@/components/widgets/all-widgets/health-monitor-widget"
@@ -15,6 +16,7 @@ import { HeartZonesLowWidget } from "@/components/widgets/all-widgets/heart-zone
 import { HrvWidget } from "@/components/widgets/all-widgets/hrv-widget"
 import { JournalWidget } from "@/components/widgets/all-widgets/journal-widget"
 import { LeanBodyMassWidget } from "@/components/widgets/all-widgets/lean-body-mass-widget"
+import { MenstrualCycleWidget } from "@/components/widgets/all-widgets/menstrual-cycle-widget"
 import { RecoveryWidget } from "@/components/widgets/all-widgets/recovery-widget"
 import { RespiratoryRateWidget } from "@/components/widgets/all-widgets/respiratory-rate-widget"
 import { RestingHeartRateWidget } from "@/components/widgets/all-widgets/resting-heart-rate-widget"
@@ -31,6 +33,7 @@ import { StrainRecoveryTrendWidget } from "@/components/widgets/all-widgets/stra
 import { StrainWidget } from "@/components/widgets/all-widgets/strain-widget"
 import { StrengthActivityTimeWidget } from "@/components/widgets/all-widgets/strength-activity-time-widget"
 import { StressMonitorWidget } from "@/components/widgets/all-widgets/stress-monitor-widget"
+import { TemperatureDeviationWidget } from "@/components/widgets/all-widgets/temperature-deviation-widget"
 import { TimeInBedWidget } from "@/components/widgets/all-widgets/time-in-bed-widget"
 import { Vo2MaxWidget } from "@/components/widgets/all-widgets/vo2-max-widget"
 import { WeightWidget } from "@/components/widgets/all-widgets/weight-widget"
@@ -73,4 +76,7 @@ export const widgetRegistry: Record<WidgetId, WidgetComponent> = {
   bedtime: BedtimeWidget,
   journal: JournalWidget,
   "strength-activity-time": StrengthActivityTimeWidget,
+  "menstrual-cycle": MenstrualCycleWidget,
+  "temperature-deviation": TemperatureDeviationWidget,
+  "blood-oxygen": BloodOxygenWidget,
 }

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="waterDepth" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d8f3ff" />
+      <stop offset="0.32" stop-color="#74c8e6" />
+      <stop offset="0.7" stop-color="#1b87b8" />
+      <stop offset="1" stop-color="#0a4667" />
+    </linearGradient>
+    <radialGradient id="surfaceLight" cx="32%" cy="24%" r="66%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.78" />
+      <stop offset="0.34" stop-color="#b8efff" stop-opacity="0.48" />
+      <stop offset="0.72" stop-color="#0a709e" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#053146" stop-opacity="0" />
+    </radialGradient>
+    <filter id="waterTexture" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence baseFrequency="0.012 0.045" numOctaves="4" seed="17" type="fractalNoise" />
+      <feColorMatrix
+        values="0.18 0.08 0.03 0 0.02
+                0.22 0.42 0.12 0 0.22
+                0.15 0.34 0.72 0 0.36
+                0 0 0 0.62 0"
+      />
+      <feGaussianBlur stdDeviation="0.75" />
+    </filter>
+    <filter id="caustics" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence baseFrequency="0.03 0.08" numOctaves="2" seed="8" type="turbulence" />
+      <feColorMatrix
+        values="1.8 0 0 0 0
+                0 1.8 0 0 0
+                0 0 1.8 0 0
+                0 0 0 0.28 0"
+      />
+      <feGaussianBlur stdDeviation="0.45" />
+    </filter>
+  </defs>
+
+  <rect width="420" height="300" fill="url(#waterDepth)" />
+  <rect width="420" height="300" fill="url(#surfaceLight)" />
+  <rect width="420" height="300" filter="url(#waterTexture)" opacity="0.95" />
+  <rect width="420" height="300" filter="url(#caustics)" opacity="0.48" />
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" opacity="0.26">
+    <path d="M-18 78 C56 42 116 116 188 78 S324 46 438 92" stroke-width="5" />
+    <path d="M-24 154 C54 116 118 198 202 150 S334 104 442 164" stroke-width="3" />
+    <path d="M-20 226 C62 190 134 268 224 218 S348 178 438 232" stroke-width="4" />
+  </g>
+</svg>

@@ -1,44 +1,62 @@
 "use client"
 
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Mars, Venus } from "lucide-react"
 
-import { deviceOptions } from "@/components/study/constants"
-import { type DeviceType } from "@/components/study/types"
+import { type SportCategory } from "@/components/study/types"
 
-interface DeviceScreenProps {
-  selectedDeviceType: DeviceType | null
-  onSelectDeviceType: (deviceType: DeviceType) => void
+const sportCategoryOptions: Array<{
+  id: SportCategory
+  label: string
+  icon: typeof Mars
+}> = [
+  {
+    id: "mens",
+    label: "Men's sports",
+    icon: Mars,
+  },
+  {
+    id: "womens",
+    label: "Women's sports",
+    icon: Venus,
+  },
+]
+
+interface SportCategoryScreenProps {
+  selectedSportCategory: SportCategory | null
+  onSelectSportCategory: (sportCategory: SportCategory) => void
   onBack: () => void
   onContinue: () => void
 }
 
-export function DeviceScreen({
-  selectedDeviceType,
-  onSelectDeviceType,
+export function SportCategoryScreen({
+  selectedSportCategory,
+  onSelectSportCategory,
   onBack,
   onContinue,
-}: DeviceScreenProps) {
+}: SportCategoryScreenProps) {
   return (
     <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
       <div className="mx-auto max-w-4xl rounded-3xl border border-border bg-card/70 p-6 shadow-2xl md:p-8">
         <div className="max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Device Familiarity</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">Select the device you know best</h1>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Sport Category</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+            Do you participate in men's or women's sports?
+          </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            Choose the wearable platform you are most familiar with. This will later help tailor the look of the
-            widgets to something closer to the interface you already know.
+            This helps us show the wearable data examples that are relevant to this session.
           </p>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {deviceOptions.map((option) => {
-            const isSelected = selectedDeviceType === option.id
+          {sportCategoryOptions.map((option) => {
+            const Icon = option.icon
+            const isSelected = selectedSportCategory === option.id
 
             return (
               <button
                 key={option.id}
                 type="button"
-                onClick={() => onSelectDeviceType(option.id)}
+                onClick={() => onSelectSportCategory(option.id)}
                 className={`rounded-2xl border p-5 text-left transition-colors ${
                   isSelected
                     ? "border-primary bg-primary/10"
@@ -47,15 +65,14 @@ export function DeviceScreen({
               >
                 <div className="flex items-start gap-4">
                   <div
-                    className={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl ${
-                      isSelected ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""
+                    className={`rounded-xl p-3 ${
+                      isSelected ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
                     }`}
                   >
-                    <img src={option.iconPath} alt={option.label} className="h-full w-full object-contain" />
+                    <Icon className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-base font-semibold text-foreground">{option.label}</p>
-                    <p className="mt-1 text-sm leading-6 text-muted-foreground">{option.description}</p>
                   </div>
                 </div>
               </button>
@@ -75,10 +92,10 @@ export function DeviceScreen({
           <button
             type="button"
             onClick={onContinue}
-            disabled={!selectedDeviceType}
+            disabled={!selectedSportCategory}
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Continue to Scenarios
+            Continue to Device Selection
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>

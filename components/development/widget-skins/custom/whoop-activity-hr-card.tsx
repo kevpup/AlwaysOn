@@ -1,7 +1,8 @@
 "use client"
 
-import { heartRateData } from "@/lib/mock-data"
-import { type AppleWatchHrLinePoint } from "@/lib/apple-watch-hr-data"
+import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import { defaultAppleWatchHrDataset } from "@/lib/apple-watch-hr-data"
+import { getActivityHrData } from "@/lib/activity-hr-utils"
 import {
   Area,
   AreaChart,
@@ -14,29 +15,6 @@ import {
 
 const WHOOP_HR_BLUE = "hsl(200, 70%, 50%)"
 const WHOOP_AXIS_BLACK = "hsl(220, 20%, 4%)"
-const MINUTES_IN_DAY = 1440
-const WHOOP_HOUR_TICKS = Array.from({ length: 9 }, (_, index) => index * 180)
-
-function formatHourTick(minuteOfDay: number) {
-  return String(Math.round(minuteOfDay / 60))
-}
-
-const CustomXTick = (props: any) => {
-  const { x, y, payload } = props
-  let textAnchor = "middle"
-  let dx = 0
-  if (payload.value === 0) {
-    textAnchor = "start"
-  } else if (payload.value === MINUTES_IN_DAY) {
-    textAnchor = "end"
-  }
-  
-  return (
-    <text x={x} y={y} dy={12} dx={dx} textAnchor={textAnchor} fill="hsl(215, 12%, 55%)" fontSize={10}>
-      {formatHourTick(payload.value)}
-    </text>
-  )
-}
 
 function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ value: number }> }) {
   if (active && payload && payload.length) {
@@ -51,28 +29,53 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<
   return null
 }
 
-interface HeartRateWidgetProps {
-  data?: AppleWatchHrLinePoint[]
-}
+export function WhoopActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: WidgetSkinProps) {
+  const activityData = getActivityHrData(hrDataset.fullDayLine)
+  const { chartData, chartMin, chartMax, windowStart, windowEnd, averageHr, minHr, maxHr, activityName, durationFormatted } = activityData
 
-export function HeartRateWidget({ data = heartRateData }: HeartRateWidgetProps = {}) {
-  const chartData = data.map((point, index) => ({
-    ...point,
-    minuteOfDay: point.minuteOfDay ?? (data.length <= 1 ? 0 : (index / (data.length - 1)) * MINUTES_IN_DAY),
-  }))
-  const currentHr = chartData[chartData.length - 1].hr
-  const maxHr = Math.max(...chartData.map((d) => d.hr))
-  const minHr = Math.min(...chartData.map((d) => d.hr))
-  const axisMin = Math.max(30, Math.floor((minHr - 10) / 10) * 10)
-  const axisMax = Math.ceil((maxHr + 10) / 10) * 10
-  const yTicks = [axisMin, Math.round((axisMin + axisMax) / 2), axisMax]
+  const axisMin = chartMin
+  const axisMax = chartMax
+
+  const yTicks = [
+
+    axisMin,
+
+    Math.round(axisMin + (axisMax - axisMin) * 0.33),
+
+    Math.round(axisMin + (axisMax - axisMin) * 0.66),
+
+    axisMax,
+
+  ]
+  const workoutStart = windowStart + 15
+  const workoutEnd = windowEnd - 15
+
+  const preBufferData = chartData.filter((d) => d.minuteOfDay <= workoutStart)
+  const activeLineData = chartData.filter((d) => d.minuteOfDay >= workoutStart && d.minuteOfDay <= workoutEnd)
+  const postBufferData = chartData.filter((d) => d.minuteOfDay >= workoutEnd)
+
+  const xTicks = [windowStart, workoutStart, workoutEnd, windowEnd]
+
+  function formatTick(minuteOfDay: number) {
+    let h = Math.floor(minuteOfDay / 60)
+    const m = minuteOfDay % 60
+    const ampm = h >= 12 ? "PM" : "AM"
+    h = h % 12
+    h = h ? h : 12
+    return `${h}:${m.toString().padStart(2, "0")} ${ampm}`
+  }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
+      <div className="mb-2">
+        <h3 className="text-sm font-semibold text-foreground">{activityName}</h3>
+        <p className="text-xs text-muted-foreground">{durationFormatted}</p>
+      </div>
+
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-foreground">{currentHr}</span>
-          <span className="text-xs text-muted-foreground">last HR reading</span>
+          <span className="text-2xl font-bold text-foreground">{averageHr}</span>
+          <span className="text-xs text-muted-foreground">average HR</span>
         </div>
         <div className="flex gap-3 text-xs text-muted-foreground">
           <span>
@@ -103,18 +106,18 @@ export function HeartRateWidget({ data = heartRateData }: HeartRateWidgetProps =
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
               <defs>
-                <linearGradient id="whoopHeartRateGradient" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="whoopHeartRateGradientActivity" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={WHOOP_HR_BLUE} stopOpacity={0.34} />
                   <stop offset="100%" stopColor={WHOOP_HR_BLUE} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <XAxis
                 dataKey="minuteOfDay"
-                domain={[0, MINUTES_IN_DAY]}
-                tick={<CustomXTick />}
+                domain={[windowStart, windowEnd]}
+                tickFormatter={formatTick}
                 tickLine={false}
-                tickMargin={0}
-                ticks={WHOOP_HOUR_TICKS}
+                tickMargin={8}
+                ticks={xTicks}
                 type="number"
                 axisLine={{ stroke: WHOOP_AXIS_BLACK, strokeOpacity: 0.9 }}
                 height={24}
@@ -128,13 +131,41 @@ export function HeartRateWidget({ data = heartRateData }: HeartRateWidgetProps =
                 <ReferenceLine key={tick} y={tick} stroke={WHOOP_AXIS_BLACK} strokeDasharray="3 3" strokeOpacity={0.75} />
               ))}
               <Area
+                data={preBufferData}
                 type="linear"
                 dataKey="hr"
-                fill="url(#whoopHeartRateGradient)"
+                fill="url(#whoopHeartRateGradientActivity)"
+                stroke={WHOOP_HR_BLUE}
+                strokeOpacity={0.25}
+                fillOpacity={0.25}
+                strokeWidth={1}
+                dot={false}
+                activeDot={false}
+                isAnimationActive={false}
+              />
+              <Area
+                data={activeLineData}
+                type="linear"
+                dataKey="hr"
+                fill="url(#whoopHeartRateGradientActivity)"
                 stroke={WHOOP_HR_BLUE}
                 strokeWidth={1}
                 dot={false}
                 activeDot={{ r: 4, fill: WHOOP_HR_BLUE, strokeWidth: 0 }}
+                isAnimationActive={false}
+              />
+              <Area
+                data={postBufferData}
+                type="linear"
+                dataKey="hr"
+                fill="url(#whoopHeartRateGradientActivity)"
+                stroke={WHOOP_HR_BLUE}
+                strokeOpacity={0.25}
+                fillOpacity={0.25}
+                strokeWidth={1}
+                dot={false}
+                activeDot={false}
+                isAnimationActive={false}
               />
             </AreaChart>
           </ResponsiveContainer>

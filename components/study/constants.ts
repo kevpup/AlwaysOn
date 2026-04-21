@@ -1,14 +1,12 @@
 "use client"
 
-import { Activity, Circle, Navigation, Watch, type LucideIcon } from "lucide-react"
-
 import { type DeviceType, type ZoneId } from "@/components/study/types"
 
 export interface DeviceOption {
   id: DeviceType
   label: string
   description: string
-  icon: LucideIcon
+  iconPath: string
 }
 
 export const zoneContainerIds: Record<ZoneId, string> = {
@@ -31,24 +29,24 @@ export const deviceOptions: DeviceOption[] = [
     id: "whoop",
     label: "WHOOP",
     description: "Recovery, strain, and coaching-oriented metrics.",
-    icon: Activity,
+    iconPath: "/device-logos/whoop.png",
   },
   {
     id: "oura",
     label: "Oura Ring",
     description: "Sleep, readiness, and recovery-focused views.",
-    icon: Circle,
+    iconPath: "/device-logos/oura.png",
   },
   {
     id: "apple-watch",
     label: "Apple Watch",
     description: "General wellness, fitness, and activity summaries.",
-    icon: Watch,
+    iconPath: "/device-logos/apple.png",
   },
   {
     id: "garmin",
     label: "Garmin",
     description: "Training load, performance, and endurance tracking.",
-    icon: Navigation,
+    iconPath: "/device-logos/garmin.png",
   },
 ]

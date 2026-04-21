@@ -2,24 +2,28 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 
 import { scenarios } from "@/lib/scenarios"
-import { defaultWidgets } from "@/lib/widget-selection"
+import { allWidgets, defaultWidgets } from "@/lib/widget-selection"
 
 const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxQhibrsN32hk95XQgxqBCM1_r_iHtK8HoOY6QbE1KgZb9H5UnP5pEmXChgdEYZ_k9X/exec"
 
 const DEVICE_TYPES = ["whoop", "oura", "apple-watch", "garmin"] as const
+const SPORT_CATEGORIES = ["mens", "womens"] as const
+const MENSTRUAL_CYCLE_WIDGET_TITLE = "Cycle Tracking"
 const MAX_BODY_BYTES = 64 * 1024
 const UPSTREAM_TIMEOUT_MS = 5000
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX_REQUESTS = 30
 const allowedScenarioIds = new Set(scenarios.map((scenario) => scenario.id))
-const allowedWidgetTitles = new Set(defaultWidgets.map((widget) => widget.title))
+const allowedWidgetTitles = new Set(allWidgets.map((widget) => widget.title))
 const requestTimestampsByClient = new Map<string, number[]>()
 
 const deviceTypeSchema = z.enum(DEVICE_TYPES)
+const sportCategorySchema = z.enum(SPORT_CATEGORIES)
 
 const scenarioDecisionRowSchema = z.object({
   participantName: z.string().trim().min(1).max(120),
+  sportCategory: sportCategorySchema,
   deviceType: deviceTypeSchema,
   scenarioId: z.string().trim().min(1).max(64),
   widgetTitle: z.string().trim().min(1).max(120),
@@ -30,6 +34,7 @@ const scenarioDecisionRowSchema = z.object({
 const persistRequestSchema = z.object({
   sessionId: z.string().trim().min(1).max(120),
   participantName: z.string().trim().min(1).max(120),
+  sportCategory: sportCategorySchema,
   deviceType: deviceTypeSchema,
   rows: z.array(scenarioDecisionRowSchema).min(1).max(defaultWidgets.length),
 })
@@ -38,12 +43,14 @@ interface ReplaceScenarioPayload {
   action: "replaceScenario"
   sessionId: string
   participantName: string
+  sportCategory: (typeof SPORT_CATEGORIES)[number]
   deviceType: (typeof DEVICE_TYPES)[number]
   scenarioId: string
   rows: Array<{
     timestamp: string
     sessionId: string
     participantName: string
+    sportCategory: (typeof SPORT_CATEGORIES)[number]
     deviceType: (typeof DEVICE_TYPES)[number]
     scenarioId: string
     widgetTitle: string
@@ -104,7 +111,10 @@ function isRateLimited(request: Request) {
   return false
 }
 
-function hasValidScenarioState(rows: z.infer<typeof scenarioDecisionRowSchema>[]) {
+function hasValidScenarioState(
+  sportCategory: (typeof SPORT_CATEGORIES)[number],
+  rows: z.infer<typeof scenarioDecisionRowSchema>[]
+) {
   const uniqueScenarioIds = new Set(rows.map((row) => row.scenarioId))
   const uniqueWidgetTitles = new Set(rows.map((row) => row.widgetTitle))
 
@@ -114,6 +124,14 @@ function hasValidScenarioState(rows: z.infer<typeof scenarioDecisionRowSchema>[]
 
   for (const row of rows) {
     if (!allowedScenarioIds.has(row.scenarioId) || !allowedWidgetTitles.has(row.widgetTitle)) {
+      return false
+    }
+
+    if (row.sportCategory !== sportCategory) {
+      return false
+    }
+
+    if (sportCategory !== "womens" && row.widgetTitle === MENSTRUAL_CYCLE_WIDGET_TITLE) {
       return false
     }
 
@@ -184,7 +202,7 @@ async function parseRequestBody(request: Request) {
     }
   }
 
-  if (!hasValidScenarioState(result.data.rows)) {
+  if (!hasValidScenarioState(result.data.sportCategory, result.data.rows)) {
     return {
       error: jsonNoStore({ error: "Scenario payload failed validation." }, 400),
       data: null,
@@ -217,7 +235,7 @@ export async function POST(request: Request) {
       return jsonNoStore({ error: "Invalid scenario payload." }, 400)
     }
 
-    const { deviceType, participantName, rows, sessionId } = parsedRequest.data
+    const { deviceType, participantName, rows, sessionId, sportCategory } = parsedRequest.data
     const scenarioId = rows[0].scenarioId
     const timestamp = new Date().toISOString()
 
@@ -225,12 +243,14 @@ export async function POST(request: Request) {
       action: "replaceScenario",
       sessionId,
       participantName,
+      sportCategory,
       deviceType,
       scenarioId,
       rows: rows.map((row) => ({
         timestamp,
         sessionId,
         participantName,
+        sportCategory,
         deviceType,
         scenarioId: row.scenarioId,
         widgetTitle: row.widgetTitle,

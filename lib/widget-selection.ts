@@ -1,83 +1,24 @@
 import { type WidgetConfig, type WidgetId } from "@/lib/mock-data"
+import { type SportCategory } from "@/components/study/types"
+import { widgetDevelopmentMetrics } from "@/lib/widget-development"
 
-export const allWidgets: WidgetConfig[] = [
-  { id: "recovery", title: "Recovery Score" },
-  { id: "strain", title: "Strain Score" },
-  { id: "sleep-hours", title: "Sleep Hours" },
-  { id: "sleep-debt", title: "Sleep Debt" },
-  { id: "hrv", title: "HRV" },
-  { id: "heart-rate", title: "Heart Rate" },
-  { id: "sleep-graph", title: "Sleep Stages" },
-  { id: "calories", title: "Calories Burned" },
-  { id: "workout-log", title: "Workout Log" },
-  { id: "bedtime-routine", title: "Bedtime Routine" },
-  { id: "alcohol", title: "Alcohol Consumption" },
-  { id: "step-count", title: "Steps" },
-  { id: "resting-heart-rate", title: "Resting HR" },
-  { id: "stress-monitor", title: "Stress Monitor" },
-  { id: "strain-recovery-trend", title: "Strain vs Recovery" },
-  { id: "respiratory-rate", title: "Respiratory Rate" },
-  { id: "average-daily-heart-rate", title: "Average Daily HR" },
-  { id: "heart-zones-all", title: "HR Zones (All)" },
-  { id: "heart-zones-low", title: "Weekly HR Zones 1-3" },
-  { id: "heart-zones-high", title: "Weekly HR Zones 4-5" },
-  { id: "lean-body-mass", title: "Lean Body Mass" },
-  { id: "restorative-sleep", title: "Restorative Sleep" },
-  { id: "sleep-consistency", title: "Sleep Consistency" },
-  { id: "sleep-efficiency", title: "Sleep Efficiency" },
-  { id: "sleep-needed", title: "Sleep Needed" },
-  { id: "time-in-bed", title: "Time in Bed" },
-  { id: "vo2-max", title: "VO2 Max" },
-  { id: "weight", title: "Weight" },
-  { id: "sleep-score", title: "Sleep Score" },
-  { id: "health-monitor", title: "Health Monitor" },
-  { id: "daily-activities", title: "Daily Activities" },
-  { id: "bedtime", title: "Bedtime" },
-  { id: "journal", title: "Journal" },
-  { id: "strength-activity-time", title: "Strength Activity Time" },
-]
+export const allWidgets: WidgetConfig[] = widgetDevelopmentMetrics.map((metric) => ({
+  id: metric.id as WidgetId,
+  title: metric.label,
+}))
 
-// The study currently uses the original 12 widgets.
-// Uncomment newer entries here when you want to turn them on.
-export const ENABLED_WIDGET_IDS: WidgetId[] = [
-  "recovery",
-  "strain",
-  "sleep-hours",
-  "sleep-debt",
-  "hrv",
-  "heart-rate",
-  "sleep-graph",
-  "calories",
-  "workout-log",
-  "bedtime-routine",
-  "alcohol",
-  "step-count",
-  // "resting-heart-rate",
-  // "stress-monitor",
-  // "strain-recovery-trend",
-  // "respiratory-rate",
-  // "average-daily-heart-rate",
-  // "heart-zones-all",
-  // "heart-zones-low",
-  // "heart-zones-high",
-  // "lean-body-mass",
-  // "restorative-sleep",
-  // "sleep-consistency",
-  // "sleep-efficiency",
-  // "sleep-needed",
-  // "time-in-bed",
-  // "vo2-max",
-  // "weight",
-  // "sleep-score",
-  // "health-monitor",
-  // "daily-activities",
-  // "bedtime",
-  // "journal",
-  // "strength-activity-time",
-]
+// Enable all 21 core widgets
+export const ENABLED_WIDGET_IDS: WidgetId[] = widgetDevelopmentMetrics.map(
+  (metric) => metric.id as WidgetId
+)
 
 export function getEnabledWidgets(enabledIds: WidgetId[] = ENABLED_WIDGET_IDS) {
   return allWidgets.filter((widget) => enabledIds.includes(widget.id))
 }
 
 export const defaultWidgets = getEnabledWidgets()
+export const cycleTrackingWidget = allWidgets.find((widget) => widget.id === "cycle-tracking")
+
+export function getWidgetsForSportCategory(sportCategory: SportCategory | null | undefined) {
+  return defaultWidgets.filter((widget) => sportCategory === "womens" || widget.id !== "cycle-tracking")
+}
