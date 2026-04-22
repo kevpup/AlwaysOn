@@ -275,11 +275,24 @@ This note tracks design decisions for the widget skin development process.
 - Apple sleep score should use the Widget 13 reference screenshot as the primary visual direction.
 - Apple sleep score should show the breakdown values on the left and the segmented score ring on the right.
 - Apple sleep score breakdown values are Duration `48/50`, Bedtime `30/30`, and Interruptions `11/20`.
-- Apple sleep score should include a small `Hi` label above the breakdown list.
+- Apple sleep score should not include the small `Hi` label above the breakdown list.
 - Apple sleep score ring should segment the total score as 50% blue Duration, 30% teal Bedtime, and 20% orange Interruptions.
 - Apple sleep score should display the overall score in the center of the ring.
+- Apple sleep score should place the breakdown in the top third and the ring in the lower portion of the card.
+
+### Sleep Timeline
+
+- Apple total sleep time should read as a single overnight day rather than a weekly history.
+- Apple total sleep time should use a wider noon-to-noon timeline so the sleep bar and time labels have room to breathe.
+- Apple total sleep time should compress the graph band vertically so the top summary labels stay legible.
 
 ## Device Familiarity Screen
 
 - Device familiarity screen should use custom high-fidelity PNG device logos (Apple, Garmin, Oura, WHOOP) rather than generic vector icons.
 - Device logos should be rendered large and without padding/bounding boxes to ensure a premium, integrated feel.
+
+## Widget Labels
+
+- Participant-facing widget labels may vary by device or scenario.
+- Spreadsheet logging should continue to use the canonical widget titles so data remains stable across label changes.
+- Apple-facing labels currently override widget names as: `steps`, `HR graph`, `Activity HR`, `Resting HR`, `HRV`, `Active energy`, `weight`, `V02 max`, `sleep duration`, `sleep stages`, `sleep stages`, `Sleep score`, `Respritory rate`, `Training load`, `Vitals`, `Cycle tracking`, `Activity minutes`, `Workout history`, `Tempature deviation`, and `Sp02`.

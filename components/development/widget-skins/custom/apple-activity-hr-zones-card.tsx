@@ -54,7 +54,7 @@ export function AppleActivityHrZonesCard(_props: WidgetSkinProps) {
           ))}
         </div>
 
-        <div className="mt-4 min-h-0 flex-1 divide-y divide-[#e5e5ea]">
+        <div className="mt-4 min-h-0 flex-1 overflow-y-auto pr-1 divide-y divide-[#e5e5ea]">
           {zoneSummary.map((item) => (
             <div key={item.zone} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-2">
               <div className="flex min-w-0 items-center gap-2">

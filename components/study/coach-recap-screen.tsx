@@ -101,6 +101,7 @@ export function CoachRecapScreen({
                   <div key={widget.id}>
                     <SortableWidget
                       deviceType={deviceType}
+                      scenarioId={scenario.id}
                       widget={widget}
                       disableSorting
                       sportCategory={sportCategory}

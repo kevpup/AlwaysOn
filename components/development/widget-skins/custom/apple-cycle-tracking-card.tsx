@@ -7,6 +7,7 @@ const CYCLE_LIGHT = "#ffd6e1"
 const currentCycleDay = 18
 const estimatedCycleLength = 28
 const nextPeriodDate = "May 1"
+const cyclePhase = "Luteal phase"
 const cycleProgress = currentCycleDay / estimatedCycleLength
 
 export function AppleCycleTrackingCard(_props: WidgetSkinProps) {
@@ -19,7 +20,7 @@ export function AppleCycleTrackingCard(_props: WidgetSkinProps) {
             <p className="mt-0.5 text-[32px] font-bold leading-none tracking-[-0.05em]" style={{ color: CYCLE_PINK }}>
               Day {currentCycleDay}
             </p>
-            <p className="mt-1 text-xs font-medium text-[#6e6e73]">Current cycle</p>
+            <p className="mt-1 text-xs font-medium text-[#6e6e73]">{cyclePhase}</p>
           </div>
 
           <div className="rounded-full bg-[#fff0f4] px-3 py-1 text-[11px] font-semibold" style={{ color: CYCLE_PINK }}>
@@ -30,25 +31,25 @@ export function AppleCycleTrackingCard(_props: WidgetSkinProps) {
         <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
           <div className="relative h-36 w-36">
             <svg className="h-full w-full -rotate-90" viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r="44" fill="none" stroke={CYCLE_LIGHT} strokeWidth="14" />
+              <circle cx="60" cy="60" r="47" fill="none" stroke={CYCLE_LIGHT} strokeWidth="12" />
               <circle
                 cx="60"
                 cy="60"
-                r="44"
+                r="47"
                 fill="none"
                 stroke={CYCLE_PINK}
-                strokeDasharray={`${cycleProgress * 276.46} 276.46`}
+                strokeDasharray={`${cycleProgress * 295.31} 295.31`}
                 strokeLinecap="round"
-                strokeWidth="14"
+                strokeWidth="12"
               />
             </svg>
 
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#86868b]">Next period</p>
-              <p className="mt-1 text-[24px] font-bold leading-none tracking-[-0.05em] text-[#1d1d1f]">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[#86868b]">Next</p>
+              <p className="mt-0.5 text-[20px] font-bold leading-none tracking-[-0.04em] text-[#1d1d1f]">
                 {nextPeriodDate}
               </p>
-              <p className="mt-1 text-[10px] font-medium text-[#86868b]">in 10 days</p>
+              <p className="mt-0.5 text-[9px] font-medium text-[#86868b]">Period in 10 days</p>
             </div>
           </div>
         </div>
@@ -59,6 +60,10 @@ export function AppleCycleTrackingCard(_props: WidgetSkinProps) {
             <span>
               {currentCycleDay} of {estimatedCycleLength}
             </span>
+          </div>
+          <div className="mt-1 flex items-center justify-between text-xs font-semibold text-[#1d1d1f]">
+            <span>Phase</span>
+            <span>{cyclePhase}</span>
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#e5e5ea]">
             <div className="h-full rounded-full" style={{ width: `${cycleProgress * 100}%`, backgroundColor: CYCLE_PINK }} />

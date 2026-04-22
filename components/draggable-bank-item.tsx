@@ -3,6 +3,8 @@
 import { type ReactNode } from "react"
 import { useDraggable } from "@dnd-kit/core"
 import { type WidgetConfig } from "@/lib/mock-data"
+import { getWidgetDisplayName } from "@/lib/widget-display-names"
+import { type DeviceType } from "@/components/study/types"
 import {
   BarChart3,
   GripVertical,
@@ -45,13 +47,16 @@ const widgetIcons: Record<string, ReactNode> = {
 }
 
 interface DraggableBankItemProps {
+  deviceType?: DeviceType
+  scenarioId?: string
   widget: WidgetConfig
 }
 
-export function DraggableBankItem({ widget }: DraggableBankItemProps) {
+export function DraggableBankItem({ deviceType, scenarioId, widget }: DraggableBankItemProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: widget.id,
   })
+  const displayName = getWidgetDisplayName(widget, { deviceType, scenarioId })
 
   return (
     <div
@@ -69,7 +74,7 @@ export function DraggableBankItem({ widget }: DraggableBankItemProps) {
         {widgetIcons[widget.id] || <Activity className="h-4 w-4" />}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-foreground">{widget.title}</p>
+        <p className="truncate text-sm font-medium text-foreground">{displayName}</p>
       </div>
     </div>
   )

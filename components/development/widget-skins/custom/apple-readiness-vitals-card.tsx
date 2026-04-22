@@ -1,11 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { Activity, Bed, Heart, Thermometer } from "lucide-react"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
 
 const TYPICAL_BLUE = "#64b5f6"
-const SELECTED_BLUE = "#2f80ed"
+const CHART_RIGHT_GUTTER = 42
 
 const vitals = [
   {
@@ -13,6 +14,7 @@ const vitals = [
     label: "Heart Rate",
     value: "49 bpm",
     status: "Typical",
+    detail: "Resting trend is stable",
     Icon: Heart,
     position: 44,
     selected: false,
@@ -22,6 +24,7 @@ const vitals = [
     label: "Respiratory Rate",
     value: "14.2 br/min",
     status: "Typical",
+    detail: "Breathing is in range",
     Icon: Activity,
     position: 48,
     selected: false,
@@ -31,6 +34,7 @@ const vitals = [
     label: "Temperature",
     value: "+0.2 F",
     status: "Typical",
+    detail: "Slightly above baseline",
     Icon: Thermometer,
     position: 38,
     selected: false,
@@ -40,6 +44,7 @@ const vitals = [
     label: "Sleep Duration",
     value: "7 hr 57 min",
     status: "Typical",
+    detail: "Last night, strong recovery",
     Icon: Bed,
     position: 51,
     selected: true,
@@ -47,13 +52,16 @@ const vitals = [
 ] as const
 
 export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
+  const [activeVitalId, setActiveVitalId] = useState<(typeof vitals)[number]["id"] | null>(null)
+  const activeVital = activeVitalId ? vitals.find((vital) => vital.id === activeVitalId) : null
+
   return (
-    <div className="flex h-full flex-col rounded-[24px] border border-black/5 bg-[#f5f5f7] p-3 text-[#1d1d1f] shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
-      <div className="flex min-h-0 flex-1 flex-col rounded-[20px] bg-white p-4 shadow-sm">
-        <div className="mb-3 flex items-start justify-between gap-4">
+    <div className="flex h-full flex-col rounded-[24px] border border-black/5 bg-[#f5f5f7] p-[4%] text-[#1d1d1f] shadow-[0_12px_28px_rgba(0,0,0,0.12)] [container-type:inline-size]">
+      <div className="flex min-h-0 flex-1 flex-col rounded-[20px] bg-white p-[5%] shadow-sm">
+        <div className="mb-[4%] flex items-start justify-between gap-4">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#86868b]">Vitals</p>
-            <p className="mt-0.5 text-[28px] font-bold leading-none tracking-[-0.05em]">Readiness</p>
+            <p className="mt-0.5 text-[clamp(22px,8cqw,28px)] font-bold leading-none tracking-[-0.05em]">Readiness</p>
           </div>
 
           <div className="rounded-full bg-[#f2f2f7] px-3 py-1 text-[11px] font-semibold text-[#6e6e73]">
@@ -61,8 +69,11 @@ export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
           </div>
         </div>
 
-        <div className="relative min-h-0 flex-1 rounded-[18px] border border-[#e5e5ea] bg-white">
-          <div className="absolute inset-y-0 left-0 right-[42px] grid grid-cols-4">
+        <div className="relative min-h-0 flex-1 overflow-hidden rounded-[18px] border border-[#e5e5ea] bg-white">
+          <div
+            className="absolute inset-y-0 left-0 grid grid-cols-4"
+            style={{ right: CHART_RIGHT_GUTTER }}
+          >
             {vitals.map((vital) => (
               <div key={vital.id} className="border-r border-dashed border-[#d8d8de] last:border-r-0" />
             ))}
@@ -80,17 +91,27 @@ export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
 
           {vitals.map((vital, index) => {
             const columnWidth = 100 / vitals.length
-            const left = columnWidth * index + columnWidth / 2
+            const left = `${columnWidth * index}%`
+
             return (
               <button
                 key={vital.id}
                 type="button"
-                className="absolute flex -translate-x-1/2 flex-col items-center gap-1 rounded-2xl px-1 py-1 transition-transform hover:scale-105"
-                style={{ left: `${left}%`, top: `${vital.position}%` }}
+                className="absolute z-10 flex h-11 -translate-y-1/2 items-center justify-center rounded-2xl transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2f80ed]"
+                style={{
+                  left,
+                  right: `${100 - columnWidth * (index + 1)}%`,
+                  top: `${vital.position}%`,
+                  marginRight: CHART_RIGHT_GUTTER / vitals.length,
+                }}
                 aria-label={`${vital.label}: ${vital.value}, ${vital.status}`}
+                onMouseEnter={() => setActiveVitalId(vital.id)}
+                onFocus={() => setActiveVitalId(vital.id)}
+                onMouseLeave={() => setActiveVitalId(null)}
+                onBlur={() => setActiveVitalId(null)}
               >
                 <span
-                  className={`h-5 w-5 rounded-full border-2 ${
+                  className={`h-4 w-4 rounded-full border-2 ${
                     vital.selected ? "border-[#2f80ed] bg-white" : "border-transparent bg-[#b8dcff]"
                   }`}
                 >
@@ -104,16 +125,23 @@ export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
             )
           })}
 
-          <div className="absolute -top-1 right-[12px] w-[150px] rounded-[18px] bg-[#f2f2f7] px-4 py-2 text-center shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">Sleep Duration</p>
-            <p className="mt-1 text-[26px] font-semibold leading-none tracking-[-0.06em]">
-              7 <span className="text-[13px] font-semibold text-[#6e6e73]">hr</span> 57{" "}
-              <span className="text-[13px] font-semibold text-[#6e6e73]">min</span>
-            </p>
-            <p className="mt-1 text-[12px] font-semibold tracking-[0.08em] text-[#86868b]">Apr 21, 2026</p>
-          </div>
+          {activeVital ? (
+            <div className="absolute right-[4%] top-[2%] z-20 w-[min(48%,150px)] rounded-[18px] bg-[#f2f2f7] px-3 py-2 text-center shadow-sm">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">
+                {activeVital.label}
+              </p>
+              <p className="mt-1 text-[clamp(18px,7cqw,26px)] font-semibold leading-none tracking-[-0.06em]">
+                {activeVital.value}
+              </p>
+              <p className="mt-1 text-[12px] font-semibold tracking-[0.08em] text-[#86868b]">{activeVital.status}</p>
+              <p className="mt-1 text-[11px] leading-tight text-[#6e6e73]">{activeVital.detail}</p>
+            </div>
+          ) : null}
 
-          <div className="absolute bottom-1 left-0 right-[42px] grid grid-cols-4">
+          <div
+            className="absolute bottom-[2%] left-0 grid grid-cols-4"
+            style={{ right: CHART_RIGHT_GUTTER }}
+          >
             {vitals.map((vital) => {
               const Icon = vital.Icon
 
@@ -122,7 +150,7 @@ export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
                   key={vital.id}
                   type="button"
                   className="mx-auto flex h-9 w-11 items-center justify-center rounded-2xl text-[#b8b8bf] transition-colors hover:bg-[#f2f2f7] hover:text-[#6e6e73]"
-                  aria-label={`Inspect ${vital.label}`}
+                  aria-label={vital.label}
                 >
                   <Icon className="h-6 w-6" strokeWidth={2.8} />
                 </button>

@@ -21,8 +21,21 @@ import {
 import { getScenariosForParticipant, type Scenario, scenarios } from "@/lib/scenarios"
 import { getWidgetsForSportCategory } from "@/lib/widget-selection"
 
-function createInitialZones(sportCategory?: SportCategory | null): ZonesState {
-  const widgets = getWidgetsForSportCategory(sportCategory)
+function shuffleWidgets(widgets: WidgetConfig[]) {
+  const shuffledWidgets = [...widgets]
+
+  for (let index = shuffledWidgets.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1))
+    const currentWidget = shuffledWidgets[index]
+    shuffledWidgets[index] = shuffledWidgets[randomIndex]
+    shuffledWidgets[randomIndex] = currentWidget
+  }
+
+  return shuffledWidgets
+}
+
+function createInitialZones(sportCategory?: SportCategory | null, orderedWidgets?: WidgetConfig[]): ZonesState {
+  const widgets = orderedWidgets ?? getWidgetsForSportCategory(sportCategory)
 
   return {
     not_displayed: [...widgets],
@@ -51,6 +64,7 @@ export function useStudySession() {
   const [scenarioIndex, setScenarioIndex] = useState(0)
   const [zones, setZones] = useState<ZonesState>(createInitialZones)
   const [savedRows, setSavedRows] = useState<ScenarioDecisionRow[]>([])
+  const [sessionWidgetOrder, setSessionWidgetOrder] = useState<WidgetConfig[]>([])
   const [activeId, setActiveId] = useState<WidgetId | null>(null)
   const [navigationHistory, setNavigationHistory] = useState<NavigationSnapshot[]>([])
 
@@ -125,10 +139,12 @@ export function useStudySession() {
     const scenarioRows = savedRows.filter((row) => row.scenarioId === targetScenarioId)
 
     if (scenarioRows.length === 0) {
-      return createInitialZones(participant?.sportCategory)
+      return createInitialZones(participant?.sportCategory, sessionWidgetOrder)
     }
 
-    const availableWidgets = getWidgetsForSportCategory(participant?.sportCategory)
+    const availableWidgets = sessionWidgetOrder.length
+      ? sessionWidgetOrder
+      : getWidgetsForSportCategory(participant?.sportCategory)
     const widgetByTitle = new Map(availableWidgets.map((widget) => [widget.title, widget]))
     const sharedRows = scenarioRows
       .filter((row) => row.shared)
@@ -146,7 +162,7 @@ export function useStudySession() {
         .map((row) => widgetByTitle.get(row.widgetTitle))
         .filter((widget): widget is WidgetConfig => Boolean(widget)),
     }
-  }, [participant?.sportCategory, savedRows])
+  }, [participant?.sportCategory, savedRows, sessionWidgetOrder])
 
   const pushNavigationSnapshot = useCallback(() => {
     setNavigationHistory((current) => [
@@ -213,6 +229,7 @@ export function useStudySession() {
     setScenarioIndex(0)
     setZones(createInitialZones())
     setSavedRows([])
+    setSessionWidgetOrder([])
     setActiveId(null)
     setNavigationHistory([])
   }, [])
@@ -256,13 +273,15 @@ export function useStudySession() {
     pushNavigationSnapshot()
 
     const selectedScenarios = getScenariosForParticipant(name)
+    const randomizedWidgetOrder = shuffleWidgets(getWidgetsForSportCategory(sportCategory))
 
     setParticipant({ name, sportCategory, deviceType })
     setSessionId(`session-${Date.now()}`)
     setAssignedScenarios(selectedScenarios)
     setScenarioIndex(0)
     setScenarioView("intro")
-    setZones(createInitialZones(sportCategory))
+    setSessionWidgetOrder(randomizedWidgetOrder)
+    setZones(createInitialZones(sportCategory, randomizedWidgetOrder))
     setSavedRows([])
     setActiveId(null)
     setStep("study")
@@ -390,10 +409,10 @@ export function useStudySession() {
       return
     }
 
-    setZones(createInitialZones(participant.sportCategory))
+    setZones(createInitialZones(participant.sportCategory, sessionWidgetOrder))
     setScenarioIndex(nextScenarioIndex)
     setScenarioView("intro")
-  }, [assignedScenarios.length, buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, zones])
+  }, [assignedScenarios.length, buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, sessionWidgetOrder, zones])
 
   const skipToFinish = useCallback(() => {
     if (!participant || !sessionId) return

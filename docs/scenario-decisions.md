@@ -80,3 +80,5 @@ This note documents design decisions made while developing the research scenario
 - Consequences of data use were identified as an important axis, especially roster decisions and public team comparison.
 - Scenario prompts were shortened where possible so participants can understand the scenario without being overloaded.
 - Prompts aim to include one clear situation, one clear recipient, one clear reason for access, and one clear decision.
+- Widget order is randomized once per participant session to reduce ordering effects without reshuffling between scenarios.
+- Within a participant session, the same widget order is reused for each new scenario so the participant does not have to repeatedly relearn the dashboard layout.

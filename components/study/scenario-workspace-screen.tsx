@@ -20,6 +20,7 @@ import { type DeviceType, type SportCategory, type WidgetConfig, type WidgetId }
 import { DraggableBankItem } from "@/components/draggable-bank-item"
 import { SortableWidget } from "@/components/sortable-widget"
 import { WidgetRenderer } from "@/components/widgets/widget-renderer"
+import { getWidgetDisplayName } from "@/lib/widget-display-names"
 import { type Scenario } from "@/lib/scenarios"
 
 interface ScenarioWorkspaceScreenProps {
@@ -116,9 +117,15 @@ export function ScenarioWorkspaceScreen({
         </div>
 
         <div className="mx-auto grid max-w-[1600px] gap-4 px-4 py-6 md:px-6 xl:grid-cols-[280px_minmax(0,1fr)]">
-          <WidgetListZone zoneId="not_displayed" widgets={zones.not_displayed} />
+          <WidgetListZone
+            deviceType={deviceType}
+            scenarioId={scenario.id}
+            zoneId="not_displayed"
+            widgets={zones.not_displayed}
+          />
           <ShareZone
             deviceType={deviceType}
+            scenarioId={scenario.id}
             widgets={zones.share}
             onMoveToNotDisplayed={onMoveToNotDisplayed}
             sportCategory={sportCategory}
@@ -143,7 +150,9 @@ export function ScenarioWorkspaceScreen({
               <div className="flex items-center gap-3">
                 <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground/50" />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-foreground">{activeWidget.title}</p>
+                  <p className="truncate text-sm font-medium text-foreground">
+                    {getWidgetDisplayName(activeWidget, { deviceType, scenarioId: scenario.id })}
+                  </p>
                 </div>
               </div>
             )}
@@ -154,7 +163,17 @@ export function ScenarioWorkspaceScreen({
   )
 }
 
-function WidgetListZone({ zoneId, widgets }: { zoneId: "not_displayed"; widgets: WidgetConfig[] }) {
+function WidgetListZone({
+  deviceType,
+  scenarioId,
+  zoneId,
+  widgets,
+}: {
+  deviceType: DeviceType
+  scenarioId: string
+  zoneId: "not_displayed"
+  widgets: WidgetConfig[]
+}) {
   const { setNodeRef, isOver } = useDroppable({ id: zoneContainerIds[zoneId] })
 
   return (
@@ -180,7 +199,7 @@ function WidgetListZone({ zoneId, widgets }: { zoneId: "not_displayed"; widgets:
         ) : (
           <div className="flex flex-col gap-2">
             {widgets.map((widget) => (
-              <DraggableBankItem key={widget.id} widget={widget} />
+              <DraggableBankItem key={widget.id} deviceType={deviceType} scenarioId={scenarioId} widget={widget} />
             ))}
           </div>
         )}
@@ -191,11 +210,13 @@ function WidgetListZone({ zoneId, widgets }: { zoneId: "not_displayed"; widgets:
 
 function ShareZone({
   deviceType,
+  scenarioId,
   widgets,
   onMoveToNotDisplayed,
   sportCategory,
 }: {
   deviceType: DeviceType
+  scenarioId: string
   widgets: WidgetConfig[]
   onMoveToNotDisplayed: (id: WidgetId) => void
   sportCategory: SportCategory
@@ -236,6 +257,7 @@ function ShareZone({
                   </p>
                   <SortableWidget
                     deviceType={deviceType}
+                    scenarioId={scenarioId}
                     widget={widget}
                     onMoveToNotDisplayed={() => onMoveToNotDisplayed(widget.id)}
                     sportCategory={sportCategory}

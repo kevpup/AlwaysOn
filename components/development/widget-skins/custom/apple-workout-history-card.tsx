@@ -46,15 +46,17 @@ const workoutHistory = [
 
 export function AppleWorkoutHistoryCard(_props: WidgetSkinProps) {
   return (
-    <div className="flex h-full flex-col rounded-[24px] border border-black/10 bg-[#050507] p-3 text-white shadow-[0_12px_28px_rgba(0,0,0,0.2)]">
-      <div className="flex min-h-0 flex-1 flex-col rounded-[20px] bg-[#111113] p-4 shadow-sm">
-        <div className="mb-3 flex items-start justify-between gap-4">
+    <div className="flex h-full flex-col rounded-[24px] border border-black/5 bg-[#f5f5f7] p-3 text-[#1d1d1f] shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
+      <div className="flex min-h-0 flex-1 flex-col rounded-[20px] bg-white px-3 pb-2.5 pt-3 shadow-sm">
+        <div className="mb-2 flex items-start justify-between gap-3">
           <div>
-            <p className="text-[11px] font-semibold text-white/55">Workout History</p>
-            <p className="mt-0.5 text-[28px] font-bold leading-none tracking-[-0.05em]">Sessions</p>
+            <p className="text-[11px] font-semibold text-[#6e6e73]">Workout history</p>
+            <p className="mt-0.5 text-3xl font-bold leading-none tracking-[-0.04em]" style={{ color: ACTIVITY_GREEN }}>
+              Sessions
+            </p>
           </div>
 
-          <div className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/65">
+          <div className="rounded-full bg-[#f2f2f7] px-3 py-1 text-[11px] font-semibold text-[#6e6e73]">
             Recent
           </div>
         </div>
@@ -68,7 +70,7 @@ export function AppleWorkoutHistoryCard(_props: WidgetSkinProps) {
                 <button
                   key={`${workout.type}-${workout.date}`}
                   type="button"
-                  className="grid grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl bg-white/[0.07] px-3 py-2 text-left transition-colors hover:bg-white/[0.11]"
+                  className="grid grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl bg-[#f7f7fa] px-3 py-2 text-left transition-colors hover:bg-[#f2f2f7]"
                 >
                   <span
                     className="flex h-9 w-9 items-center justify-center rounded-full"
@@ -78,13 +80,13 @@ export function AppleWorkoutHistoryCard(_props: WidgetSkinProps) {
                   </span>
 
                   <span className="min-w-0">
-                    <span className="block truncate text-[14px] font-semibold leading-tight">{workout.type}</span>
-                    <span className="mt-0.5 block truncate text-[11px] font-medium leading-tight text-white/55">
+                    <span className="block truncate text-[14px] font-semibold leading-tight text-[#1d1d1f]">{workout.type}</span>
+                    <span className="mt-0.5 block truncate text-[11px] font-medium leading-tight text-[#6e6e73]">
                       {workout.detail} - {workout.summary}
                     </span>
                   </span>
 
-                  <span className="max-w-[56px] text-right text-[10px] font-semibold leading-tight text-white/45">
+                  <span className="max-w-[56px] text-right text-[10px] font-semibold leading-tight text-[#86868b]">
                     {workout.date}
                   </span>
                 </button>

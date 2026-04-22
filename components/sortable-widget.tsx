@@ -3,12 +3,14 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { type WidgetConfig } from "@/lib/mock-data"
+import { getWidgetDisplayName } from "@/lib/widget-display-names"
 import { WidgetRenderer } from "@/components/widgets/widget-renderer"
 import { type DeviceType, type SportCategory } from "@/components/study/types"
 import { EyeOff } from "lucide-react"
 
 interface SortableWidgetProps {
   deviceType: DeviceType
+  scenarioId?: string
   widget: WidgetConfig
   disableSorting?: boolean
   onMoveToNotDisplayed?: () => void
@@ -17,6 +19,7 @@ interface SortableWidgetProps {
 
 export function SortableWidget({
   deviceType,
+  scenarioId,
   widget,
   disableSorting = false,
   onMoveToNotDisplayed,
@@ -35,6 +38,7 @@ export function SortableWidget({
     transform: CSS.Transform.toString(transform),
     transition,
   }
+  const displayName = getWidgetDisplayName(widget, { deviceType, scenarioId })
 
   return (
     <div
@@ -42,6 +46,7 @@ export function SortableWidget({
       style={style}
       {...attributes}
       {...listeners}
+      aria-label={disableSorting ? displayName : `Drag to reorder ${displayName}`}
       className={`group relative aspect-square w-full cursor-grab overflow-hidden active:cursor-grabbing ${
         isDragging ? "z-50 opacity-50" : ""
       }`}
