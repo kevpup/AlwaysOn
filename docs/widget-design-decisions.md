@@ -137,6 +137,12 @@ This note tracks design decisions for the widget skin development process.
 - Apple resting heart rate should show Monday through Friday as a weekly line graph.
 - Apple resting heart rate should use dynamic y-axis scaling based on the displayed weekly values.
 - Apple resting heart rate should show the weekly average resting heart rate prominently at the top.
+- Garmin resting heart rate should use dark-mode Garmin styling consistent with the existing Garmin heart-rate widgets.
+- Garmin resting heart rate should use a blue line graph across a period of days with no highlighted area fill underneath.
+- Garmin resting heart rate should serve as the visual reference for subsequent Garmin dark-mode trend widgets.
+- Oura resting heart rate should use a dark, premium, minimal metric card rather than a graph.
+- Oura resting heart rate should show `Lowest Heart Rate`, a large `43 bpm` primary value, and `Average 56 bpm` as supporting text.
+- Oura resting heart rate should be left-aligned, spacious, and quiet with refined typography and minimal chrome.
 
 ### HRV / HRV Status
 
@@ -144,12 +150,44 @@ This note tracks design decisions for the widget skin development process.
 - Apple HRV should show Monday through Friday as a line graph with dynamic y-axis scaling.
 - Apple HRV should display values in milliseconds.
 - Apple HRV should show the weekly average prominently at the top.
+- WHOOP HRV should use a daily graph over the last month.
+- WHOOP HRV should show individual daily HRV data points with the most recent day visually highlighted.
+- WHOOP HRV should display the most recent HRV value as the primary top-left summary metric.
+- WHOOP HRV should use the same blue color treatment as the WHOOP average-heart-rate workout graph.
+- Garmin HRV should use a compact dark-mode summary card rather than a chart-heavy layout.
+- Garmin HRV should show the label `HRV`, the most recent HRV value in milliseconds as the primary metric, and a small status/reference line.
+- Garmin HRV should match the black-background Garmin styling established by the existing Garmin heart-rate widgets.
+- Oura HRV should use a dark premium recovery card with the metric header more prominent than the chart.
+- Oura HRV should show `Average HRV`, a large `48 ms` primary value, and `Max 72 ms` as supporting text.
+- Oura HRV should include a restrained overnight white line chart with subtle horizontal gridlines and no heavy axis styling.
 
 ### Respiratory Rate / Respiration
 
 - Apple respiratory rate should reuse the same range/trend structure as the Apple full-day heart-rate graph.
 - Apple respiratory rate should adapt the labels to respiratory rate and display values in breaths per minute.
 - Apple respiratory rate should use blue instead of red.
+- WHOOP respiratory rate should use a last-month daily line graph.
+- WHOOP respiratory rate should show average respiratory rate for each night with one-decimal values.
+- WHOOP respiratory rate should highlight the most recent night and display that value as the primary top-left summary metric.
+- WHOOP respiratory rate should use the light-blue WHOOP graph treatment.
+- Garmin respiratory rate should use a Garmin dark-mode dual-line graph.
+- Garmin respiratory rate should show sleep average respiratory rate as a Garmin blue line and awake average respiratory rate as a light-blue line.
+- Garmin respiratory rate should keep the chart readable with a small legend and dynamic y-axis labels.
+- Oura respiratory rate should use a dark weekly trend card with a smooth pale cyan line and subtle teal-blue gradient fill.
+- Oura respiratory rate should show `Respiratory rate` as the title and clearly display the selected day's value.
+- Oura respiratory rate should highlight the selected day with a marker/emphasis line and avoid tabs or extra navigation controls.
+
+### Calories / Active Energy
+
+- WHOOP calories should use a monthly bar graph.
+- WHOOP calories should show very thin blue bars across the last month with enough spacing to make the full month readable.
+- WHOOP calories should include a horizontal average-calories reference line.
+- WHOOP calories should display calories burned today as the primary summary metric.
+- WHOOP calories should stay minimal, dense, and consistent with the dark WHOOP graph style.
+- Garmin calories should use a black-background dark-mode card.
+- Garmin calories should use a simple circular metric display rather than a chart.
+- Garmin calories should show total calories burned centered inside the circle.
+- Garmin calories should remain visually consistent with Garmin dark-mode Widgets 1-3.
 
 ### Strain / Activity Load / Training Load
 
@@ -157,6 +195,19 @@ This note tracks design decisions for the widget skin development process.
 - Apple training load should use a smooth curve style inspired by the Oura heart-rate chart.
 - Apple training load should show daily strain values with light blue to purple intensity coloring.
 - Apple training load should overlay a weekly rolling average on top of the daily values.
+- WHOOP strain should use a minimal blue circular score display.
+- WHOOP strain should show the current strain value for the day as a 1-21 scale value centered inside the circle.
+- WHOOP strain should label the centered value with `Strain` underneath.
+- WHOOP strain should match WHOOP's circular metric-card style without extra chart detail.
+- Garmin training load should use the shared Garmin dark-mode chart shell.
+- Garmin training load should show absolute training load around `1000` as the main line graph.
+- Garmin training load should also show acute-to-chronic workload ratio as dense vertical bars.
+- Garmin training load should highlight the optimal ACWR range from `0.8` to `1.5` with a green band/reference treatment.
+- Garmin training load should be data-dense but still readable inside the square widget.
+- Oura should represent the training-load/stress widget slot as `Daytime stress`.
+- Oura stress should use a dark daytime trend chart with small point markers and a white line over a dark blue-to-green gradient chart background.
+- Oura stress should show right-side qualitative bands: Restored, Relaxed, Engaged, and Stressed.
+- Oura stress should use soft horizontal dividers and stay chart-centric without dense analytics controls.
 
 ### Recovery Score / Readiness Summary
 
@@ -165,12 +216,30 @@ This note tracks design decisions for the widget skin development process.
 - Apple readiness metrics should be categorized as Low, Typical, or High.
 - Apple readiness metrics should look clickable so a participant can imagine inspecting more detail.
 - Apple readiness should use the Widget 16 reference screenshot as the primary visual direction, including the selected sleep-duration callout and Low/Typical/High grid.
+- WHOOP recovery should use a circular percentage score display.
+- WHOOP recovery should use red, yellow, or green depending on the score.
+- WHOOP recovery currently uses a score of `72%` and displays it in green.
+- WHOOP recovery should stay simple and consistent with WHOOP's recovery/readiness circular metric style.
+- Garmin readiness should be represented as Body Battery.
+- Garmin Body Battery should use a dark-mode card with Body Battery High and Low values on a 1-100 scale.
+- Garmin Body Battery should show an intraday chart that generally starts high in the morning and drains lower by the end of the day.
+- Oura readiness should use an immersive premium dark score card with cool blue atmospheric background treatment.
+- Oura readiness should show a large centered `88` value with `READINESS` below it in uppercase.
+- Oura readiness should include a broad curved 0-100-style arc near the top with subtle tick marks and a clean white stroke.
+- Oura readiness should keep the score dominant over the scenic/atmospheric treatment.
 
 ### Cycle Tracking
 
 - Apple cycle tracking should be simple, clear, and dashboard-friendly.
 - Apple cycle tracking should focus only on the current day of the user's cycle and the predicted start date of the next period.
 - Apple cycle tracking should avoid adding symptoms, fertility windows, or extra cycle detail at this stage.
+- Garmin cycle tracking should use a dark-mode circular summary card.
+- Garmin cycle tracking should show only the current cycle day and current phase.
+- Garmin cycle tracking should not add calendar-view functionality.
+- Oura cycle tracking should use a dark stacked informational card layout without a temperature graph.
+- Oura cycle tracking should show current cycle day prominently, followed by rows/cards for cycle phase and period status.
+- Oura cycle tracking should include a bottom-summary-card style estimate for the next period start timeframe.
+- Oura cycle tracking should use deep blue-dark surfaces, soft rounded cards, clean typography, and subtle separation between blocks.
 
 ### Activity / Workout Minutes
 
@@ -182,6 +251,15 @@ This note tracks design decisions for the widget skin development process.
 - Apple full workout report should show a dense but scannable scrollable list of workout sessions.
 - Apple full workout report rows should include workout type, distance or calories, and day/date.
 - Apple full workout report should use realistic dummy activities for development.
+- WHOOP workout report should preserve the existing scrollable recent-session concept.
+- WHOOP workout report should use dark WHOOP card styling with dense session rows, dates, durations, calories, and intensity labels.
+- WHOOP workout report should avoid adding new chart complexity unless later refinement requires it.
+- Garmin workout report should reuse the WHOOP workout report structure and sample data.
+- Garmin workout report should preserve the scrollable dense recent-session list.
+- Garmin workout report should restyle the structure with Garmin dark-mode surfaces, blue accents, compact metric panels, and Garmin-like spacing.
+- Oura workout report should reuse the same workout-report structure and sample data as WHOOP and Garmin.
+- Oura workout report should preserve the scrollable dense recent-session list while using very dark surfaces, elegant typography, soft contrast, and restrained separators.
+- Oura workout report should be a visual reskin of the shared workout-report concept rather than a new widget type.
 
 ### Skin / Wrist / Body Temperature / Temperature Deviation
 
@@ -189,12 +267,31 @@ This note tracks design decisions for the widget skin development process.
 - Apple temperature should show the zero baseline clearly.
 - Apple temperature should show positive and negative daily deviations across the week.
 - Apple temperature should show the average deviation over the last week and today's current distance from baseline.
+- WHOOP skin temperature should use a compact health-status summary card rather than a weekly chart.
+- WHOOP skin temperature should show `Skin Temp from baseline`, the value `+0.2°`, and a green check status.
+- WHOOP skin temperature should include the message `within -0.6 to +0.7`.
+- Garmin skin temperature should use a very simple dark-mode summary card.
+- Garmin skin temperature should show only the daily change from baseline.
+- Garmin skin temperature should not add charting or additional explanatory detail.
+- Oura skin temperature should use a deep cool-blue dark chart card focused only on temperature deviation from baseline.
+- Oura skin temperature should show positive and negative narrow bars around a clearly defined zero baseline.
+- Oura skin temperature should highlight the selected day and show its deviation as the primary metric, for example `+0.2°C`.
+- Oura skin temperature should not include cycle-phase, period, or other reproductive-health summary content.
 
 ### Blood Oxygen / SpO2
 
 - Apple blood oxygen should reuse the Apple heart-rate range graph structure.
 - Apple blood oxygen should show a clean daily SpO2 range in percent.
 - Apple blood oxygen should adapt the heart-rate visual language to blue/cyan SpO2 styling and labels.
+- WHOOP blood oxygen should use the same compact health-status card style as WHOOP skin temperature.
+- WHOOP blood oxygen should show one day of data only: `Blood Oxygen (SpO2)` and `97%`.
+- WHOOP blood oxygen should include a green check status with `within 95 to 100%`.
+- Garmin blood oxygen should use a dark-mode circular percentage display.
+- Garmin blood oxygen should show the SpO2 percentage inside the circle, `SpO2` below the value, and the most recent reading time below that.
+- Garmin blood oxygen should stay visually simple and consistent with Garmin circular summary cards.
+- Oura blood oxygen should be an extremely minimal dark single-metric card.
+- Oura blood oxygen should show `Average Oxygen Saturation` in small uppercase text and a large `98%` value.
+- Oura blood oxygen should not include charts, trends, or additional supporting graphs.
 
 ### Calories / Active Energy
 
@@ -202,6 +299,9 @@ This note tracks design decisions for the widget skin development process.
 - Apple calories should show calories burned today in the top left.
 - Apple calories should show average calories over the last week in the top right.
 - Apple calories should use a sparse weekly bar chart and should not force every day to have a visible bar when data is missing.
+- Oura active calories should use a dark, immersive, water-themed background texture rather than a chart.
+- Oura active calories should center a large `655` metric with `Active calorie burn` directly beneath it.
+- Oura active calories may include one short positive supporting sentence, but should not mention goals, targets, or percentages over goal.
 
 ### Weight
 
@@ -209,6 +309,12 @@ This note tracks design decisions for the widget skin development process.
 - Apple weight should display the latest weight clearly on the top left.
 - Apple weight should show the average weight over the last week on the top right.
 - Apple weight should use a sparse weekly graph where empty days remain blank and only days with readings are plotted.
+- WHOOP weight should use a sparse monthly line graph for manually entered measurements.
+- WHOOP weight should only plot days where measurements exist and connect those intermittent manual entries with a blue line.
+- WHOOP weight should visually emphasize that weight is not a dense daily automatic metric by using a manual-entry label and a measurement count.
+- Garmin weight should use a sparse dark-mode line graph showing intermittent measurements.
+- Garmin weight should show active/current weight as supporting information below the graph.
+- Garmin weight should use the same minimal dark-mode trend language established by Garmin Widgets 1-3.
 
 ### VO2 Max / Cardio Capacity
 
@@ -216,6 +322,16 @@ This note tracks design decisions for the widget skin development process.
 - Apple VO2 Max should display the latest available VO2 Max value clearly.
 - Apple VO2 Max should show the average over the last week.
 - Apple VO2 Max should only plot days where readings exist and leave other days empty.
+- WHOOP VO2 Max should use a sparse monthly line graph with weekly VO2 Max estimates.
+- WHOOP VO2 Max should use the same blue line styling as the WHOOP weight widget.
+- WHOOP VO2 Max should only plot available estimates and leave missing periods empty.
+- WHOOP VO2 Max should stay visually simple and consistent with the sparse WHOOP manual/estimate graph family.
+- Garmin VO2 Max should use a black dark-mode card with a circular score display instead of a line graph.
+- Garmin VO2 Max should segment the circle into red 40%, orange 15%, green 15%, blue 15%, and purple 15% bands.
+- Garmin VO2 Max should show `54 Superior` inside the circle and place the indicator in the purple superior range.
+- Oura VO2 Max should use a dark cardio-capacity trend card with thin white chart lines, subtle gridlines, and restrained labels.
+- Oura VO2 Max should show a monthly timeline, small round points, and a selected-month vertical emphasis line with a floating `VO2 max 42` value label.
+- Oura VO2 Max should include right-side qualitative range labels: Low, Fair, High, and Peak.
 
 ### Sleep Report
 
@@ -223,6 +339,20 @@ This note tracks design decisions for the widget skin development process.
 - Apple Sleep Report should show sleep start time, sleep end time, hours awake, total sleep, and sleep stages.
 - Apple Sleep Report should use the same sleep-stage timeline visual that used to be represented by the standalone Sleep Stages widget.
 - Apple Sleep Report should be scrollable and show time spent in each stage below the graph.
+- WHOOP Sleep Report should use a vertically structured premium sleep-report layout.
+- WHOOP Sleep Report should show a light-blue circular score display with `75% Sleep Performance` centered inside.
+- WHOOP Sleep Report should include a scrollable list of sleep metrics: hours vs needed, consistency, sleep efficiency, and high sleep stress.
+- WHOOP Sleep Report metric rows should include status labels such as Poor, Sufficient, or Optimal with visible color treatment.
+- WHOOP Sleep Report should include a sleep-stage timeline for awake, light, deep, and REM with distinct segment colors and visible bedtime/wake time.
+- Garmin Sleep Report should use the shared Garmin dark-mode card shell.
+- Garmin Sleep Report should show sleep stages over time with separate Deep, Light, REM, and Awake rows.
+- Garmin Sleep Report should include a circular total-sleep composition ring with stage-colored segments: light blue for Light, dark blue for Deep, purple for REM, and pink for Awake.
+- Garmin Sleep Report should show total duration plus sleep start and end times, and may scroll if the content needs more vertical room.
+- Oura Sleep Report should use a vertically stacked premium dark layout with only a simple date label at the top.
+- Oura Sleep Report should title the card `Sleep stages` and make the sleep-stage timeline the main focal point.
+- Oura Sleep Report should show bedtime and wake time near the top of the chart area.
+- Oura Sleep Report should use distinct controlled colors for Awake, REM, Light, and Deep rectangular timeline segments.
+- Oura Sleep Report should include a clean legend with each stage, duration, and percentage, separated by thin restrained dividers.
 
 ### Sleep Time
 
@@ -230,6 +360,9 @@ This note tracks design decisions for the widget skin development process.
 - Apple Sleep Time should show last night's total sleep duration.
 - Apple Sleep Time should show the average sleep over the past week.
 - Apple Sleep Time should use a minimal weekly bar chart focused only on total sleep time.
+- WHOOP Sleep Time should show last night's sleep duration as the primary summary metric.
+- WHOOP Sleep Time should include a simple weekly bar graph underneath.
+- WHOOP Sleep Time should stay minimal and visually distinct from the richer WHOOP Sleep Report.
 
 ### Sleep Stages / Cycles
 
@@ -273,6 +406,16 @@ This note tracks design decisions for the widget skin development process.
 - Apple sleep score ring should segment the total score as 50% blue Duration, 30% teal Bedtime, and 20% orange Interruptions.
 - Apple sleep score should display the overall score in the center of the ring.
 - Apple sleep score should place the breakdown in the top third and the ring in the lower portion of the card.
+- WHOOP Sleep Score should be a simple circular score display only.
+- WHOOP Sleep Score should show the sleep percentage centered inside the circle.
+- WHOOP Sleep Score should not include the full supporting report content; that belongs in Sleep Report.
+- WHOOP Sleep Score should stay minimal and visually polished.
+- Garmin Sleep Score should be a very simple dark-mode metric card.
+- Garmin Sleep Score should show `78 / 100` in white text on a black background.
+- Garmin Sleep Score should stay visually minimal and distinct from the richer Garmin Sleep Report.
+- Oura Sleep Score should be a simple premium dark score card.
+- Oura Sleep Score should show `Sleep` at the top, a large centered `94`, and `Optimal` underneath.
+- Oura Sleep Score should frame the score with a thin, softly luminous semicircular arc and avoid extra supporting data.
 
 ### Sleep Timeline
 

@@ -15,9 +15,6 @@ export function MenstrualCycleWidget() {
           <p className="text-3xl font-bold text-foreground">Day 18</p>
           <p className="text-sm text-muted-foreground">estimated cycle day</p>
         </div>
-        <span className="rounded-md bg-violet-500/15 px-2 py-1 text-xs font-medium uppercase tracking-[0.14em] text-violet-300">
-          draft
-        </span>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col justify-center gap-3">
