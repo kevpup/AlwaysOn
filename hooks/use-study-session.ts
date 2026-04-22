@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo, useState, type FormEvent } from "react"
 import { type DragEndEvent, type DragStartEvent } from "@dnd-kit/core"
-import { arrayMove } from "@dnd-kit/sortable"
 
 import { zoneContainerIds } from "@/components/study/constants"
 import {
@@ -18,7 +17,7 @@ import {
   type ZoneId,
   type ZonesState,
 } from "@/components/study/types"
-import { getScenariosForParticipant, type Scenario, scenarios } from "@/lib/scenarios"
+import { getScenarioGroupId, getScenariosForParticipant, type Scenario, scenarios } from "@/lib/scenarios"
 import { getWidgetsForSportCategory } from "@/lib/widget-selection"
 
 function shuffleWidgets(widgets: WidgetConfig[]) {
@@ -116,11 +115,10 @@ export function useStudySession() {
         scenarioId: scenario.id,
         widgetTitle: widget.title,
         shared: false,
-        rank: "",
       })
     })
 
-    currentZones.share.forEach((widget, index) => {
+    currentZones.share.forEach((widget) => {
       allRows.push({
         participantName: participant.name,
         sportCategory: participant.sportCategory,
@@ -128,7 +126,6 @@ export function useStudySession() {
         scenarioId: scenario.id,
         widgetTitle: widget.title,
         shared: true,
-        rank: index + 1,
       })
     })
 
@@ -146,13 +143,7 @@ export function useStudySession() {
       ? sessionWidgetOrder
       : getWidgetsForSportCategory(participant?.sportCategory)
     const widgetByTitle = new Map(availableWidgets.map((widget) => [widget.title, widget]))
-    const sharedRows = scenarioRows
-      .filter((row) => row.shared)
-      .sort((a, b) => {
-        const aRank = typeof a.rank === "number" ? a.rank : Number.MAX_SAFE_INTEGER
-        const bRank = typeof b.rank === "number" ? b.rank : Number.MAX_SAFE_INTEGER
-        return aRank - bRank
-      })
+    const sharedRows = scenarioRows.filter((row) => row.shared)
 
     const sharedTitles = new Set(sharedRows.map((row) => row.widgetTitle))
 
@@ -343,20 +334,6 @@ export function useStudySession() {
     if (!targetZone) return
 
     if (sourceZone === targetZone) {
-      if (targetZone !== "share" || overId === zoneContainerIds.share || overId === activeWidgetId) {
-        return
-      }
-
-      const oldIndex = zones.share.findIndex((widget) => widget.id === activeWidgetId)
-      const newIndex = zones.share.findIndex((widget) => widget.id === overId)
-
-      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return
-
-      setZones((currentZones) => ({
-        ...currentZones,
-        share: arrayMove(currentZones.share, oldIndex, newIndex),
-      }))
-
       return
     }
 
@@ -400,6 +377,10 @@ export function useStudySession() {
     ]
     const isLastScenario = scenarioIndex === assignedScenarios.length - 1
     const nextScenarioIndex = isLastScenario ? scenarioIndex : scenarioIndex + 1
+    const nextScenario = assignedScenarios[nextScenarioIndex]
+    const shouldCarryZonesForward =
+      nextScenario &&
+      getScenarioGroupId(currentScenario.id) === getScenarioGroupId(nextScenario.id)
 
     setSavedRows(nextRows)
     persistRowsToFile(scenarioRows)
@@ -409,10 +390,14 @@ export function useStudySession() {
       return
     }
 
-    setZones(createInitialZones(participant.sportCategory, sessionWidgetOrder))
+    setZones(
+      shouldCarryZonesForward
+        ? cloneZones(zones)
+        : createInitialZones(participant.sportCategory, sessionWidgetOrder)
+    )
     setScenarioIndex(nextScenarioIndex)
     setScenarioView("intro")
-  }, [assignedScenarios.length, buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, sessionWidgetOrder, zones])
+  }, [assignedScenarios, buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, sessionWidgetOrder, zones])
 
   const skipToFinish = useCallback(() => {
     if (!participant || !sessionId) return

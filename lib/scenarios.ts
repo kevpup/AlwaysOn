@@ -58,15 +58,7 @@ export const scenarios: Scenario[] = [
     prompt:
       "Imagine your training staff is implementing wearable technology and wants athlete input on what data should be collected in different situations. If you had a sport-related injury, such as a torn ACL, and were going through rehab, what wearable data would you want your training staff to be able to access?",
     facilitatorNotes:
-      "Set: medical/recovery context. Axis: sport-related injury, rehab, and return-to-play support.",
-  },
-  {
-    id: "non-sport-medical-event-training-staff",
-    title: "Non-Sport Medical Event: Training Staff",
-    prompt:
-      "Imagine your training staff is implementing wearable technology and wants athlete input on what data should be collected in different situations. If you had a non-sport medical event, such as a concussion outside of sport or mental health concerns, and were going through recovery, what wearable data would you want your training staff to be able to access?",
-    facilitatorNotes:
-      "Set: medical/recovery context. Axis: private health context outside sport and boundaries around training staff access.",
+      "Set: season/training timing. Axis: sport-related injury, rehab, and return-to-play support.",
   },
   {
     id: "sc-coach-limited-tech-experience",
@@ -110,7 +102,7 @@ export const scenarios: Scenario[] = [
   },
 ]
 
-export const SCENARIO_GROUPS_TO_ASSIGN = 4
+export const MAX_SCENARIOS_TO_ASSIGN = 7
 
 // Optional study override for targeted sampling.
 // Add group ids here if a group needs to be forced into every participant's subset.
@@ -132,14 +124,7 @@ export const scenarioGroups: ScenarioGroup[] = [
       "offseason-training-staff",
       "critical-season-training-staff",
       "training-block-training-staff",
-    ],
-  },
-  {
-    id: "medical-recovery-context",
-    label: "Medical and recovery context",
-    scenarioIds: [
       "sport-injury-training-staff",
-      "non-sport-medical-event-training-staff",
     ],
   },
   {
@@ -160,6 +145,11 @@ export const scenarioGroups: ScenarioGroup[] = [
     ],
   },
 ]
+
+const scenarioById = new Map(scenarios.map((scenario) => [scenario.id, scenario]))
+const scenarioGroupIdByScenarioId = new Map(
+  scenarioGroups.flatMap((group) => group.scenarioIds.map((scenarioId) => [scenarioId, group.id] as const))
+)
 
 function hashSeed(seed: string) {
   let hash = 2166136261
@@ -200,11 +190,27 @@ export function getScenariosForParticipant(participantId: string) {
   const forcedGroups = scenarioGroups.filter((group) => forcedGroupIds.has(group.id))
   const remainingGroups = scenarioGroups.filter((group) => !forcedGroupIds.has(group.id))
   const shuffledGroups = shuffleWithSeed(remainingGroups, `${participantId}:groups`)
-  const groupCount = Math.min(SCENARIO_GROUPS_TO_ASSIGN, scenarioGroups.length)
-  const remainingGroupSlots = Math.max(groupCount - forcedGroups.length, 0)
-  const selectedGroups = [...forcedGroups, ...shuffledGroups.slice(0, remainingGroupSlots)]
-  const selectedScenarioIds = new Set(selectedGroups.flatMap((group) => group.scenarioIds))
-  const selectedScenarios = scenarios.filter((scenario) => selectedScenarioIds.has(scenario.id))
+  const selectedGroups: ScenarioGroup[] = []
+  let selectedScenarioCount = 0
 
-  return shuffleWithSeed(selectedScenarios, `${participantId}:scenarios`)
+  for (const group of [...forcedGroups, ...shuffledGroups]) {
+    const groupSize = group.scenarioIds.length
+
+    if (selectedScenarioCount + groupSize > MAX_SCENARIOS_TO_ASSIGN) {
+      continue
+    }
+
+    selectedGroups.push(group)
+    selectedScenarioCount += groupSize
+  }
+
+  return selectedGroups.flatMap((group) =>
+    shuffleWithSeed(group.scenarioIds, `${participantId}:scenarios:${group.id}`)
+      .map((scenarioId) => scenarioById.get(scenarioId))
+      .filter((scenario): scenario is Scenario => Boolean(scenario))
+  )
+}
+
+export function getScenarioGroupId(scenarioId: string) {
+  return scenarioGroupIdByScenarioId.get(scenarioId) ?? null
 }

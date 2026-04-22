@@ -91,8 +91,8 @@ export function WidgetDevelopmentScreen({ onBack }: WidgetDevelopmentScreenProps
         </section>
 
         <section className="overflow-x-auto rounded-3xl border border-border bg-card/60 shadow-xl">
-          <div className="min-w-[1460px]">
-            <div className="sticky top-0 z-10 grid grid-cols-[280px_repeat(4,minmax(280px,1fr))] border-b border-border bg-card">
+          <div className="min-w-[1816px]">
+            <div className="sticky top-0 z-10 grid grid-cols-[280px_repeat(4,384px)] border-b border-border bg-card">
               <div className="border-r border-border px-4 py-4">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Widget</p>
               </div>
@@ -106,7 +106,7 @@ export function WidgetDevelopmentScreen({ onBack }: WidgetDevelopmentScreenProps
             {widgetDevelopmentMetrics.map((metric, index) => (
               <div
                 key={metric.id}
-                className="grid grid-cols-[280px_repeat(4,minmax(280px,1fr))] border-b border-border last:border-b-0"
+                className="grid grid-cols-[280px_repeat(4,384px)] border-b border-border last:border-b-0"
               >
                 <div className="border-r border-border bg-background/45 px-4 py-4">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
@@ -118,9 +118,11 @@ export function WidgetDevelopmentScreen({ onBack }: WidgetDevelopmentScreenProps
                 {widgetDevelopmentPlatforms.map((platform) => (
                   <div
                     key={`${metric.id}-${platform.id}`}
-                    className="aspect-square border-r border-border p-3 last:border-r-0"
+                    className="flex min-h-[384px] items-center justify-center border-r border-border p-3 last:border-r-0"
                   >
-                    <WidgetSkinCard hrDataset={hrDataset} metric={metric} platform={platform.id} />
+                    <div className="aspect-square w-[360px]">
+                      <WidgetSkinCard hrDataset={hrDataset} metric={metric} platform={platform.id} />
+                    </div>
                   </div>
                 ))}
               </div>

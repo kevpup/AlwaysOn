@@ -27,7 +27,6 @@ export interface ScenarioDecisionRow {
   scenarioId: string
   widgetTitle: string
   shared: boolean
-  rank: number | ""
 }
 
 export interface ZonesState {

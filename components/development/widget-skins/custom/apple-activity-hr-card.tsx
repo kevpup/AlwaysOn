@@ -21,6 +21,16 @@ const APPLE_YELLOW = "#e5ff00"
 const APPLE_RED = "#ff2d55"
 const HEART_RED = "#ff2d55"
 
+const heartRateZones = [
+  { zone: "Zone 1", label: "Easy", minutes: 7, color: "#36c7f6" },
+  { zone: "Zone 2", label: "Light", minutes: 12, color: "#64d66a" },
+  { zone: "Zone 3", label: "Moderate", minutes: 14, color: "#ffd60a" },
+  { zone: "Zone 4", label: "Hard", minutes: 10, color: "#ff9f0a" },
+  { zone: "Zone 5", label: "Peak", minutes: 5, color: "#ff2d55" },
+] as const
+
+const totalZoneMinutes = heartRateZones.reduce((total, zone) => total + zone.minutes, 0)
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
@@ -113,7 +123,7 @@ export function AppleActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: 
 
   return (
     <div className="flex h-full flex-col rounded-[24px] border border-black/5 bg-[#f5f5f7] p-3 text-[#1d1d1f] shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
-      <div className="flex min-h-0 flex-1 flex-col rounded-[20px] bg-white p-4 shadow-sm">
+      <div className="min-h-0 flex-1 overflow-y-auto rounded-[20px] bg-white p-4 shadow-sm">
         <div className="mb-3 flex items-start justify-between gap-4">
           <div>
             <p className="text-[11px] font-semibold text-[#6e6e73]">{activityName} • {durationFormatted}</p>
@@ -129,7 +139,7 @@ export function AppleActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: 
           </div>
         </div>
 
-        <div className="grid min-h-0 flex-1 grid-cols-[24px_1fr] gap-1 border-b border-[#d1d1d6] pb-5 pt-1">
+        <div className="grid h-[178px] grid-cols-[24px_1fr] gap-1 border-b border-[#d1d1d6] pb-5 pt-1">
           <div className="relative pb-[24px] pt-[10px]">
             <div className="relative h-full w-full pr-1">
               {axisTicks.map((tick) => (
@@ -187,6 +197,26 @@ export function AppleActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: 
               </LineChart>
             </ResponsiveContainer>
           </div>
+        </div>
+
+        <div className="mt-4 space-y-2 pb-1">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold text-[#6e6e73]">Heart Rate Zones</p>
+            <p className="text-[11px] font-semibold text-[#1d1d1f]">{totalZoneMinutes} min</p>
+          </div>
+
+          {heartRateZones.map((zone) => (
+            <div key={zone.zone} className="grid grid-cols-[54px_1fr_40px] items-center gap-2">
+              <p className="text-[10px] font-semibold text-[#6e6e73]">{zone.zone}</p>
+              <div className="h-2 overflow-hidden rounded-full bg-[#f2f2f7]">
+                <div
+                  className="h-full rounded-full"
+                  style={{ width: `${(zone.minutes / Math.max(...heartRateZones.map((item) => item.minutes))) * 100}%`, backgroundColor: zone.color }}
+                />
+              </div>
+              <p className="text-right text-[10px] font-semibold text-[#1d1d1f]">{zone.minutes}m</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

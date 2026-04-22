@@ -120,6 +120,7 @@ export function ScenarioWorkspaceScreen({
           <WidgetListZone
             deviceType={deviceType}
             scenarioId={scenario.id}
+            sportCategory={sportCategory}
             zoneId="not_displayed"
             widgets={zones.not_displayed}
           />
@@ -136,10 +137,10 @@ export function ScenarioWorkspaceScreen({
       <DragOverlay>
         {activeWidget ? (
           <div
-            className="overflow-hidden opacity-95"
+            className="overflow-hidden rounded-xl border border-primary/40 bg-card p-3 opacity-95 shadow-2xl"
             style={{
               width: activeZone === "share" ? 340 : 240,
-              height: activeZone === "share" ? 340 : 56,
+              height: activeZone === "share" ? 340 : 210,
             }}
           >
             {activeZone === "share" ? (
@@ -147,14 +148,19 @@ export function ScenarioWorkspaceScreen({
                 <WidgetRenderer deviceType={deviceType} id={activeWidget.id} sportCategory={sportCategory} />
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-foreground">
+              <>
+                <div className="mb-3 flex items-center gap-2">
+                  <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+                  <p className="truncate text-sm font-semibold text-muted-foreground">
                     {getWidgetDisplayName(activeWidget, { deviceType, scenarioId: scenario.id })}
                   </p>
                 </div>
-              </div>
+                <div className="h-[168px] w-full overflow-hidden rounded-xl opacity-70 saturate-75 brightness-90">
+                  <div className="pointer-events-none h-[336px] w-[200%] origin-top-left scale-50">
+                    <WidgetRenderer deviceType={deviceType} id={activeWidget.id} sportCategory={sportCategory} />
+                  </div>
+                </div>
+              </>
             )}
           </div>
         ) : null}
@@ -166,11 +172,13 @@ export function ScenarioWorkspaceScreen({
 function WidgetListZone({
   deviceType,
   scenarioId,
+  sportCategory,
   zoneId,
   widgets,
 }: {
   deviceType: DeviceType
   scenarioId: string
+  sportCategory: SportCategory
   zoneId: "not_displayed"
   widgets: WidgetConfig[]
 }) {
@@ -191,7 +199,7 @@ function WidgetListZone({
         <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions[zoneId]}</p>
       </div>
 
-      <div className="min-h-[440px] p-3">
+      <div className="min-h-[440px] p-3 xl:h-[680px] xl:overflow-y-auto">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[400px] items-center justify-center rounded-xl border border-dashed border-border px-6 text-center text-sm text-muted-foreground">
             Drop widgets here when they should not appear on the coach view.
@@ -199,7 +207,13 @@ function WidgetListZone({
         ) : (
           <div className="flex flex-col gap-2">
             {widgets.map((widget) => (
-              <DraggableBankItem key={widget.id} deviceType={deviceType} scenarioId={scenarioId} widget={widget} />
+              <DraggableBankItem
+                key={widget.id}
+                deviceType={deviceType}
+                scenarioId={scenarioId}
+                sportCategory={sportCategory}
+                widget={widget}
+              />
             ))}
           </div>
         )}
@@ -249,12 +263,9 @@ function ShareZone({
           </div>
         ) : (
           <SortableContext items={widgets.map((widget) => widget.id)} strategy={rectSortingStrategy}>
-            <div className="grid content-start grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {widgets.map((widget, index) => (
-                <div key={widget.id}>
-                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-                    Rank {index + 1}
-                  </p>
+            <div className="flex flex-wrap content-start justify-start gap-4">
+              {widgets.map((widget) => (
+                <div key={widget.id} className="w-full max-w-[360px] sm:w-[360px]">
                   <SortableWidget
                     deviceType={deviceType}
                     scenarioId={scenarioId}

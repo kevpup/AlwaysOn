@@ -28,8 +28,7 @@ const scenarioDecisionRowSchema = z.object({
   scenarioId: z.string().trim().min(1).max(64),
   widgetTitle: z.string().trim().min(1).max(120),
   shared: z.boolean(),
-  rank: z.union([z.number().int().min(1).max(defaultWidgets.length), z.literal("")]),
-})
+}).strict()
 
 const persistRequestSchema = z.object({
   sessionId: z.string().trim().min(1).max(120),
@@ -37,7 +36,7 @@ const persistRequestSchema = z.object({
   sportCategory: sportCategorySchema,
   deviceType: deviceTypeSchema,
   rows: z.array(scenarioDecisionRowSchema).min(1).max(defaultWidgets.length),
-})
+}).strict()
 
 interface ReplaceScenarioPayload {
   action: "replaceScenario"
@@ -55,7 +54,6 @@ interface ReplaceScenarioPayload {
     scenarioId: string
     widgetTitle: string
     shared: boolean
-    rank: number | ""
   }>
 }
 
@@ -134,23 +132,6 @@ function hasValidScenarioState(
     if (sportCategory !== "womens" && row.widgetTitle === MENSTRUAL_CYCLE_WIDGET_TITLE) {
       return false
     }
-
-    if (row.shared && typeof row.rank !== "number") {
-      return false
-    }
-
-    if (!row.shared && row.rank !== "") {
-      return false
-    }
-  }
-
-  const sharedRanks = rows
-    .filter((row) => row.shared)
-    .map((row) => row.rank)
-    .filter((rank): rank is number => typeof rank === "number")
-
-  if (new Set(sharedRanks).size !== sharedRanks.length) {
-    return false
   }
 
   return true
@@ -255,7 +236,6 @@ export async function POST(request: Request) {
         scenarioId: row.scenarioId,
         widgetTitle: row.widgetTitle,
         shared: row.shared,
-        rank: row.rank,
       })),
     }
 

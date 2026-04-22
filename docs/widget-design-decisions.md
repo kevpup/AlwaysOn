@@ -7,10 +7,10 @@ This note tracks design decisions for the widget skin development process.
 - A development-only widget testbed is available from the first screen of the app.
 - The testbed is separate as a screen, but it now uses the same widget rendering registry as the participant study flow.
 - Changes made to `WidgetSkinCard`, platform base skins, or custom platform/widget skins should be visible in both development mode and the participant study flow.
-- The testbed displays a matrix of 21 widget categories across 4 device platforms: WHOOP, Apple, Garmin, and Oura.
-- The matrix contains 84 total cells.
+- The testbed displays a matrix of 17 active widget categories across 4 device platforms: WHOOP, Apple, Garmin, and Oura.
+- The matrix contains 68 active cells.
 - The page is organized by widget category rows and platform columns so every platform variation can be reviewed while scrolling.
-- The initial testbed pass populates all 84 cells with base platform-styled designs.
+- The initial testbed pass populated the original 84 cells with base platform-styled designs before the widget list was narrowed.
 - The base designs are not final widget implementations; they establish a visual direction for review.
 - Widget testbed cells should use a square aspect ratio rather than a short rectangular row, so each platform widget has enough vertical room for realistic layouts.
 - The widget testbed includes a full-day HR CSV uploader for development.
@@ -18,29 +18,32 @@ This note tracks design decisions for the widget skin development process.
 - Uploaded HR CSVs should rebuild the Apple and WHOOP full-day HR widgets by deriving hourly ranges, hourly averages, the last hour of readings, the daily range, and the last HR reading.
 - The built-in HR dataset is derived from `applewatch_hr_one_day_2020-06-14_clean.csv` and acts as the default fallback when no CSV is uploaded.
 
-## Final Widget Categories
+## Active Widget Categories
 
-- Steps
 - Full-Day HR Graph / HR Data
-- Activity HR Graph
-- Activity HR Zones
+- Activity HR Graph + Zones
 - Resting HR
 - HRV / HRV Status
 - Calories / Active Energy
 - Weight
 - VO2 Max / Cardio Capacity
-- Total Sleep Time / Sleep Duration
-- Sleep Hours
-- Sleep Stages / Cycles
+- Sleep Report
+- Sleep Time
 - Sleep Score
 - Respiratory Rate / Respiration
 - Strain / Activity Load / Training Load
 - Recovery Score / Readiness Summary
 - Cycle Tracking
-- Activity / Workout Minutes
 - Full Workout Report
 - Skin / Wrist / Body Temperature / Temperature Deviation
 - Blood Oxygen / SpO2
+
+## Widget Pruning Decisions
+
+- Steps are removed from the active research widget set. Although steps are shared across consumer wearable technologies, they are not a common primary metric in college athletics; workload, strain, and training-load style measures are more aligned with the study context.
+- Activity HR Graph and Activity HR Zones are combined into one scrollable workout heart-rate widget. The graph appears first, with zone summaries below, because zones are a derived subset of the workout HR data and participants have generally treated workout-specific data as interesting but comparatively comfortable.
+- Sleep Stages are removed as a standalone widget and folded into Sleep Report. Sleep now has three levels of detail: Sleep Report, Sleep Time, and Sleep Score.
+- Workout Minutes are removed from the active research widget set because they duplicate information already represented in workout history/reporting and workload-oriented widgets.
 
 ## Cross-Platform Design Direction
 
@@ -48,7 +51,7 @@ This note tracks design decisions for the widget skin development process.
 - The first pass prioritizes visual fidelity for participant-facing research stimuli over maximum code reuse.
 - Device-specific styling decisions will be logged here as they are made.
 - The implementation should allow individual platform/widget cells to become one-off custom components later, even if some base styling is shared at first.
-- High-level platform styling decisions should be applied across the full 84-widget testbed while preserving the current metric names, values, and data.
+- High-level platform styling decisions should be applied across the active 68-cell widget testbed while preserving the current metric names, values, and data.
 - Fine-grained widget-specific details can still be refined later through one-off custom components.
 
 ## Base Platform Visual Direction
@@ -67,11 +70,11 @@ This note tracks design decisions for the widget skin development process.
 
 ## Base Implementation Decision
 
-- The first implementation uses four platform skin components rather than 84 separate files.
+- The first implementation uses four platform skin components rather than separate files for every platform/widget cell.
 - This is intentional for speed and reviewability during the first design pass.
 - The registry pattern should make it straightforward to replace any specific platform/widget cell with a unique file later.
 - The WHOOP column now reuses existing athlete-dashboard widget components where a matching widget exists.
-- The WHOOP dashboard widgets are mapped from the 21 development metric categories to the closest existing dashboard widget ids.
+- The WHOOP dashboard widgets are mapped from the development metric categories to the closest existing dashboard widget ids.
 - Some WHOOP development categories currently share the same underlying dashboard widget, such as full-day heart rate and activity heart rate graph both using the existing heart-rate widget as a temporary baseline.
 - The participant study flow now treats `lib/widget-development.ts` as the canonical widget-category source.
 - The participant study flow renders widgets through `components/development/widget-skins/widget-skin-registry.tsx`, the same registry used by development mode.
@@ -115,7 +118,7 @@ This note tracks design decisions for the widget skin development process.
 - Oura full-day heart rate should use `preserveAspectRatio="none"` so the SVG line graph dynamically stretches to match the width of the flex bar layout.
 - Oura full-day heart rate should include distinct X-axis time labels and Y-axis reference lines dynamically derived from the data's min/max bounds.
 
-### Activity HR Graph
+### Activity HR Graph + Zones
 
 - Activity HR graph should dynamically extract a 2-hour workout block from the uploaded daily CSV, surrounded by 15-minute buffers.
 - Activity HR graph headers should display the specific activity type (e.g., "Outdoor Run") and formatted duration (e.g., "2 hr 0 min") instead of generic "Heart Rate" labels.
@@ -125,13 +128,8 @@ This note tracks design decisions for the widget skin development process.
 - Apple Activity HR graph should plot every minute of data as a discrete dot (ScatterChart) that smoothly interpolates its color from blue (bottom) to yellow to red (top), matching Apple Fitness workout graphs.
 - Garmin and WHOOP Activity HR graphs should split their line/area traces at the buffer boundaries to cleanly drop opacity without rendering artifacts.
 - Oura Activity HR graph should apply a multi-stop opacity gradient directly to the SVG stroke to fade the buffers while preserving the continuous Bezier curve.
-
-### Activity HR Zones
-
-- Apple activity heart-rate zones should use a compact Apple Health-inspired card with a white surface, rounded corners, and clear iOS-style hierarchy.
-- Apple activity heart-rate zones should show total activity time prominently at the top.
-- Apple activity heart-rate zones should show Zones 1-5 with time spent in each zone.
-- Apple activity heart-rate zones should use a horizontal stacked color bar to summarize the daily zone distribution.
+- Activity HR Zones are no longer a separate active widget; zone summaries should appear below the workout HR graph in a scrollable combined widget.
+- Apple activity heart-rate zones should show Zones 1-5 with time spent in each zone beneath the graph.
 
 ### Resting HR
 
@@ -176,10 +174,7 @@ This note tracks design decisions for the widget skin development process.
 
 ### Activity / Workout Minutes
 
-- Apple workout minutes should use a compact Apple activity-style weekly bar chart.
-- Apple workout minutes should show total workout minutes today and average workout minutes over the last week.
-- Apple workout minutes should use the provided development sample data for the first implementation.
-- Apple workout minutes should stay visually consistent with the other Apple weekly bar widgets.
+- Activity / Workout Minutes is retired from the active widget list because it is redundant with workout history/reporting and workload-oriented widgets.
 
 ### Full Workout Report
 
@@ -222,29 +217,28 @@ This note tracks design decisions for the widget skin development process.
 - Apple VO2 Max should show the average over the last week.
 - Apple VO2 Max should only plot days where readings exist and leave other days empty.
 
-### Total Sleep Time / Sleep Duration
+### Sleep Report
 
-- Apple total sleep time should act as the richer sleep-session summary that later sleep widgets can break apart.
-- Apple total sleep time should show sleep start time, sleep end time, hours awake, and total sleep.
-- Apple total sleep time should use a weekly sleep bar graph with each bar positioned on an overnight timeline.
-- Apple total sleep time should distinguish asleep time and awake interruptions with separate colors.
+- Apple Sleep Report should act as the richer sleep-session summary.
+- Apple Sleep Report should show sleep start time, sleep end time, hours awake, total sleep, and sleep stages.
+- Apple Sleep Report should use the same sleep-stage timeline visual that used to be represented by the standalone Sleep Stages widget.
+- Apple Sleep Report should be scrollable and show time spent in each stage below the graph.
 
-### Sleep Hours
+### Sleep Time
 
-- Apple sleep hours should be a simple total-sleep-time widget, not a sleep-stage or sleep-session-detail widget.
-- Apple sleep hours should show last night's total sleep duration.
-- Apple sleep hours should show the average sleep over the past week.
-- Apple sleep hours should use a minimal weekly bar chart focused only on total sleep time.
+- Apple Sleep Time should be a simple total-sleep-time widget, not a sleep-stage or sleep-session-detail widget.
+- Apple Sleep Time should show last night's total sleep duration.
+- Apple Sleep Time should show the average sleep over the past week.
+- Apple Sleep Time should use a minimal weekly bar chart focused only on total sleep time.
 
 ### Sleep Stages / Cycles
 
-- Apple sleep stages should use a compact time-series timeline.
-- Apple sleep stages should show four rows from top to bottom: Wake, REM, Core, and Deep.
-- Apple sleep stages should use orange for Wake, light blue for REM, blue for Core, and dark blue or purple for Deep.
-- Apple sleep stages should show when each stage occurs across the night without displaying start or end time labels.
+- Sleep Stages / Cycles is retired as a standalone active widget.
+- Sleep-stage information should be represented inside Sleep Report.
 
 ### Steps
 
+- Steps are retired from the active widget list because workload, strain, and training load are more relevant to college athletics.
 - Use `7104` as the shared step count across all four platforms.
 - Rationale: `7104` communicates meaningful progress without implying completion and avoids looking artificially round.
 - Garmin steps should use a circular progress ring rather than a bar chart.
@@ -295,4 +289,21 @@ This note tracks design decisions for the widget skin development process.
 
 - Participant-facing widget labels may vary by device or scenario.
 - Spreadsheet logging should continue to use the canonical widget titles so data remains stable across label changes.
-- Apple-facing labels currently override widget names as: `Steps`, `HR Graph`, `Activity HR`, `Resting HR`, `HRV`, `Active Energy`, `Weight`, `VO2 Max`, `Sleep Duration`, `Sleep Hours`, `Sleep Stages`, `Sleep Score`, `Respiratory Rate`, `Training Load`, `Vitals`, `Cycle Tracking`, `Activity Minutes`, `Workout History`, `Temperature Deviation`, and `SpO2`.
+- Apple-facing labels currently override widget names as: `HR Graph`, `Activity HR + Zones`, `Resting HR`, `HRV`, `Active Energy`, `Weight`, `VO2 Max`, `Sleep Report`, `Sleep Time`, `Sleep Score`, `Respiratory Rate`, `Training Load`, `Vitals`, `Cycle Tracking`, `Workout History`, `Temperature Deviation`, and `SpO2`.
+
+## Widget Information Cards
+
+- Scenario widgets can flip over like a flash card to show more information.
+- The back of each widget has three consistent sections: what the information shows, why a coach might use it, and what might influence the data.
+- Widget information is keyed by canonical widget ID so the same content appears across Apple, Garmin, Oura, and WHOOP styles for the same widget.
+
+## Not Displayed Preview
+
+- The not-displayed column should use compact live widget previews rather than icon-only rows.
+- The preview cards are visually muted with reduced opacity, saturation, and brightness so they remain informative without competing with the selected coach-view widgets.
+- The not-displayed column scrolls independently when the preview list is taller than the workspace.
+
+## Widget Testbed Scale
+
+- The widget skin testbed should render widgets at the same 360px square size used in the participatory design and coach-view tiles on desktop.
+- Matching the testbed and participatory design sizes makes widget styling decisions easier to evaluate one-to-one.

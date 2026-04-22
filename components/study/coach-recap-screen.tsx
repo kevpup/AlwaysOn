@@ -80,8 +80,7 @@ export function CoachRecapScreen({
               <h2 className="text-sm font-semibold text-foreground">Coach View</h2>
             </div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              These are the widgets currently shared with the coach for this scenario, arranged in the order they
-              would appear.
+              These are the widgets currently shared with the coach for this scenario.
             </p>
           </div>
 
@@ -96,9 +95,9 @@ export function CoachRecapScreen({
                 </p>
               </div>
             ) : (
-              <div className="grid content-start grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="flex flex-wrap content-start justify-start gap-4">
                 {sharedWidgets.map((widget) => (
-                  <div key={widget.id}>
+                  <div key={widget.id} className="w-full max-w-[360px] sm:w-[360px]">
                     <SortableWidget
                       deviceType={deviceType}
                       scenarioId={scenario.id}
