@@ -3,26 +3,30 @@
 import { ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react"
 
 import { SortableWidget } from "@/components/sortable-widget"
-import { type WidgetConfig } from "@/components/study/types"
+import { type DeviceType, type SportCategory, type WidgetConfig } from "@/components/study/types"
 import { type Scenario } from "@/lib/scenarios"
 
 interface CoachRecapScreenProps {
+  deviceType: DeviceType
   onBack: () => void
   onContinue: () => void
   onSkipToFinish: () => void
   scenario: Scenario
   scenarioIndex: number
   sharedWidgets: WidgetConfig[]
+  sportCategory: SportCategory
   totalScenarios: number
 }
 
 export function CoachRecapScreen({
+  deviceType,
   onBack,
   onContinue,
   onSkipToFinish,
   scenario,
   scenarioIndex,
   sharedWidgets,
+  sportCategory,
   totalScenarios,
 }: CoachRecapScreenProps) {
   return (
@@ -95,7 +99,12 @@ export function CoachRecapScreen({
               <div className="grid content-start grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {sharedWidgets.map((widget) => (
                   <div key={widget.id}>
-                    <SortableWidget widget={widget} disableSorting />
+                    <SortableWidget
+                      deviceType={deviceType}
+                      widget={widget}
+                      disableSorting
+                      sportCategory={sportCategory}
+                    />
                   </div>
                 ))}
               </div>

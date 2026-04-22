@@ -1,10 +1,9 @@
-import { widgetRegistry } from "@/components/widgets/widget-registry"
+import { type LegacyWidgetId, widgetRegistry } from "@/components/widgets/widget-registry"
 import { HeartRateWidget } from "@/components/widgets/all-widgets/heart-rate-widget"
-import { type WidgetId } from "@/lib/mock-data"
 import { type WidgetSkinProps } from "./types"
 import { WhoopSkinCard } from "./whoop-skin-card"
 
-const whoopDashboardWidgetMap: Partial<Record<string, WidgetId>> = {
+const whoopDashboardWidgetMap: Partial<Record<string, LegacyWidgetId>> = {
   steps: "step-count",
   "full-day-hr": "heart-rate",
   "activity-hr-graph": "heart-rate",
@@ -42,9 +41,6 @@ export function WhoopDashboardWidgetCard({ hrDataset, metric, platform }: Widget
         <div>
           <h3 className="max-w-[190px] truncate text-sm font-semibold text-foreground">{metric.shortLabel}</h3>
         </div>
-        <span className="rounded-md border border-border bg-background px-2 py-1 text-[10px] font-medium text-muted-foreground">
-          {widgetId}
-        </span>
       </div>
       <div className="min-h-0 flex-1">
         {widgetId === "heart-rate" ? <HeartRateWidget data={hrDataset?.fullDayLine} /> : <WidgetComponent />}

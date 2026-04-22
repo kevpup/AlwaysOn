@@ -4,18 +4,23 @@ import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { type WidgetConfig } from "@/lib/mock-data"
 import { WidgetRenderer } from "@/components/widgets/widget-renderer"
-import { EyeOff, GripVertical } from "lucide-react"
+import { type DeviceType, type SportCategory } from "@/components/study/types"
+import { EyeOff } from "lucide-react"
 
 interface SortableWidgetProps {
+  deviceType: DeviceType
   widget: WidgetConfig
   disableSorting?: boolean
   onMoveToNotDisplayed?: () => void
+  sportCategory: SportCategory
 }
 
 export function SortableWidget({
+  deviceType,
   widget,
   disableSorting = false,
   onMoveToNotDisplayed,
+  sportCategory,
 }: SortableWidgetProps) {
   const {
     attributes,
@@ -35,40 +40,29 @@ export function SortableWidget({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative h-[232px] rounded-xl border border-border bg-card p-3 transition-shadow ${
-        isDragging ? "z-50 opacity-50 shadow-2xl" : "shadow-sm hover:shadow-md"
+      {...attributes}
+      {...listeners}
+      className={`group relative aspect-square w-full cursor-grab overflow-hidden active:cursor-grabbing ${
+        isDragging ? "z-50 opacity-50" : ""
       }`}
     >
-      {/* Card Header */}
-      <div className="mb-2 flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
-          {!disableSorting && (
-            <button
-              {...attributes}
-              {...listeners}
-              className="cursor-grab touch-none text-muted-foreground/50 transition-colors hover:text-muted-foreground active:cursor-grabbing"
-              aria-label={`Drag to reorder ${widget.title}`}
-            >
-              <GripVertical className="h-4 w-4" />
-            </button>
-          )}
-          <h3 className="text-sm font-semibold text-foreground">{widget.title}</h3>
-        </div>
-        {onMoveToNotDisplayed && (
-          <button
-            type="button"
-            onClick={onMoveToNotDisplayed}
-            className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            <EyeOff className="h-3 w-3" />
-            Hide from Coach
-          </button>
-        )}
-      </div>
+      {onMoveToNotDisplayed && (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation()
+            onMoveToNotDisplayed()
+          }}
+          onPointerDown={(event) => event.stopPropagation()}
+          className="absolute right-2 top-2 z-20 inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground opacity-0 shadow-sm backdrop-blur-sm transition-all hover:text-foreground group-hover:opacity-100"
+        >
+          <EyeOff className="h-3 w-3" />
+          Hide from Coach
+        </button>
+      )}
 
-      {/* Widget Content */}
-      <div className="h-[calc(100%-2.25rem)]">
-        <WidgetRenderer id={widget.id} />
+      <div className="h-full w-full">
+        <WidgetRenderer deviceType={deviceType} id={widget.id} sportCategory={sportCategory} />
       </div>
     </div>
   )

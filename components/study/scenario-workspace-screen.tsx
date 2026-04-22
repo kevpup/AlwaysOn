@@ -16,7 +16,7 @@ import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } fro
 import { ChevronLeft, ChevronRight, Eye, EyeOff, LayoutGrid } from "lucide-react"
 
 import { zoneContainerIds, zoneDescriptions, zoneTitles } from "@/components/study/constants"
-import { type WidgetConfig, type WidgetId } from "@/components/study/types"
+import { type DeviceType, type SportCategory, type WidgetConfig, type WidgetId } from "@/components/study/types"
 import { DraggableBankItem } from "@/components/draggable-bank-item"
 import { SortableWidget } from "@/components/sortable-widget"
 import { WidgetRenderer } from "@/components/widgets/widget-renderer"
@@ -26,6 +26,7 @@ interface ScenarioWorkspaceScreenProps {
   activeWidget: WidgetConfig | null
   activeZone: "not_displayed" | "share" | null
   canGoBack: boolean
+  deviceType: DeviceType
   onBack: () => void
   onDragCancel: () => void
   onDragEnd: (event: DragEndEvent) => void
@@ -35,6 +36,7 @@ interface ScenarioWorkspaceScreenProps {
   onSkipToFinish: () => void
   scenario: Scenario
   scenarioIndex: number
+  sportCategory: SportCategory
   totalScenarios: number
   zones: {
     not_displayed: WidgetConfig[]
@@ -46,6 +48,7 @@ export function ScenarioWorkspaceScreen({
   activeWidget,
   activeZone,
   canGoBack,
+  deviceType,
   onBack,
   onDragCancel,
   onDragEnd,
@@ -55,6 +58,7 @@ export function ScenarioWorkspaceScreen({
   onSkipToFinish,
   scenario,
   scenarioIndex,
+  sportCategory,
   totalScenarios,
   zones,
 }: ScenarioWorkspaceScreenProps) {
@@ -113,31 +117,28 @@ export function ScenarioWorkspaceScreen({
 
         <div className="mx-auto grid max-w-[1600px] gap-4 px-4 py-6 md:px-6 xl:grid-cols-[280px_minmax(0,1fr)]">
           <WidgetListZone zoneId="not_displayed" widgets={zones.not_displayed} />
-          <ShareZone widgets={zones.share} onMoveToNotDisplayed={onMoveToNotDisplayed} />
+          <ShareZone
+            deviceType={deviceType}
+            widgets={zones.share}
+            onMoveToNotDisplayed={onMoveToNotDisplayed}
+            sportCategory={sportCategory}
+          />
         </div>
       </div>
 
       <DragOverlay>
         {activeWidget ? (
           <div
-            className="rounded-xl border border-primary/40 bg-card p-4 shadow-2xl opacity-95"
+            className="overflow-hidden opacity-95"
             style={{
-              width: activeZone === "share" ? 280 : 240,
-              height: activeZone === "share" ? 232 : 56,
+              width: activeZone === "share" ? 340 : 240,
+              height: activeZone === "share" ? 340 : 56,
             }}
           >
             {activeZone === "share" ? (
-              <>
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="cursor-grab text-muted-foreground/50">
-                    <LayoutGrid className="h-4 w-4" />
-                  </span>
-                  <h3 className="text-sm font-semibold text-foreground">{activeWidget.title}</h3>
-                </div>
-                <div className="h-[calc(100%-2.25rem)] opacity-60">
-                  <WidgetRenderer id={activeWidget.id} />
-                </div>
-              </>
+              <div className="h-full w-full">
+                <WidgetRenderer deviceType={deviceType} id={activeWidget.id} sportCategory={sportCategory} />
+              </div>
             ) : (
               <div className="flex items-center gap-3">
                 <LayoutGrid className="h-4 w-4 shrink-0 text-muted-foreground/50" />
@@ -189,11 +190,15 @@ function WidgetListZone({ zoneId, widgets }: { zoneId: "not_displayed"; widgets:
 }
 
 function ShareZone({
+  deviceType,
   widgets,
   onMoveToNotDisplayed,
+  sportCategory,
 }: {
+  deviceType: DeviceType
   widgets: WidgetConfig[]
   onMoveToNotDisplayed: (id: WidgetId) => void
+  sportCategory: SportCategory
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: zoneContainerIds.share })
 
@@ -229,7 +234,12 @@ function ShareZone({
                   <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
                     Rank {index + 1}
                   </p>
-                  <SortableWidget widget={widget} onMoveToNotDisplayed={() => onMoveToNotDisplayed(widget.id)} />
+                  <SortableWidget
+                    deviceType={deviceType}
+                    widget={widget}
+                    onMoveToNotDisplayed={() => onMoveToNotDisplayed(widget.id)}
+                    sportCategory={sportCategory}
+                  />
                 </div>
               ))}
             </div>

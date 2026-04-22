@@ -1,81 +1,45 @@
 "use client"
 
-import type { ComponentType } from "react"
+import { defaultAppleWatchHrDataset } from "@/lib/apple-watch-hr-data"
 import { type WidgetId } from "@/lib/mock-data"
-import { ENABLED_WIDGET_IDS } from "@/lib/widget-selection"
-import { widgetRegistry } from "@/components/widgets/widget-registry"
-import { useStudySession } from "@/hooks/use-study-session"
-import { type DeviceType } from "@/components/study/types"
+import {
+  widgetDevelopmentMetrics,
+  type WidgetDevelopmentPlatformId,
+} from "@/lib/widget-development"
+import { WidgetSkinCard } from "@/components/development/widget-skins/widget-skin-registry"
+import { type DeviceType, type SportCategory } from "@/components/study/types"
 
-// Apple
-import { AppleFullDayHrCard } from "@/components/development/widget-skins/custom/apple-full-day-hr-card"
-import { AppleActivityHrCard } from "@/components/development/widget-skins/custom/apple-activity-hr-card"
-import { AppleStepsCard } from "@/components/development/widget-skins/custom/apple-steps-card"
-
-// Garmin
-import { GarminFullDayHrCard } from "@/components/development/widget-skins/custom/garmin-full-day-hr-card"
-import { GarminActivityHrCard } from "@/components/development/widget-skins/custom/garmin-activity-hr-card"
-import { GarminStepsCard } from "@/components/development/widget-skins/custom/garmin-steps-card"
-
-// Oura
-import { OuraFullDayHrCard } from "@/components/development/widget-skins/custom/oura-full-day-hr-card"
-import { OuraActivityHrCard } from "@/components/development/widget-skins/custom/oura-activity-hr-card"
-import { OuraStepsCard } from "@/components/development/widget-skins/custom/oura-steps-card"
-
-// Whoop
-import { WhoopActivityHrCard } from "@/components/development/widget-skins/custom/whoop-activity-hr-card"
-import { WhoopStepsCard } from "@/components/development/widget-skins/custom/whoop-steps-card"
-
-const enabledWidgetSet = new Set<WidgetId>(ENABLED_WIDGET_IDS)
-
-const deviceOverrides: Record<DeviceType, Partial<Record<WidgetId, ComponentType<any>>>> = {
-  "apple-watch": {
-    "heart-rate": AppleFullDayHrCard,
-    "step-count": AppleStepsCard,
-    "workout-log": AppleActivityHrCard,
-  },
-  garmin: {
-    "heart-rate": GarminFullDayHrCard,
-    "step-count": GarminStepsCard,
-    "workout-log": GarminActivityHrCard,
-  },
-  oura: {
-    "heart-rate": OuraFullDayHrCard,
-    "step-count": OuraStepsCard,
-    "workout-log": OuraActivityHrCard,
-  },
-  whoop: {
-    "step-count": WhoopStepsCard,
-    "workout-log": WhoopActivityHrCard,
-    // Note: Whoop Full Day HR defaults to the standard generic HeartRateWidget which is already whoop styled.
-  },
+const studyDeviceToWidgetPlatform: Record<DeviceType, WidgetDevelopmentPlatformId> = {
+  "apple-watch": "apple",
+  garmin: "garmin",
+  oura: "oura",
+  whoop: "whoop",
 }
+
+const developmentMetricById = new Map(widgetDevelopmentMetrics.map((metric) => [metric.id, metric]))
 
 interface WidgetRendererProps {
+  deviceType: DeviceType
   id: WidgetId
+  sportCategory: SportCategory
 }
 
-export function WidgetRenderer({ id }: WidgetRendererProps) {
-  const { participant } = useStudySession()
+export function WidgetRenderer({ deviceType, id, sportCategory }: WidgetRendererProps) {
+  const metric = developmentMetricById.get(id)
 
-  if (!enabledWidgetSet.has(id)) {
+  if (!metric) {
     return null
   }
 
-  // Enforce sport category logic for menstrual cycle tracking
-  if (id === "menstrual-cycle" && participant?.sportCategory === "mens") {
+  if (id === "cycle-tracking" && sportCategory === "mens") {
     return null
   }
 
-  // Device-specific override
-  if (participant?.deviceType) {
-    const OverrideComponent = deviceOverrides[participant.deviceType][id]
-    if (OverrideComponent) {
-      return <OverrideComponent />
-    }
-  }
-
-  // Default generic widget
-  const WidgetComponent = widgetRegistry[id]
-  return WidgetComponent ? <WidgetComponent /> : null
+  return (
+    <WidgetSkinCard
+      hrDataset={defaultAppleWatchHrDataset}
+      metric={metric}
+      platform={studyDeviceToWidgetPlatform[deviceType]}
+    />
+  )
 }

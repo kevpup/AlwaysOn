@@ -1,8 +1,10 @@
 "use client"
 
+import { type ReactNode } from "react"
 import { useDraggable } from "@dnd-kit/core"
 import { type WidgetConfig } from "@/lib/mock-data"
 import {
+  BarChart3,
   GripVertical,
   Heart,
   Moon,
@@ -10,24 +12,36 @@ import {
   Battery,
   Flame,
   Activity,
-  BookOpen,
-  Wine,
   Dumbbell,
   Footprints,
+  Gauge,
+  Scale,
+  Thermometer,
+  Droplets,
 } from "lucide-react"
 
-const widgetIcons: Record<string, React.ReactNode> = {
-  "heart-rate": <Heart className="h-4 w-4" />,
-  "sleep-graph": <Moon className="h-4 w-4" />,
+const widgetIcons: Record<string, ReactNode> = {
+  steps: <Footprints className="h-4 w-4" />,
+  "full-day-hr": <Heart className="h-4 w-4" />,
+  "activity-hr-graph": <Activity className="h-4 w-4" />,
+  "activity-hr-zones": <BarChart3 className="h-4 w-4" />,
+  "resting-hr": <Heart className="h-4 w-4" />,
+  "hrv-status": <Activity className="h-4 w-4" />,
+  "calories-active-energy": <Flame className="h-4 w-4" />,
+  weight: <Scale className="h-4 w-4" />,
+  "vo2-max": <Gauge className="h-4 w-4" />,
+  "total-sleep-time": <Moon className="h-4 w-4" />,
   "sleep-hours": <Clock className="h-4 w-4" />,
-  "recovery": <Battery className="h-4 w-4" />,
-  "strain": <Flame className="h-4 w-4" />,
-  "hrv": <Activity className="h-4 w-4" />,
-  "bedtime-routine": <BookOpen className="h-4 w-4" />,
-  "alcohol": <Wine className="h-4 w-4" />,
-  "workout-log": <Dumbbell className="h-4 w-4" />,
-  "calories": <Flame className="h-4 w-4" />,
-  "step-count": <Footprints className="h-4 w-4" />,
+  "sleep-stages-cycles": <Moon className="h-4 w-4" />,
+  "sleep-score": <Moon className="h-4 w-4" />,
+  "respiratory-rate": <Activity className="h-4 w-4" />,
+  "training-load": <Flame className="h-4 w-4" />,
+  "recovery-readiness": <Battery className="h-4 w-4" />,
+  "cycle-tracking": <Activity className="h-4 w-4" />,
+  "activity-workout-minutes": <Dumbbell className="h-4 w-4" />,
+  "full-workout-report": <Dumbbell className="h-4 w-4" />,
+  "temperature-deviation": <Thermometer className="h-4 w-4" />,
+  "blood-oxygen": <Droplets className="h-4 w-4" />,
 }
 
 interface DraggableBankItemProps {

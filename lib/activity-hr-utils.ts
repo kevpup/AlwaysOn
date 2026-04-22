@@ -18,6 +18,8 @@ export interface ActivityHrData {
   chartMax: number
   windowStart: number
   windowEnd: number
+  workoutStart: number
+  workoutEnd: number
 }
 
 export function getActivityHrData(

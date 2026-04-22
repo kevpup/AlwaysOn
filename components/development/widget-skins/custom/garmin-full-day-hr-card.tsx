@@ -75,7 +75,7 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<
 
 const CustomXTick = (props: any) => {
   const { x, y, payload } = props
-  let textAnchor = "middle"
+  let textAnchor: "start" | "middle" | "end" = "middle"
   let dx = 0
   if (payload.value === 0) {
     textAnchor = "start"

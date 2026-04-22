@@ -1,6 +1,5 @@
 import type { ComponentType } from "react"
 
-import { type WidgetId } from "@/lib/mock-data"
 import { AlcoholWidget } from "@/components/widgets/all-widgets/alcohol-widget"
 import { AverageDailyHeartRateWidget } from "@/components/widgets/all-widgets/average-daily-heart-rate-widget"
 import { BedtimeRoutineWidget } from "@/components/widgets/all-widgets/bedtime-routine-widget"
@@ -41,7 +40,7 @@ import { WorkoutLogWidget } from "@/components/widgets/all-widgets/workout-log-w
 
 export type WidgetComponent = ComponentType
 
-export const widgetRegistry: Record<WidgetId, WidgetComponent> = {
+export const widgetRegistry = {
   recovery: RecoveryWidget,
   strain: StrainWidget,
   "sleep-hours": SleepHoursWidget,
@@ -79,4 +78,6 @@ export const widgetRegistry: Record<WidgetId, WidgetComponent> = {
   "menstrual-cycle": MenstrualCycleWidget,
   "temperature-deviation": TemperatureDeviationWidget,
   "blood-oxygen": BloodOxygenWidget,
-}
+} satisfies Record<string, WidgetComponent>
+
+export type LegacyWidgetId = keyof typeof widgetRegistry

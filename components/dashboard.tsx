@@ -79,12 +79,14 @@ export function Dashboard() {
   if (session.scenarioView === "recap") {
     return (
       <CoachRecapScreen
+        deviceType={session.participant.deviceType}
         onBack={session.goBack}
         onContinue={session.saveScenario}
         onSkipToFinish={session.skipToFinish}
         scenario={session.currentScenario}
         scenarioIndex={session.scenarioIndex}
         sharedWidgets={session.zones.share}
+        sportCategory={session.participant.sportCategory}
         totalScenarios={session.totalScenarios}
       />
     )
@@ -95,6 +97,7 @@ export function Dashboard() {
       activeWidget={session.activeWidget}
       activeZone={session.activeZone}
       canGoBack={session.canGoBack}
+      deviceType={session.participant.deviceType}
       onBack={session.goBack}
       onDragCancel={session.handleDragCancel}
       onDragEnd={session.handleDragEnd}
@@ -104,6 +107,7 @@ export function Dashboard() {
       onSkipToFinish={session.skipToFinish}
       scenario={session.currentScenario}
       scenarioIndex={session.scenarioIndex}
+      sportCategory={session.participant.sportCategory}
       totalScenarios={session.totalScenarios}
       zones={session.zones}
     />

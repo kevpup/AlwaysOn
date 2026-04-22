@@ -76,7 +76,7 @@ function formatTick(minuteOfDay: number) {
 
 const CustomXTick = (props: any) => {
   const { x, y, payload, windowStart, windowEnd } = props
-  let textAnchor = "middle"
+  let textAnchor: "start" | "middle" | "end" = "middle"
   let dx = 0
   if (payload.value === windowStart) {
     textAnchor = "start"
