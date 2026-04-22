@@ -295,4 +295,4 @@ This note tracks design decisions for the widget skin development process.
 
 - Participant-facing widget labels may vary by device or scenario.
 - Spreadsheet logging should continue to use the canonical widget titles so data remains stable across label changes.
-- Apple-facing labels currently override widget names as: `steps`, `HR graph`, `Activity HR`, `Resting HR`, `HRV`, `Active energy`, `weight`, `V02 max`, `sleep duration`, `sleep stages`, `sleep stages`, `Sleep score`, `Respritory rate`, `Training load`, `Vitals`, `Cycle tracking`, `Activity minutes`, `Workout history`, `Tempature deviation`, and `Sp02`.
+- Apple-facing labels currently override widget names as: `Steps`, `HR Graph`, `Activity HR`, `Resting HR`, `HRV`, `Active Energy`, `Weight`, `VO2 Max`, `Sleep Duration`, `Sleep Hours`, `Sleep Stages`, `Sleep Score`, `Respiratory Rate`, `Training Load`, `Vitals`, `Cycle Tracking`, `Activity Minutes`, `Workout History`, `Temperature Deviation`, and `SpO2`.
