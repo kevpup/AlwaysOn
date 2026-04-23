@@ -40,7 +40,7 @@ const stageTotals = sleepStages.reduce<Record<keyof typeof STAGE_COLORS, number>
 )
 
 const totalMinutes = sleepStages.reduce((sum, segment) => sum + segment.duration, 0)
-const sleepDuration = "7h 57m"
+const sleepDuration = "7h 42m"
 const sleepStart = "10:46 PM"
 const sleepEnd = "6:43 AM"
 
@@ -61,13 +61,6 @@ export function GarminSleepReportCard(_props: WidgetSkinProps) {
 
   return (
     <div className="flex h-full flex-col rounded-[18px] border border-white/10 bg-[#111111] text-white shadow-lg">
-      <div className="rounded-t-[18px] bg-[#1e1e1e] px-4 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/90">Garmin Connect</p>
-          <p className="text-[11px] font-semibold text-white/70">Sleep Report</p>
-        </div>
-      </div>
-
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>

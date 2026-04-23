@@ -7,8 +7,8 @@ This note tracks design decisions for the widget skin development process.
 - A development-only widget testbed is available from the first screen of the app.
 - The testbed is separate as a screen, but it now uses the same widget rendering registry as the participant study flow.
 - Changes made to `WidgetSkinCard`, platform base skins, or custom platform/widget skins should be visible in both development mode and the participant study flow.
-- The testbed displays a matrix of 17 active widget categories across 4 device platforms: WHOOP, Apple, Garmin, and Oura.
-- The matrix contains 68 active cells.
+- The testbed displays a matrix of 15 active widget categories across 4 device platforms: WHOOP, Apple, Garmin, and Oura.
+- The matrix contains 60 active cells.
 - The page is organized by widget category rows and platform columns so every platform variation can be reviewed while scrolling.
 - The initial testbed pass populated the original 84 cells with base platform-styled designs before the widget list was narrowed.
 - The base designs are not final widget implementations; they establish a visual direction for review.
@@ -25,10 +25,8 @@ This note tracks design decisions for the widget skin development process.
 - Resting HR
 - HRV / HRV Status
 - Calories / Active Energy
-- Weight
 - VO2 Max / Cardio Capacity
 - Sleep Report
-- Sleep Time
 - Sleep Score
 - Respiratory Rate / Respiration
 - Strain / Activity Load / Training Load
@@ -41,8 +39,10 @@ This note tracks design decisions for the widget skin development process.
 ## Widget Pruning Decisions
 
 - Steps are removed from the active research widget set. Although steps are shared across consumer wearable technologies, they are not a common primary metric in college athletics; workload, strain, and training-load style measures are more aligned with the study context.
+- Weight is removed from the active research widget set.
 - Activity HR Graph and Activity HR Zones are combined into one scrollable workout heart-rate widget. The graph appears first, with zone summaries below, because zones are a derived subset of the workout HR data and participants have generally treated workout-specific data as interesting but comparatively comfortable.
 - Sleep Stages are removed as a standalone widget and folded into Sleep Report. Sleep now has three levels of detail: Sleep Report, Sleep Time, and Sleep Score.
+- Sleep Time is removed from the active research widget set, leaving Sleep Report and Sleep Score as the active sleep widgets.
 - Workout Minutes are removed from the active research widget set because they duplicate information already represented in workout history/reporting and workload-oriented widgets.
 
 ## Cross-Platform Design Direction
@@ -51,7 +51,7 @@ This note tracks design decisions for the widget skin development process.
 - The first pass prioritizes visual fidelity for participant-facing research stimuli over maximum code reuse.
 - Device-specific styling decisions will be logged here as they are made.
 - The implementation should allow individual platform/widget cells to become one-off custom components later, even if some base styling is shared at first.
-- High-level platform styling decisions should be applied across the active 68-cell widget testbed while preserving the current metric names, values, and data.
+- High-level platform styling decisions should be applied across the active 60-cell widget testbed while preserving the current metric names, values, and data.
 - Fine-grained widget-specific details can still be refined later through one-off custom components.
 
 ## Base Platform Visual Direction

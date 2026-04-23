@@ -1,8 +1,14 @@
 "use client"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import {
+  getSleepScoreStatus,
+  parseMetricInteger,
+} from "@/components/development/widget-skins/custom/widget-metric-utils"
 
-export function OuraSleepScoreCard(_props: WidgetSkinProps) {
+export function OuraSleepScoreCard({ metric }: WidgetSkinProps) {
+  const sleepScore = parseMetricInteger(metric.primaryValue)
+
   return (
     <div className="relative flex h-full flex-col overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#101216] p-6 text-white shadow-[0_22px_46px_rgba(0,0,0,0.34)]">
       <p className="text-center text-2xl font-semibold leading-none tracking-[-0.04em] text-white">Sleep</p>
@@ -27,8 +33,8 @@ export function OuraSleepScoreCard(_props: WidgetSkinProps) {
         </svg>
 
         <div className="relative z-10 mt-8 text-center">
-          <p className="text-8xl font-semibold leading-none tracking-[-0.09em] text-white">94</p>
-          <p className="mt-4 text-lg font-medium text-[#b8c3cc]/78">Optimal</p>
+          <p className="text-8xl font-semibold leading-none tracking-[-0.09em] text-white">{sleepScore}</p>
+          <p className="mt-4 text-lg font-medium text-[#b8c3cc]/78">{getSleepScoreStatus(sleepScore)}</p>
         </div>
       </div>
     </div>

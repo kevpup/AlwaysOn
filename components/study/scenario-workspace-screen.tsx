@@ -137,15 +137,22 @@ export function ScenarioWorkspaceScreen({
       <DragOverlay>
         {activeWidget ? (
           <div
-            className="overflow-hidden rounded-xl border border-primary/40 bg-card p-3 opacity-95 shadow-2xl"
+            className="overflow-hidden rounded-xl border border-primary/40 bg-card opacity-95 shadow-2xl"
             style={{
               width: activeZone === "share" ? 340 : 240,
               height: activeZone === "share" ? 340 : 210,
             }}
           >
             {activeZone === "share" ? (
-              <div className="h-full w-full">
-                <WidgetRenderer deviceType={deviceType} id={activeWidget.id} sportCategory={sportCategory} />
+              <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-background/35 shadow-sm">
+                <div className="flex min-h-8 items-center border-b border-border/60 bg-background/88 px-3 backdrop-blur-sm">
+                  <p className="truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    {getWidgetDisplayName(activeWidget, { deviceType, scenarioId: scenario.id })}
+                  </p>
+                </div>
+                <div className="min-h-0 flex-1">
+                  <WidgetRenderer deviceType={deviceType} id={activeWidget.id} sportCategory={sportCategory} />
+                </div>
               </div>
             ) : (
               <>

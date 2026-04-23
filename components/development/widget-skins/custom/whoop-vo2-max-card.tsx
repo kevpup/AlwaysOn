@@ -16,11 +16,11 @@ const WHOOP_BLUE = "hsl(200, 70%, 50%)"
 const WHOOP_AXIS_BLACK = "hsl(220, 20%, 4%)"
 
 const weeklyVo2Estimates = [
-  { day: 3, vo2: 51.8 },
-  { day: 10, vo2: 52.1 },
-  { day: 17, vo2: 52.4 },
-  { day: 24, vo2: 52.2 },
-  { day: 30, vo2: 52.7 },
+  { day: 3, vo2: 52.6 },
+  { day: 10, vo2: 52.9 },
+  { day: 17, vo2: 53.1 },
+  { day: 24, vo2: 53.0 },
+  { day: 30, vo2: 53.4 },
 ]
 
 const monthlyVo2Data = Array.from({ length: 30 }, (_, index) => {

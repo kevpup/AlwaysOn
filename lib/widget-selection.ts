@@ -7,7 +7,7 @@ export const allWidgets: WidgetConfig[] = widgetDevelopmentMetrics.map((metric) 
   title: metric.label,
 }))
 
-// Enable all 21 core widgets
+// Enable all active widgets from the canonical widget-development list
 export const ENABLED_WIDGET_IDS: WidgetId[] = widgetDevelopmentMetrics.map(
   (metric) => metric.id as WidgetId
 )

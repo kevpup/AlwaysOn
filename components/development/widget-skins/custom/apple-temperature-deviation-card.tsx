@@ -21,7 +21,7 @@ const weeklyTemperatureDeviation = [
   { day: "T", value: 0.2 },
   { day: "F", value: -0.1 },
   { day: "S", value: 0.3 },
-  { day: "S", value: 0.5 },
+  { day: "S", value: 0.2 },
 ]
 
 const values = weeklyTemperatureDeviation.map((item) => item.value)

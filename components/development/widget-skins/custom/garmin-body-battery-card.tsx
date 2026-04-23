@@ -18,15 +18,15 @@ const GARMIN_GRID_LINE = "#2c2c2e"
 const GARMIN_MUTED = "#8e8e93"
 
 const bodyBatteryDay = [
-  { time: "6a", value: 86 },
-  { time: "8a", value: 82 },
-  { time: "10a", value: 76 },
-  { time: "12p", value: 68 },
-  { time: "2p", value: 59 },
-  { time: "4p", value: 48 },
-  { time: "6p", value: 39 },
-  { time: "8p", value: 31 },
-  { time: "10p", value: 24 },
+  { time: "6a", value: 72 },
+  { time: "8a", value: 68 },
+  { time: "10a", value: 62 },
+  { time: "12p", value: 54 },
+  { time: "2p", value: 46 },
+  { time: "4p", value: 37 },
+  { time: "6p", value: 29 },
+  { time: "8p", value: 23 },
+  { time: "10p", value: 18 },
 ]
 
 const bodyBatteryHigh = Math.max(...bodyBatteryDay.map((item) => item.value))
@@ -57,13 +57,6 @@ function BodyBatteryTooltip({
 export function GarminBodyBatteryCard(_props: WidgetSkinProps) {
   return (
     <div className="flex h-full flex-col rounded-[18px] border border-white/10 bg-[#111111] text-white shadow-lg">
-      <div className="rounded-t-[18px] bg-[#1e1e1e] px-4 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/90">Garmin Connect</p>
-          <p className="text-[11px] font-semibold text-white/70">Body Battery</p>
-        </div>
-      </div>
-
       <div className="flex min-h-0 flex-1 flex-col p-4">
         <div className="mb-4 grid grid-cols-2 gap-3">
           <div className="rounded-2xl border border-white/10 bg-[#1a1a1a] px-4 py-3">

@@ -42,11 +42,6 @@ export const widgetInformationById: Record<WidgetId, WidgetInformation> = {
     coachUse: "A coach might use this to understand workload, fueling needs, or total activity outside scheduled training.",
     influences: "Body size estimates, activity type, device algorithms, heart rate data, wear time, and workout logging accuracy.",
   },
-  weight: {
-    shows: "Body weight entries or connected weight trends.",
-    coachUse: "A coach might use this in conversations about body composition, fueling, recovery, or readiness.",
-    influences: "Hydration, time of day, clothing, scale accuracy, menstrual cycle phase, illness, and intentional or unintentional weight change.",
-  },
   "vo2-max": {
     shows: "Estimated cardiorespiratory fitness or aerobic capacity.",
     coachUse: "A coach might use this to discuss endurance capacity, conditioning progress, or training adaptation.",
@@ -56,11 +51,6 @@ export const widgetInformationById: Record<WidgetId, WidgetInformation> = {
     shows: "Sleep start, sleep end, awake time, and total sleep duration for a night.",
     coachUse: "A coach might use this to discuss recovery habits, travel effects, or whether sleep timing supports training demands.",
     influences: "Schedule, travel, naps, stress, caffeine, device wear, sleep detection accuracy, and interruptions during the night.",
-  },
-  "sleep-hours": {
-    shows: "Total sleep duration for the night and recent sleep duration trends.",
-    coachUse: "A coach might use this as a quick recovery signal or to discuss sleep consistency during heavy training.",
-    influences: "Bedtime, wake time, naps, travel, academic load, stress, illness, and whether the device correctly detects sleep.",
   },
   "sleep-stages-cycles": {
     shows: "Estimated time spent in sleep stages such as wake, REM, core, and deep sleep.",

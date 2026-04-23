@@ -1,20 +1,18 @@
 "use client"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import {
+  getVo2Status,
+  parseMetricNumber,
+} from "@/components/development/widget-skins/custom/widget-metric-utils"
 
-const VO2_SCORE = 54
-const VO2_STATUS = "Superior"
+export function GarminVo2MaxCard({ metric }: WidgetSkinProps) {
+  const vo2Score = parseMetricNumber(metric.primaryValue)
+  const roundedVo2Score = Math.round(vo2Score)
+  const vo2Status = getVo2Status(vo2Score)
 
-export function GarminVo2MaxCard(_props: WidgetSkinProps) {
   return (
     <div className="flex h-full flex-col rounded-[18px] border border-white/10 bg-[#111111] text-white shadow-lg">
-      <div className="rounded-t-[18px] bg-[#1e1e1e] px-4 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/90">Garmin Connect</p>
-          <p className="text-[11px] font-semibold text-white/70">VO2 Max</p>
-        </div>
-      </div>
-
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-5">
         <div className="relative flex h-48 w-48 items-center justify-center rounded-full bg-[#171717] shadow-[0_0_44px_rgba(155,92,255,0.22)]">
           <div
@@ -25,11 +23,11 @@ export function GarminVo2MaxCard(_props: WidgetSkinProps) {
             }}
           />
           <div className="absolute inset-4 rounded-full bg-[#111111]" />
-          <div className="absolute right-8 top-4 h-4 w-4 rounded-full border-2 border-[#111111] bg-[#9b5cff] shadow-[0_0_16px_rgba(155,92,255,0.95)]" />
+          <div className="absolute left-[18%] top-[14%] h-4 w-4 rounded-full border-2 border-[#111111] bg-[#9b5cff] shadow-[0_0_16px_rgba(155,92,255,0.95)]" />
 
           <div className="relative text-center">
-            <p className="text-6xl font-extrabold leading-none tracking-[-0.08em] text-white">{VO2_SCORE}</p>
-            <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-[#9b5cff]">{VO2_STATUS}</p>
+            <p className="text-6xl font-extrabold leading-none tracking-[-0.08em] text-white">{roundedVo2Score}</p>
+            <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-[#9b5cff]">{vo2Status}</p>
           </div>
         </div>
 

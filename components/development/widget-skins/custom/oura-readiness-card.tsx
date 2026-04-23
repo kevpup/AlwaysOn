@@ -1,10 +1,13 @@
 "use client"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import { parseMetricInteger } from "@/components/development/widget-skins/custom/widget-metric-utils"
 
 const tickAngles = [-70, -45, -20, 5, 30, 55, 80]
 
-export function OuraReadinessCard(_props: WidgetSkinProps) {
+export function OuraReadinessCard({ metric }: WidgetSkinProps) {
+  const readinessScore = parseMetricInteger(metric.primaryValue)
+
   return (
     <div className="relative flex h-full flex-col overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#071019] text-white shadow-[0_24px_52px_rgba(0,0,0,0.4)]">
       <div
@@ -56,7 +59,7 @@ export function OuraReadinessCard(_props: WidgetSkinProps) {
 
       <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center px-6 pt-16 text-center">
         <p className="text-8xl font-semibold leading-none tracking-[-0.09em] text-white drop-shadow-[0_8px_28px_rgba(0,0,0,0.42)]">
-          88
+          {readinessScore}
         </p>
         <p className="mt-4 text-sm font-semibold uppercase tracking-[0.26em] text-[#dceff3]/86">Readiness</p>
       </div>

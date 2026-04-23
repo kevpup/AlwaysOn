@@ -55,7 +55,7 @@ export function SortableWidget({
       {...attributes}
       {...listeners}
       aria-label={disableSorting ? displayName : `Drag ${displayName}`}
-      className={`group relative aspect-square w-full cursor-grab overflow-hidden active:cursor-grabbing ${
+      className={`group relative aspect-square w-full cursor-grab active:cursor-grabbing ${
         isDragging ? "z-50 opacity-50" : ""
       }`}
     >
@@ -70,39 +70,49 @@ export function SortableWidget({
               showInformation ? "pointer-events-none" : "pointer-events-auto"
             }`}
           >
-            <div className="absolute right-2 top-2 z-20 flex flex-wrap justify-end gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-              {widgetInformation ? (
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    setShowInformation(true)
-                  }}
-                  onPointerDown={stopControlDrag}
-                  className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-foreground"
-                >
-                  <Info className="h-3 w-3" />
-                  More information
-                </button>
-              ) : null}
-              {onMoveToNotDisplayed && (
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    onMoveToNotDisplayed()
-                  }}
-                  onPointerDown={stopControlDrag}
-                  className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-foreground"
-                >
-                  <EyeOff className="h-3 w-3" />
-                  Hide from Coach
-                </button>
-              )}
-            </div>
+            <div className="flex h-full w-full flex-col overflow-hidden rounded-[24px] border border-border/60 bg-background/35 shadow-sm">
+              <div className="flex min-h-8 items-center border-b border-border/60 bg-background/88 px-3 backdrop-blur-sm">
+                <p className="truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  {displayName}
+                </p>
+              </div>
 
-            <div className="h-full w-full">
-              <WidgetRenderer deviceType={deviceType} id={widget.id} sportCategory={sportCategory} />
+              <div className="relative min-h-0 flex-1">
+                <div className="absolute right-2 top-2 z-20 flex flex-wrap justify-end gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                  {widgetInformation ? (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        setShowInformation(true)
+                      }}
+                      onPointerDown={stopControlDrag}
+                      className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-foreground"
+                    >
+                      <Info className="h-3 w-3" />
+                      More information
+                    </button>
+                  ) : null}
+                  {onMoveToNotDisplayed && (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        onMoveToNotDisplayed()
+                      }}
+                      onPointerDown={stopControlDrag}
+                      className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-foreground"
+                    >
+                      <EyeOff className="h-3 w-3" />
+                      Hide from Coach
+                    </button>
+                  )}
+                </div>
+
+                <div className="h-full w-full">
+                  <WidgetRenderer deviceType={deviceType} id={widget.id} sportCategory={sportCategory} />
+                </div>
+              </div>
             </div>
           </div>
 

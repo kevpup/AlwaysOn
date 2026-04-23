@@ -10,13 +10,6 @@ export function GarminStepsCard({ metric }: WidgetSkinProps) {
 
   return (
     <div className="flex h-full flex-col rounded-[18px] border border-[#d8e1e8] bg-white text-[#14212b] shadow-[0_10px_26px_rgba(20,33,43,0.14)]">
-      <div className="rounded-t-[18px] bg-[#007cc3] px-4 py-2 text-white">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em]">Garmin Connect</p>
-          <p className="text-[10px] font-semibold opacity-80">Glance</p>
-        </div>
-      </div>
-
       <div className="flex min-h-0 flex-1 items-center justify-center p-4">
         <div className="relative flex aspect-square w-[82%] max-w-[230px] min-w-[150px] items-center justify-center">
           <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full rotate-[-90deg]" aria-hidden="true">

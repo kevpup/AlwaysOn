@@ -35,9 +35,9 @@ const trainingLoadTrend = [
   { day: "19", load: 1010, ratio: 0.96 },
   { day: "21", load: 1065, ratio: 1.14 },
   { day: "23", load: 1125, ratio: 1.38 },
-  { day: "25", load: 1170, ratio: 1.56 },
-  { day: "27", load: 1105, ratio: 1.29 },
-  { day: "29", load: 1035, ratio: 1.12 },
+  { day: "25", load: 1180, ratio: 1.48 },
+  { day: "27", load: 1160, ratio: 1.45 },
+  { day: "29", load: 1185, ratio: 1.42 },
 ]
 
 const latestTrainingLoad = trainingLoadTrend[trainingLoadTrend.length - 1]
@@ -68,16 +68,9 @@ function TrainingLoadTooltip({ active, payload, label }: { active?: boolean; pay
   )
 }
 
-export function GarminTrainingLoadCard(_props: WidgetSkinProps) {
+export function GarminTrainingLoadCard({ metric }: WidgetSkinProps) {
   return (
     <div className="flex h-full flex-col rounded-[18px] border border-white/10 bg-[#111111] text-white shadow-lg">
-      <div className="rounded-t-[18px] bg-[#1e1e1e] px-4 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/90">Garmin Connect</p>
-          <p className="text-[11px] font-semibold text-white/70">Training Load</p>
-        </div>
-      </div>
-
       <div className="flex min-h-0 flex-1 flex-col p-4">
         <div className="mb-3 flex items-start justify-between gap-3">
           <div>
@@ -92,7 +85,7 @@ export function GarminTrainingLoadCard(_props: WidgetSkinProps) {
             <p className="mt-1 text-xl font-extrabold leading-none" style={{ color: getRatioColor(latestTrainingLoad.ratio) }}>
               {latestTrainingLoad.ratio.toFixed(2)}
             </p>
-            <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.12em] text-[#8e8e93]">Optimal 0.8-1.5</p>
+            <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.12em] text-white/75">{metric.secondaryValue}</p>
           </div>
         </div>
 

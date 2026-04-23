@@ -32,7 +32,7 @@ const stageRows = [
 ] as const
 
 const sleepStart = "10:38 PM"
-const sleepEnd = "6:39 AM"
+const sleepEnd = "6:43 AM"
 const totalMinutes = sleepStages.reduce((sum, stage) => sum + stage.duration, 0)
 const timelineTotal = sleepStages[sleepStages.length - 1].start + sleepStages[sleepStages.length - 1].duration
 const stageTotals = sleepStages.reduce<Record<keyof typeof STAGE_COLORS, number>>(
@@ -57,15 +57,21 @@ function getPercent(minutes: number) {
 
 export function OuraSleepReportCard(_props: WidgetSkinProps) {
   return (
-    <div className="flex h-full flex-col rounded-[30px] border border-white/[0.08] bg-[#101216] p-5 text-white shadow-[0_22px_46px_rgba(0,0,0,0.34)]">
-      <div className="mb-4">
+    <div className="flex h-full flex-col overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#101216] p-4 text-white shadow-[0_22px_46px_rgba(0,0,0,0.34)]">
+      <div className="mb-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#b8c3cc]/66">Apr 21, 2026</p>
         <h3 className="mt-2 text-2xl font-semibold leading-none tracking-[-0.04em] text-white">Sleep stages</h3>
+        <div className="mt-3 flex items-end gap-2">
+          <p className="text-4xl font-semibold leading-none tracking-[-0.07em] text-white">
+            7h 42m
+          </p>
+          <p className="pb-1 text-sm font-medium text-[#b8c3cc]/72">total sleep time</p>
+        </div>
       </div>
 
-      <div className="rounded-[24px] bg-white/[0.025] p-4">
+      <div className="rounded-[24px] bg-white/[0.025] p-3.5">
         <div className="mb-3 flex items-center justify-between text-[11px] font-semibold text-[#b8c3cc]/68">
-          <span>{sleepStart}</span>
+          <span>10:46 PM</span>
           <span>{sleepEnd}</span>
         </div>
 
@@ -95,11 +101,11 @@ export function OuraSleepReportCard(_props: WidgetSkinProps) {
         </div>
       </div>
 
-      <div className="mt-4 min-h-0 flex-1 overflow-y-auto">
+      <div className="mt-3 min-h-0 flex-1 overflow-y-auto">
         {stageRows.map((row, index) => (
           <div
             key={row.id}
-            className={`flex items-center justify-between gap-4 py-2.5 ${index === 0 ? "" : "border-t border-white/[0.07]"}`}
+            className={`flex items-center justify-between gap-4 py-2 ${index === 0 ? "" : "border-t border-white/[0.07]"}`}
           >
             <div className="flex items-center gap-3">
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: STAGE_COLORS[row.id] }} />

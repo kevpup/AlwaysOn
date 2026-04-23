@@ -7,7 +7,7 @@ const PERFORMANCE_BLUE = "hsl(198, 86%, 63%)"
 const sleepMetrics = [
   {
     label: "Hours vs needed",
-    value: "6:42 / 8:55",
+    value: "7:42 / 8:55",
     status: "Poor",
     tone: "bg-red-500/16 text-red-300 ring-red-400/30",
   },
@@ -45,10 +45,10 @@ const sleepStages = [
 ] as const
 
 const stageTotals = [
-  { label: "Awake", value: "31m", color: "hsl(24, 92%, 58%)" },
-  { label: "Light", value: "4h 02m", color: "hsl(202, 82%, 58%)" },
-  { label: "Deep", value: "1h 11m", color: "hsl(247, 64%, 58%)" },
-  { label: "REM", value: "1h 29m", color: "hsl(170, 66%, 48%)" },
+  { label: "Awake", value: "15m", color: "hsl(24, 92%, 58%)" },
+  { label: "Light", value: "4h 24m", color: "hsl(202, 82%, 58%)" },
+  { label: "Deep", value: "1h 18m", color: "hsl(247, 64%, 58%)" },
+  { label: "REM", value: "2h 00m", color: "hsl(170, 66%, 48%)" },
 ]
 
 export function WhoopSleepReportCard(_props: WidgetSkinProps) {
@@ -65,7 +65,7 @@ export function WhoopSleepReportCard(_props: WidgetSkinProps) {
             <div className="absolute inset-3 rounded-full bg-card" />
             <div className="relative text-center">
               <p className="text-4xl font-bold leading-none tracking-[-0.05em] text-foreground">75%</p>
-              <p className="mt-1 max-w-[76px] text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] text-muted-foreground">
+              <p className="mt-1 max-w-[68px] text-[9px] font-semibold uppercase leading-[1.15] tracking-[0.1em] text-muted-foreground">
                 Sleep Performance
               </p>
             </div>
@@ -94,9 +94,9 @@ export function WhoopSleepReportCard(_props: WidgetSkinProps) {
           <div className="mb-3 flex items-center justify-between">
             <div>
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">Sleep Stages</p>
-              <p className="mt-1 text-sm font-semibold text-foreground">10:48 PM - 6:12 AM</p>
+              <p className="mt-1 text-sm font-semibold text-foreground">10:46 PM - 6:43 AM</p>
             </div>
-            <p className="text-right text-[11px] font-medium text-muted-foreground">7h 24m in bed</p>
+            <p className="text-right text-[11px] font-medium text-muted-foreground">7h 57m in bed</p>
           </div>
 
           <div className="relative h-12 overflow-hidden rounded-xl bg-muted/50">
@@ -115,8 +115,8 @@ export function WhoopSleepReportCard(_props: WidgetSkinProps) {
           </div>
 
           <div className="mt-2 flex items-center justify-between text-[10px] font-medium text-muted-foreground">
-            <span>10:48 PM</span>
-            <span>6:12 AM</span>
+            <span>10:46 PM</span>
+            <span>6:43 AM</span>
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2">

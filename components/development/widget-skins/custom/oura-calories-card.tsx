@@ -1,8 +1,11 @@
 "use client"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import { parseMetricInteger } from "@/components/development/widget-skins/custom/widget-metric-utils"
 
-export function OuraCaloriesCard(_props: WidgetSkinProps) {
+export function OuraCaloriesCard({ metric }: WidgetSkinProps) {
+  const calories = parseMetricInteger(metric.primaryValue)
+
   return (
     <div className="relative flex h-full overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#07131a] text-white shadow-[0_24px_52px_rgba(0,0,0,0.38)]">
       <div
@@ -23,7 +26,7 @@ export function OuraCaloriesCard(_props: WidgetSkinProps) {
 
       <div className="relative flex min-h-0 flex-1 flex-col items-center justify-center px-7 text-center">
         <p className="text-8xl font-semibold leading-none tracking-[-0.09em] text-white drop-shadow-[0_6px_24px_rgba(0,0,0,0.45)]">
-          655
+          {calories}
         </p>
         <p className="mt-4 text-lg font-semibold text-white">Active calorie burn</p>
         <p className="mt-5 max-w-[220px] text-sm font-medium leading-6 text-[#d7e9ee]/82">

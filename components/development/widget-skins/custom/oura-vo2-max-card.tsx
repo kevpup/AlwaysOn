@@ -14,16 +14,16 @@ import {
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
 
 const vo2Trend = [
-  { month: "Jan", value: 38 },
-  { month: "Feb", value: 39 },
-  { month: "Mar", value: 39.5 },
-  { month: "Apr", value: 40 },
-  { month: "May", value: 41 },
-  { month: "Jun", value: 40.5 },
-  { month: "Jul", value: 41.5 },
-  { month: "Aug", value: 42 },
-  { month: "Sep", value: 42.4 },
-  { month: "Oct", value: 42 },
+  { month: "Jan", value: 50.2 },
+  { month: "Feb", value: 50.8 },
+  { month: "Mar", value: 51.1 },
+  { month: "Apr", value: 51.6 },
+  { month: "May", value: 52.0 },
+  { month: "Jun", value: 52.3 },
+  { month: "Jul", value: 52.7 },
+  { month: "Aug", value: 53.0 },
+  { month: "Sep", value: 53.2 },
+  { month: "Oct", value: 53.4 },
 ]
 
 const selectedMonth = "Oct"
@@ -53,7 +53,7 @@ export function OuraVo2MaxCard(_props: WidgetSkinProps) {
       <div className="mb-4">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#b8c3cc]/72">Cardio Capacity</p>
         <div className="mt-2 flex items-baseline gap-2">
-          <p className="text-4xl font-semibold leading-none tracking-[-0.06em]">42</p>
+          <p className="text-4xl font-semibold leading-none tracking-[-0.06em]">53.4</p>
           <p className="text-sm font-medium text-[#e7edf2]/75">VO2 max</p>
         </div>
       </div>
@@ -70,14 +70,14 @@ export function OuraVo2MaxCard(_props: WidgetSkinProps) {
               height={24}
               tick={{ fill: "rgba(184,195,204,0.58)", fontSize: 10, fontWeight: 600 }}
             />
-            <YAxis domain={[30, 50]} hide />
+            <YAxis domain={[48, 56]} hide />
             <Tooltip content={<Vo2Tooltip />} cursor={{ stroke: "rgba(255,255,255,0.1)", strokeWidth: 1 }} />
-            {[34, 38, 42, 46].map((tick) => (
+            {[49, 51, 53, 55].map((tick) => (
               <ReferenceLine key={tick} y={tick} stroke="rgba(255,255,255,0.07)" />
             ))}
             <ReferenceLine x={selectedMonth} stroke="rgba(255,255,255,0.28)" strokeWidth={1}>
               <Label
-                value="VO2 max 42"
+                value="VO2 max 53.4"
                 position="top"
                 fill="rgba(255,255,255,0.9)"
                 fontSize={11}

@@ -1,12 +1,14 @@
 "use client"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import { parseMetricInteger } from "@/components/development/widget-skins/custom/widget-metric-utils"
 
 const RECOVERY_GREEN = "hsl(160, 60%, 45%)"
-const recoveryScore = 72
-const recoveryDegrees = recoveryScore * 3.6
 
-export function WhoopRecoveryCard(_props: WidgetSkinProps) {
+export function WhoopRecoveryCard({ metric }: WidgetSkinProps) {
+  const recoveryScore = parseMetricInteger(metric.primaryValue)
+  const recoveryDegrees = recoveryScore * 3.6
+
   return (
     <div className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
       <div className="flex min-h-0 flex-1 items-center justify-center">

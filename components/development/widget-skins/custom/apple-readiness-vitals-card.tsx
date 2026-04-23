@@ -54,6 +54,9 @@ const vitals = [
 export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
   const [activeVitalId, setActiveVitalId] = useState<(typeof vitals)[number]["id"] | null>(null)
   const activeVital = activeVitalId ? vitals.find((vital) => vital.id === activeVitalId) : null
+  const setActiveVital = (vitalId: (typeof vitals)[number]["id"] | null) => {
+    setActiveVitalId(vitalId)
+  }
 
   return (
     <div className="flex h-full flex-col rounded-[24px] border border-black/5 bg-[#f5f5f7] p-[4%] text-[#1d1d1f] shadow-[0_12px_28px_rgba(0,0,0,0.12)] [container-type:inline-size]">
@@ -97,28 +100,27 @@ export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
               <button
                 key={vital.id}
                 type="button"
-                className="absolute z-10 flex h-11 -translate-y-1/2 items-center justify-center rounded-2xl transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2f80ed]"
+                className="absolute z-10 flex h-12 items-center justify-center rounded-2xl transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2f80ed]"
                 style={{
                   left,
                   right: `${100 - columnWidth * (index + 1)}%`,
-                  top: `${vital.position}%`,
+                  top: `calc(${vital.position}% - 24px)`,
                   marginRight: CHART_RIGHT_GUTTER / vitals.length,
                 }}
                 aria-label={`${vital.label}: ${vital.value}, ${vital.status}`}
-                onMouseEnter={() => setActiveVitalId(vital.id)}
-                onFocus={() => setActiveVitalId(vital.id)}
-                onMouseLeave={() => setActiveVitalId(null)}
-                onBlur={() => setActiveVitalId(null)}
+                onMouseEnter={() => setActiveVital(vital.id)}
+                onFocus={() => setActiveVital(vital.id)}
+                onMouseLeave={() => setActiveVital(null)}
+                onBlur={() => setActiveVital(null)}
               >
                 <span
-                  className={`h-4 w-4 rounded-full border-2 ${
-                    vital.selected ? "border-[#2f80ed] bg-white" : "border-transparent bg-[#b8dcff]"
+                  className={`relative h-4 w-4 rounded-full ${
+                    vital.selected ? "bg-[#2f80ed]" : "bg-[#64b5f6]"
                   }`}
                 >
-                  <span
-                    className="block h-full w-full rounded-full"
-                    style={{ backgroundColor: vital.selected ? "white" : TYPICAL_BLUE }}
-                  />
+                  {vital.selected ? (
+                    <span className="absolute inset-[-4px] rounded-full border-2 border-[#2f80ed]/55" />
+                  ) : null}
                 </span>
                 <span className="sr-only">{vital.value}</span>
               </button>
@@ -126,7 +128,7 @@ export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
           })}
 
           {activeVital ? (
-            <div className="absolute right-[4%] top-[2%] z-20 w-[min(48%,150px)] rounded-[18px] bg-[#f2f2f7] px-3 py-2 text-center shadow-sm">
+            <div className="pointer-events-none absolute right-[4%] top-[2%] z-20 w-[min(44%,140px)] rounded-[18px] bg-[#f2f2f7] px-3 py-2 text-center shadow-sm">
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#86868b]">
                 {activeVital.label}
               </p>
@@ -151,6 +153,10 @@ export function AppleReadinessVitalsCard(_props: WidgetSkinProps) {
                   type="button"
                   className="mx-auto flex h-9 w-11 items-center justify-center rounded-2xl text-[#b8b8bf] transition-colors hover:bg-[#f2f2f7] hover:text-[#6e6e73]"
                   aria-label={vital.label}
+                  onMouseEnter={() => setActiveVital(vital.id)}
+                  onFocus={() => setActiveVital(vital.id)}
+                  onMouseLeave={() => setActiveVital(null)}
+                  onBlur={() => setActiveVital(null)}
                 >
                   <Icon className="h-6 w-6" strokeWidth={2.8} />
                 </button>

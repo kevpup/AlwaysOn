@@ -37,17 +37,17 @@ const dayRanges: Spo2Range[] = [
   { label: "", low: 95, high: 98 },
   { label: "", low: 96, high: 99 },
   { label: "", low: 97, high: 99 },
-  { label: "6A", low: 96, high: 98 },
+  { label: "6A", low: 96, high: 100 },
   { label: "", low: 95, high: 97 },
   { label: "", low: 96, high: 98 },
   { label: "", low: 97, high: 99 },
-  { label: "12P", low: 96, high: 99 },
+  { label: "12P", low: 96, high: 100 },
   { label: "", low: 95, high: 98 },
   { label: "", low: 96, high: 98 },
   { label: "", low: 97, high: 99 },
   { label: "6P", low: 96, high: 98 },
   { label: "", low: 95, high: 97 },
-  { label: "", low: 97, high: 99 },
+  { label: "", low: 95, high: 97 },
 ]
 
 const weekRanges: Spo2Range[] = [
@@ -153,9 +153,8 @@ export function AppleBloodOxygenCard(_props: WidgetSkinProps) {
                   key={mode}
                   type="button"
                   onClick={() => setSelectedMode(mode)}
-                  className={`rounded-full px-2.5 py-1 transition-colors ${
-                    selectedMode === mode ? "bg-white text-[#1d1d1f] shadow-sm" : "text-[#6e6e73]"
-                  }`}
+                  className={`rounded-full px-2.5 py-1 transition-colors ${selectedMode === mode ? "bg-white text-[#1d1d1f] shadow-sm" : "text-[#6e6e73]"
+                    }`}
                 >
                   {mode}
                 </button>

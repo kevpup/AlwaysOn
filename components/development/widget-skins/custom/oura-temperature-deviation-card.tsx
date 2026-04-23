@@ -59,7 +59,7 @@ export function OuraTemperatureDeviationCard(_props: WidgetSkinProps) {
             {formatDeviation(selectedDay.value)}
           </p>
         </div>
-        <p className="mt-2 text-sm font-medium text-[#b8c3cc]/62">{selectedDay.day} from baseline</p>
+        <p className="mt-2 text-sm font-medium text-[#b8c3cc]/62">Distance from baseline</p>
       </div>
 
       <div className="min-h-0 flex-1 rounded-[24px] border border-white/[0.06] bg-[#0b1d2c] px-2 py-3">

@@ -1,11 +1,13 @@
 "use client"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import { parseMetricInteger } from "@/components/development/widget-skins/custom/widget-metric-utils"
 
 const PERFORMANCE_BLUE = "hsl(198, 86%, 63%)"
-const sleepScore = 75
 
-export function WhoopSleepScoreCard(_props: WidgetSkinProps) {
+export function WhoopSleepScoreCard({ metric }: WidgetSkinProps) {
+  const sleepScore = parseMetricInteger(metric.primaryValue)
+
   return (
     <div className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
       <div className="flex min-h-0 flex-1 items-center justify-center">

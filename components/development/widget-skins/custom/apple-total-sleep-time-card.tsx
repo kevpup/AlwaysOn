@@ -9,10 +9,10 @@ const AXIS_END_HOUR = 36
 const AXIS_RANGE = AXIS_END_HOUR - AXIS_START_HOUR
 
 const sleepStageRows = [
-  { id: "wake", label: "Awake", duration: "28m", color: AWAKE_ORANGE },
-  { id: "rem", label: "REM", duration: "1h 38m", color: "#66d4ff" },
-  { id: "core", label: "Core", duration: "4h 42m", color: SLEEP_BLUE },
-  { id: "deep", label: "Deep", duration: "1h 14m", color: "#3b3fd9" },
+  { id: "wake", label: "Awake", duration: "15m", color: AWAKE_ORANGE },
+  { id: "rem", label: "REM", duration: "2h 00m", color: "#66d4ff" },
+  { id: "core", label: "Core", duration: "4h 24m", color: SLEEP_BLUE },
+  { id: "deep", label: "Deep", duration: "1h 18m", color: "#3b3fd9" },
 ] as const
 
 const sleepStageSegments = [
@@ -31,11 +31,11 @@ const sleepStageSegments = [
 ] as const
 
 const sleepNight = {
-  start: "10:54 PM",
-  end: "6:42 AM",
-  startHour: 22.9,
-  endHour: 30.7,
-  awakeMinutes: 28,
+  start: "10:46 PM",
+  end: "6:43 AM",
+  startHour: 22.77,
+  endHour: 30.72,
+  awakeMinutes: 15,
 }
 
 function formatDuration(minutes: number) {

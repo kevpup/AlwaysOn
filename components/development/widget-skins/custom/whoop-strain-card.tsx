@@ -1,13 +1,15 @@
 "use client"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import { parseMetricNumber } from "@/components/development/widget-skins/custom/widget-metric-utils"
 
 const WHOOP_BLUE = "hsl(200, 70%, 50%)"
-const currentStrain = 14.2
 const maxStrain = 21
-const strainDegrees = (currentStrain / maxStrain) * 360
 
-export function WhoopStrainCard(_props: WidgetSkinProps) {
+export function WhoopStrainCard({ metric }: WidgetSkinProps) {
+  const currentStrain = parseMetricNumber(metric.primaryValue)
+  const strainDegrees = (currentStrain / maxStrain) * 360
+
   return (
     <div className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
       <div className="flex min-h-0 flex-1 items-center justify-center">

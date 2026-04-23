@@ -10,13 +10,13 @@ const TRACK = "#edf0f4"
 const sleepScoreBreakdown = [
   {
     label: "Duration",
-    score: "48/50",
+    score: "37/50",
     color: BLUE,
     share: 50,
   },
   {
     label: "Bedtime",
-    score: "30/30",
+    score: "26/30",
     color: TEAL,
     share: 30,
   },
@@ -61,7 +61,7 @@ function SegmentedSleepScoreRing() {
       </svg>
 
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <p className="text-[38px] font-semibold leading-none tracking-[-0.07em] text-black">89</p>
+        <p className="text-[38px] font-semibold leading-none tracking-[-0.07em] text-black">74</p>
       </div>
     </div>
   )

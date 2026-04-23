@@ -11,14 +11,15 @@ import {
 } from "recharts"
 
 import { type WidgetSkinProps } from "@/components/development/widget-skins/types"
+import { parseMetricInteger } from "@/components/development/widget-skins/custom/widget-metric-utils"
 
 const WHOOP_BLUE = "hsl(200, 70%, 50%)"
 const WHOOP_AXIS_BLACK = "hsl(220, 20%, 4%)"
 
 const monthlyCaloriesData = [
-  2380, 2640, 2510, 2875, 2310, 2740, 3020, 2460, 2585, 2910,
-  2680, 2425, 3150, 2795, 2550, 2665, 2890, 3015, 2475, 2590,
-  2840, 2710, 2360, 2925, 3060, 2670, 2490, 2765, 2995, 2820,
+  612, 688, 701, 754, 638, 722, 804, 676, 692, 758,
+  718, 663, 822, 784, 705, 726, 768, 796, 681, 694,
+  742, 731, 648, 772, 812, 724, 686, 736, 768, 742,
 ].map((calories, index) => ({
   day: index + 1,
   calories,
@@ -54,7 +55,9 @@ function CaloriesTooltip({
   )
 }
 
-export function WhoopCaloriesCard(_props: WidgetSkinProps) {
+export function WhoopCaloriesCard({ metric }: WidgetSkinProps) {
+  const displayCalories = parseMetricInteger(metric.primaryValue)
+
   return (
     <div className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
       <div className="mb-4 flex items-start justify-between gap-3">
@@ -62,7 +65,7 @@ export function WhoopCaloriesCard(_props: WidgetSkinProps) {
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Calories</p>
           <div className="mt-1 flex items-baseline gap-2">
             <span className="text-4xl font-bold leading-none tracking-[-0.04em] text-foreground">
-              {latestCalories.calories.toLocaleString()}
+              {displayCalories.toLocaleString()}
             </span>
             <span className="text-sm font-medium text-muted-foreground">cal</span>
           </div>

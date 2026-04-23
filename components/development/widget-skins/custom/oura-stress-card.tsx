@@ -18,9 +18,9 @@ const daytimeStress = [
   { time: "11a", value: 44 },
   { time: "1p", value: 52 },
   { time: "3p", value: 61 },
-  { time: "5p", value: 46 },
-  { time: "7p", value: 34 },
-  { time: "9p", value: 24 },
+  { time: "5p", value: 58 },
+  { time: "7p", value: 64 },
+  { time: "9p", value: 68 },
 ]
 
 function StressTooltip({
@@ -42,11 +42,14 @@ function StressTooltip({
   )
 }
 
-export function OuraStressCard(_props: WidgetSkinProps) {
+export function OuraStressCard({ metric }: WidgetSkinProps) {
   return (
     <div className="flex h-full flex-col rounded-[30px] border border-white/[0.08] bg-[#101216] p-5 text-white shadow-[0_22px_46px_rgba(0,0,0,0.34)]">
-      <div className="mb-4">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <p className="text-2xl font-semibold leading-none tracking-[-0.04em] text-white">Daytime stress</p>
+        <div className="rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#d7e9ee]/70">
+          {metric.secondaryValue}
+        </div>
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-[1fr_58px] gap-3 rounded-[24px] border border-white/[0.05] bg-[#0c1518] p-3">
