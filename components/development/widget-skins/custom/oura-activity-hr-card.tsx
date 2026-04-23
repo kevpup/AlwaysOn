@@ -13,6 +13,15 @@ import {
   ReferenceLine,
 } from "recharts"
 
+const heartRateZones = [
+  { zone: "Zone 1", minutes: 18, color: "#36c7f6" },
+  { zone: "Zone 2", minutes: 24, color: "#64d66a" },
+  { zone: "Zone 3", minutes: 32, color: "#ffd60a" },
+  { zone: "Zone 4", minutes: 28, color: "#ff9f0a" },
+  { zone: "Zone 5", minutes: 18, color: "#ff2d55" },
+] as const
+const totalZoneMinutes = heartRateZones.reduce((total, zone) => total + zone.minutes, 0)
+
 function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ value: number }> }) {
   if (active && payload && payload.length) {
     return (
@@ -54,18 +63,18 @@ export function OuraActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: W
   const yTicks = [chartMax, Math.round((chartMin + chartMax) / 2), chartMin]
 
   return (
-    <div className="relative flex h-full overflow-hidden rounded-[28px] border border-white/10 bg-[#111111] p-6 text-white shadow-lg">
-      <div className="relative flex h-full w-full flex-col">
+    <div className="relative flex h-full overflow-hidden rounded-[28px] border border-white/10 bg-[#111111] p-5 text-white shadow-lg">
+      <div className="relative flex h-full w-full flex-col overflow-y-auto pr-1">
         {/* Header */}
-        <div className="mb-4 flex items-baseline gap-2">
-          <h2 className="text-[24px] font-medium tracking-tight">{activityName}</h2>
-          <p className="text-[14px] font-medium text-[#8e8e93]">
+        <div className="mb-3 flex items-baseline gap-2">
+          <h2 className="text-[21px] font-medium tracking-tight">{activityName}</h2>
+          <p className="text-[12px] font-medium text-[#8e8e93]">
             Today, {formatTimeOfDay(workoutStart)}
           </p>
         </div>
 
         {/* 3 Stats */}
-        <div className="mb-8 flex gap-8">
+        <div className="mb-5 flex gap-6">
           <div>
             <p className="text-[11px] font-semibold text-[#8e8e93]">Duration</p>
             <p className="mt-0.5 text-[15px] font-semibold tracking-tight">{durationFormatted.replace(' hr', 'h').replace(' min', 'm')}</p>
@@ -81,7 +90,7 @@ export function OuraActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: W
         </div>
 
         {/* Chart Area */}
-        <div className="grid min-h-0 flex-1 grid-cols-[1fr_32px]">
+        <div className="grid h-[156px] grid-cols-[1fr_30px]">
           <div className="relative min-h-0 flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
@@ -114,7 +123,7 @@ export function OuraActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: W
             </ResponsiveContainer>
 
             {/* X-Axis Labels (Custom Overlay to match design exactly) */}
-            <div className="absolute -bottom-6 left-0 right-0 flex justify-between text-[10px] font-medium text-[#8e8e93]">
+            <div className="absolute -bottom-5 left-0 right-0 flex justify-between text-[9px] font-medium text-[#8e8e93]">
               <span>{formatTimeOfDay(workoutStart)}</span>
               <span>{formatTimeOfDay(workoutStart + workoutLength * 0.33)}</span>
               <span>{formatTimeOfDay(workoutStart + workoutLength * 0.66)}</span>
@@ -122,7 +131,7 @@ export function OuraActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: W
             </div>
           </div>
 
-          <div className="relative pb-[24px] pt-[8px]">
+          <div className="relative pb-[20px] pt-[8px]">
             <div className="relative h-full w-full pl-2">
               <span className="absolute top-0 text-[10px] font-medium text-white" style={{ transform: "translateY(-50%)" }}>
                 Max {maxHr}
@@ -132,6 +141,28 @@ export function OuraActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: W
               </span>
             </div>
           </div>
+        </div>
+
+        <div className="mt-5 space-y-2 pb-1">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8e8e93]">Zones</p>
+            <p className="text-[11px] font-semibold text-white">{totalZoneMinutes} min</p>
+          </div>
+          {heartRateZones.map((zone) => (
+            <div key={zone.zone} className="grid grid-cols-[54px_1fr_40px] items-center gap-2">
+              <p className="text-[10px] font-semibold text-[#8e8e93]">{zone.zone}</p>
+              <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${(zone.minutes / Math.max(...heartRateZones.map((item) => item.minutes))) * 100}%`,
+                    backgroundColor: zone.color,
+                  }}
+                />
+              </div>
+              <p className="text-right text-[10px] font-semibold text-white">{zone.minutes}m</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -6,8 +6,6 @@ import { getActivityHrData } from "@/lib/activity-hr-utils"
 import {
   Area,
   AreaChart,
-  Line,
-  LineChart,
   XAxis,
   YAxis,
   Tooltip,
@@ -25,6 +23,15 @@ const HR_RED = "#e53935"
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
+
+const heartRateZones = [
+  { zone: "Zone 1", minutes: 18, color: "#36c7f6" },
+  { zone: "Zone 2", minutes: 24, color: "#64d66a" },
+  { zone: "Zone 3", minutes: 32, color: "#ffd60a" },
+  { zone: "Zone 4", minutes: 28, color: "#ff9f0a" },
+  { zone: "Zone 5", minutes: 18, color: "#ff2d55" },
+] as const
+const totalZoneMinutes = heartRateZones.reduce((total, zone) => total + zone.minutes, 0)
 
 function interpolateColor(startColor: string, endColor: string, ratio: number) {
   const start = Number.parseInt(startColor.slice(1), 16)
@@ -99,18 +106,15 @@ export function GarminActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }:
   const xTicks = [workoutStart, workoutEnd]
   const axisTicks = [chartMin, Math.round((chartMin + chartMax) / 20) * 10, chartMax]
 
-  const GARMIN_DARK_BG = "#111111"
-  const GARMIN_HEADER_BG = "#1e1e1e"
   const GARMIN_RED = "#ff3b30"
   const GARMIN_GRID_LINE = "#2c2c2e"
-  const GARMIN_TEXT_MUTED = "#8e8e93"
-  const GARMIN_TEXT = "#ffffff"
 
   return (
     <div className="flex h-full flex-col rounded-[18px] border border-white/10 bg-[#111111] text-white shadow-lg">
-      <div className="flex min-h-0 flex-1 flex-col p-4">
+      <div className="min-h-0 flex-1 overflow-y-auto p-4">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
+            <p className="text-xs font-medium text-[#8e8e93]">{activityName} · {durationFormatted}</p>
             <p className="text-xs font-medium text-[#8e8e93]">Range</p>
             <p className="mt-1 text-3xl font-extrabold leading-none tracking-[-0.04em] text-white">
               {minHr}-{maxHr}
@@ -126,7 +130,7 @@ export function GarminActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }:
           </div>
         </div>
 
-        <div className="grid min-h-0 flex-1 grid-cols-[24px_1fr] gap-1">
+        <div className="grid h-[180px] grid-cols-[24px_1fr] gap-1">
           <div className="relative pb-[24px] pt-[10px]">
             <div className="relative h-full w-full border-r border-[#2c2c2e] pr-1">
               {axisTicks.map((tick) => (
@@ -184,6 +188,28 @@ export function GarminActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }:
               </AreaChart>
             </ResponsiveContainer>
           </div>
+        </div>
+
+        <div className="mt-4 space-y-2 pb-1">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/75">Zones</p>
+            <p className="text-[11px] font-semibold text-white">{totalZoneMinutes} min</p>
+          </div>
+          {heartRateZones.map((zone) => (
+            <div key={zone.zone} className="grid grid-cols-[54px_1fr_40px] items-center gap-2">
+              <p className="text-[10px] font-bold text-[#8e8e93]">{zone.zone}</p>
+              <div className="h-2 overflow-hidden rounded-full bg-white/[0.08]">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${(zone.minutes / Math.max(...heartRateZones.map((item) => item.minutes))) * 100}%`,
+                    backgroundColor: zone.color,
+                  }}
+                />
+              </div>
+              <p className="text-right text-[10px] font-bold text-white">{zone.minutes}m</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

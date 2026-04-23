@@ -30,12 +30,12 @@ export const widgetInformationById: Record<WidgetId, WidgetInformation> = {
   "resting-hr": {
     shows: "Resting heart rate trends, often measured during sleep or quiet periods.",
     coachUse: "A coach might use this as one signal of recovery, fatigue, illness, or adaptation to training.",
-    influences: "Sleep, illness, stress, hydration, alcohol, medications, fitness changes, and measurement timing.",
+    influences: "Sleep, illness, fatigue, hydration, alcohol, medications, level of fitness.",
   },
   "hrv-status": {
     shows: "Heart rate variability, usually summarized from overnight measurements.",
-    coachUse: "A coach might use this to discuss recovery status, readiness, or whether training load should be adjusted.",
-    influences: "Sleep quality, stress, illness, training load, alcohol, hydration, menstrual cycle phase, and measurement consistency.",
+    coachUse: "A coach might use this to interpret recovery status, readiness, or whether training load should be adjusted.",
+    influences: "Sleep quality, stress, illness, training load, alcohol, hydration, and measurement consistency.",
   },
   "calories-active-energy": {
     shows: "Estimated active energy or calories burned through movement and exercise.",
@@ -43,14 +43,14 @@ export const widgetInformationById: Record<WidgetId, WidgetInformation> = {
     influences: "Body size estimates, activity type, device algorithms, heart rate data, wear time, and workout logging accuracy.",
   },
   "vo2-max": {
-    shows: "Estimated cardiorespiratory fitness or aerobic capacity.",
+    shows: "Estimated endurance fitness or aerobic capacity.",
     coachUse: "A coach might use this to discuss endurance capacity, conditioning progress, or training adaptation.",
-    influences: "Workout data quality, running or cycling pace, heart rate response, device model, terrain, weather, and fitness changes.",
+    influences: "Running or cycling pace, heart rate response, terrain, weather, fitness changes, and training consistency.",
   },
   "total-sleep-time": {
-    shows: "Sleep start, sleep end, awake time, and total sleep duration for a night.",
-    coachUse: "A coach might use this to discuss recovery habits, travel effects, or whether sleep timing supports training demands.",
-    influences: "Schedule, travel, naps, stress, caffeine, device wear, sleep detection accuracy, and interruptions during the night.",
+    shows: "Sleep start, sleep end, awake time, sleep stages, and total sleep duration for a night.",
+    coachUse: "A coach might use this for in-depth insights to discuss recovery habits, travel effects, or to personalize training.",
+    influences: "Sleep duration, wake events, sleep timing, prior sleep debt, device algorithms, illness, and stress.",
   },
   "sleep-stages-cycles": {
     shows: "Estimated time spent in sleep stages such as wake, REM, core, and deep sleep.",
@@ -59,28 +59,28 @@ export const widgetInformationById: Record<WidgetId, WidgetInformation> = {
   },
   "sleep-score": {
     shows: "A summary score that combines sleep duration, timing, interruptions, and related sleep signals.",
-    coachUse: "A coach might use this as a simplified recovery indicator or a prompt for discussion about sleep routines.",
-    influences: "Sleep duration, wake events, sleep timing, prior sleep debt, device algorithm, illness, stress, travel, and schedule changes.",
+    coachUse: "A coach might use this as a simplified recovery indicator to modify training or prompt discussions.",
+    influences: "Sleep duration, wake events, sleep timing, prior sleep debt, device algorithms, illness, and stress.",
   },
   "respiratory-rate": {
     shows: "Estimated breathing rate, often measured overnight.",
     coachUse: "A coach might use this as a possible sign of recovery status, illness, or unusual physiological strain.",
-    influences: "Illness, altitude, sleep quality, stress, temperature, respiratory conditions, and device measurement quality.",
+    influences: "Illness, altitude, sleep quality, fatigue, temperature, respiratory conditions, and device measurement quality.",
   },
   "training-load": {
     shows: "A summary of recent strain, activity load, or training stress.",
-    coachUse: "A coach might use this to balance hard days, recovery days, and longer-term workload progression.",
-    influences: "Workout intensity, duration, heart rate response, previous training, sleep, stress, illness, and device-specific load formulas.",
+    coachUse: "A coach might use this to view training intensity, set intensity targets, and review long-term trends.",
+    influences: "Workout intensity, duration, heart rate response, previous training, workout frequency, and device-specific load formulas.",
   },
   "recovery-readiness": {
     shows: "A readiness-style summary using signals such as heart rate, respiration, temperature, and sleep.",
     coachUse: "A coach might use this to discuss whether the athlete appears ready for training or may need adjustment.",
-    influences: "Sleep, stress, illness, training load, baseline calculations, menstrual cycle phase, hydration, and device algorithms.",
+    influences: "Sleep, stress, illness, training load, HRV, hydration, and device-specific algorithms.",
   },
   "cycle-tracking": {
     shows: "Current cycle day, predicted period timing, and estimated cycle phase.",
-    coachUse: "A coach might use this to discuss individualized training, symptoms, or recovery needs if the athlete chooses to share it.",
-    influences: "Manual entries, cycle regularity, hormonal contraception, stress, illness, travel, sleep, and prediction accuracy.",
+    coachUse: "A coach might use this to discuss individualized training, symptoms, or recovery needs during different hormonal phases.",
+    influences: "Cycle regularity, hormonal contraception, stress, illness, pregnancy, sleep, and prediction accuracy.",
   },
   "activity-workout-minutes": {
     shows: "Minutes spent in recorded activity or workouts.",
@@ -95,7 +95,7 @@ export const widgetInformationById: Record<WidgetId, WidgetInformation> = {
   "temperature-deviation": {
     shows: "Skin, wrist, or body temperature deviation from the athlete's baseline.",
     coachUse: "A coach might use this as one possible signal of illness, recovery disruption, or physiological change.",
-    influences: "Illness, room temperature, sleep environment, menstrual cycle phase, device fit, travel, alcohol, and baseline calculations.",
+    influences: "Illness, room temperature, sleep environment, menstrual cycle phase, device fit, travel, and alcohol.",
   },
   "blood-oxygen": {
     shows: "Estimated blood oxygen saturation readings or overnight SpO2 ranges.",

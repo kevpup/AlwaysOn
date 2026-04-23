@@ -15,6 +15,14 @@ import {
 
 const WHOOP_HR_BLUE = "hsl(200, 70%, 50%)"
 const WHOOP_AXIS_BLACK = "hsl(220, 20%, 4%)"
+const heartRateZones = [
+  { zone: "Zone 1", minutes: 18, color: "#36c7f6" },
+  { zone: "Zone 2", minutes: 24, color: "#64d66a" },
+  { zone: "Zone 3", minutes: 32, color: "#ffd60a" },
+  { zone: "Zone 4", minutes: 28, color: "#ff9f0a" },
+  { zone: "Zone 5", minutes: 18, color: "#ff2d55" },
+] as const
+const totalZoneMinutes = heartRateZones.reduce((total, zone) => total + zone.minutes, 0)
 
 function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ value: number }> }) {
   if (active && payload && payload.length) {
@@ -87,88 +95,109 @@ export function WhoopActivityHrCard({ hrDataset = defaultAppleWatchHrDataset }: 
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-[28px_1fr] gap-1">
-        <div className="relative pb-[24px] pt-[8px]">
-          <div className="relative h-full w-full pr-1" style={{ borderRight: `1px solid ${WHOOP_AXIS_BLACK}` }}>
-            {yTicks.map((tick) => (
-              <span
-                key={tick}
-                className="absolute right-1 translate-y-1/2 text-[10px] text-[hsl(215,12%,55%)]"
-                style={{ bottom: `${((tick - axisMin) / (axisMax - axisMin)) * 100}%` }}
-              >
-                {tick}
-              </span>
-            ))}
+      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+        <div className="grid h-[180px] grid-cols-[28px_1fr] gap-1">
+          <div className="relative pb-[24px] pt-[8px]">
+            <div className="relative h-full w-full pr-1" style={{ borderRight: `1px solid ${WHOOP_AXIS_BLACK}` }}>
+              {yTicks.map((tick) => (
+                <span
+                  key={tick}
+                  className="absolute right-1 translate-y-1/2 text-[10px] text-[hsl(215,12%,55%)]"
+                  style={{ bottom: `${((tick - axisMin) / (axisMax - axisMin)) * 100}%` }}
+                >
+                  {tick}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative min-h-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id="whoopHeartRateGradientActivity" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={WHOOP_HR_BLUE} stopOpacity={0.34} />
+                    <stop offset="100%" stopColor={WHOOP_HR_BLUE} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="minuteOfDay"
+                  domain={[windowStart, windowEnd]}
+                  tickFormatter={formatTick}
+                  tickLine={false}
+                  tickMargin={8}
+                  ticks={xTicks}
+                  type="number"
+                  axisLine={{ stroke: WHOOP_AXIS_BLACK, strokeOpacity: 0.9 }}
+                  height={24}
+                />
+                <YAxis domain={[axisMin, axisMax]} hide />
+                <Tooltip content={<CustomTooltip />} />
+                {yTicks.map((tick) => (
+                  <ReferenceLine key={tick} y={tick} stroke={WHOOP_AXIS_BLACK} strokeDasharray="3 3" strokeOpacity={0.75} />
+                ))}
+                <Area
+                  data={preBufferData}
+                  type="linear"
+                  dataKey="hr"
+                  fill="url(#whoopHeartRateGradientActivity)"
+                  stroke={WHOOP_HR_BLUE}
+                  strokeOpacity={0.25}
+                  fillOpacity={0.25}
+                  strokeWidth={1}
+                  dot={false}
+                  activeDot={false}
+                  isAnimationActive={false}
+                />
+                <Area
+                  data={activeLineData}
+                  type="linear"
+                  dataKey="hr"
+                  fill="url(#whoopHeartRateGradientActivity)"
+                  stroke={WHOOP_HR_BLUE}
+                  strokeWidth={1}
+                  dot={false}
+                  activeDot={{ r: 4, fill: WHOOP_HR_BLUE, strokeWidth: 0 }}
+                  isAnimationActive={false}
+                />
+                <Area
+                  data={postBufferData}
+                  type="linear"
+                  dataKey="hr"
+                  fill="url(#whoopHeartRateGradientActivity)"
+                  stroke={WHOOP_HR_BLUE}
+                  strokeOpacity={0.25}
+                  fillOpacity={0.25}
+                  strokeWidth={1}
+                  dot={false}
+                  activeDot={false}
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="relative min-h-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
-              <defs>
-                <linearGradient id="whoopHeartRateGradientActivity" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={WHOOP_HR_BLUE} stopOpacity={0.34} />
-                  <stop offset="100%" stopColor={WHOOP_HR_BLUE} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="minuteOfDay"
-                domain={[windowStart, windowEnd]}
-                tickFormatter={formatTick}
-                tickLine={false}
-                tickMargin={8}
-                ticks={xTicks}
-                type="number"
-                axisLine={{ stroke: WHOOP_AXIS_BLACK, strokeOpacity: 0.9 }}
-                height={24}
-              />
-              <YAxis
-                domain={[axisMin, axisMax]}
-                hide
-              />
-              <Tooltip content={<CustomTooltip />} />
-              {yTicks.map((tick) => (
-                <ReferenceLine key={tick} y={tick} stroke={WHOOP_AXIS_BLACK} strokeDasharray="3 3" strokeOpacity={0.75} />
-              ))}
-              <Area
-                data={preBufferData}
-                type="linear"
-                dataKey="hr"
-                fill="url(#whoopHeartRateGradientActivity)"
-                stroke={WHOOP_HR_BLUE}
-                strokeOpacity={0.25}
-                fillOpacity={0.25}
-                strokeWidth={1}
-                dot={false}
-                activeDot={false}
-                isAnimationActive={false}
-              />
-              <Area
-                data={activeLineData}
-                type="linear"
-                dataKey="hr"
-                fill="url(#whoopHeartRateGradientActivity)"
-                stroke={WHOOP_HR_BLUE}
-                strokeWidth={1}
-                dot={false}
-                activeDot={{ r: 4, fill: WHOOP_HR_BLUE, strokeWidth: 0 }}
-                isAnimationActive={false}
-              />
-              <Area
-                data={postBufferData}
-                type="linear"
-                dataKey="hr"
-                fill="url(#whoopHeartRateGradientActivity)"
-                stroke={WHOOP_HR_BLUE}
-                strokeOpacity={0.25}
-                fillOpacity={0.25}
-                strokeWidth={1}
-                dot={false}
-                activeDot={false}
-                isAnimationActive={false}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+        <div className="mt-4 space-y-2 pb-1">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Zones</p>
+            <p className="text-[11px] font-semibold text-foreground">{totalZoneMinutes} min</p>
+          </div>
+          {heartRateZones.map((zone) => (
+            <div key={zone.zone} className="grid grid-cols-[54px_1fr_40px] items-center gap-2">
+              <p className="text-[10px] font-semibold text-muted-foreground">{zone.zone}</p>
+              <div className="h-2 overflow-hidden rounded-full bg-muted/60">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${(zone.minutes / Math.max(...heartRateZones.map((item) => item.minutes))) * 100}%`,
+                    backgroundColor: zone.color,
+                  }}
+                />
+              </div>
+              <p className="text-right text-[10px] font-semibold text-foreground">{zone.minutes}m</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

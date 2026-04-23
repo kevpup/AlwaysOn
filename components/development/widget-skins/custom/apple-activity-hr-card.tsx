@@ -22,11 +22,11 @@ const APPLE_RED = "#ff2d55"
 const HEART_RED = "#ff2d55"
 
 const heartRateZones = [
-  { zone: "Zone 1", label: "Easy", minutes: 7, color: "#36c7f6" },
-  { zone: "Zone 2", label: "Light", minutes: 12, color: "#64d66a" },
-  { zone: "Zone 3", label: "Moderate", minutes: 14, color: "#ffd60a" },
-  { zone: "Zone 4", label: "Hard", minutes: 10, color: "#ff9f0a" },
-  { zone: "Zone 5", label: "Peak", minutes: 5, color: "#ff2d55" },
+  { zone: "Zone 1", label: "Easy", minutes: 18, color: "#36c7f6" },
+  { zone: "Zone 2", label: "Light", minutes: 24, color: "#64d66a" },
+  { zone: "Zone 3", label: "Moderate", minutes: 32, color: "#ffd60a" },
+  { zone: "Zone 4", label: "Hard", minutes: 28, color: "#ff9f0a" },
+  { zone: "Zone 5", label: "Peak", minutes: 18, color: "#ff2d55" },
 ] as const
 
 const totalZoneMinutes = heartRateZones.reduce((total, zone) => total + zone.minutes, 0)

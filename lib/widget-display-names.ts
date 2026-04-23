@@ -8,7 +8,7 @@ type WidgetDisplayNameContext = {
 
 const appleWidgetDisplayNames: Partial<Record<WidgetId, string>> = {
   "full-day-hr": "HR Graph",
-  "activity-hr-graph": "Activity HR + Zones",
+  "activity-hr-graph": "Activity Data",
   "resting-hr": "Resting HR",
   "hrv-status": "HRV",
   "calories-active-energy": "Active Energy",
@@ -26,7 +26,7 @@ const appleWidgetDisplayNames: Partial<Record<WidgetId, string>> = {
 
 const whoopWidgetDisplayNames: Partial<Record<WidgetId, string>> = {
   "full-day-hr": "Heart Rate",
-  "activity-hr-graph": "Activity Heart Rate",
+  "activity-hr-graph": "Activity Data",
   "resting-hr": "Resting Heart Rate",
   "hrv-status": "HRV",
   "calories-active-energy": "Calories",
@@ -44,7 +44,7 @@ const whoopWidgetDisplayNames: Partial<Record<WidgetId, string>> = {
 
 const garminWidgetDisplayNames: Partial<Record<WidgetId, string>> = {
   "full-day-hr": "Heart Rate",
-  "activity-hr-graph": "Activity Heart Rate",
+  "activity-hr-graph": "Activity Data",
   "resting-hr": "Resting Heart Rate",
   "hrv-status": "HRV",
   "calories-active-energy": "Calories",
@@ -62,7 +62,7 @@ const garminWidgetDisplayNames: Partial<Record<WidgetId, string>> = {
 
 const ouraWidgetDisplayNames: Partial<Record<WidgetId, string>> = {
   "full-day-hr": "Heart Rate",
-  "activity-hr-graph": "Activity Heart Rate",
+  "activity-hr-graph": "Activity Data",
   "resting-hr": "Lowest Heart Rate",
   "hrv-status": "Average HRV",
   "calories-active-energy": "Active Calorie Burn",

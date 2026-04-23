@@ -45,7 +45,7 @@ export function DeviceScreen({
                     : "border-border bg-background/60 hover:bg-secondary/70"
                 }`}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-center gap-4">
                   <div
                     className={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl ${
                       isSelected ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""
@@ -55,7 +55,6 @@ export function DeviceScreen({
                   </div>
                   <div className="min-w-0">
                     <p className="text-base font-semibold text-foreground">{option.label}</p>
-                    <p className="mt-1 text-sm leading-6 text-muted-foreground">{option.description}</p>
                   </div>
                 </div>
               </button>
