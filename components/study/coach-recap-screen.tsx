@@ -37,9 +37,9 @@ export function CoachRecapScreen({
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
               Scenario {scenarioIndex + 1} of {totalScenarios}
             </p>
-            <h1 className="mt-2 text-2xl font-semibold tracking-tight">Coach View Recap</h1>
+            <h1 className="mt-2 text-2xl font-semibold tracking-tight">Staff View Recap</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-              This is the view your coach would see for{" "}
+              This is the view staff would see for{" "}
               <span className="font-medium text-foreground">{scenario.title}</span>. Use this page to discuss the
               design, then continue or go back to make changes.
             </p>
@@ -77,10 +77,10 @@ export function CoachRecapScreen({
           <div className="border-b border-border px-5 py-4">
             <div className="flex items-center gap-2">
               <Eye className="h-4 w-4 text-primary" />
-              <h2 className="text-sm font-semibold text-foreground">Coach View</h2>
+              <h2 className="text-sm font-semibold text-foreground">Staff View</h2>
             </div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              These are the widgets currently shared with the coach for this scenario.
+              These are the widgets currently shared with staff for this scenario.
             </p>
           </div>
 
@@ -90,7 +90,7 @@ export function CoachRecapScreen({
                 <EyeOff className="h-8 w-8 text-muted-foreground" />
                 <h3 className="mt-4 text-lg font-semibold text-foreground">No Shared Widgets</h3>
                 <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                  Right now the coach would not see any wearable widgets for this scenario. Go back if you want to
+                  Right now staff would not see any wearable widgets for this scenario. Go back if you want to
                   revise that view.
                 </p>
               </div>

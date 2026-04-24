@@ -104,7 +104,7 @@ export function SortableWidget({
                       className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-foreground"
                     >
                       <EyeOff className="h-3 w-3" />
-                      Hide from Coach
+                      Hide from Staff
                     </button>
                   )}
                 </div>
@@ -153,7 +153,7 @@ export function SortableWidget({
                   </section>
                   <section>
                     <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      Why a coach might use it
+                      Why staff might use it
                     </h4>
                     <p className="mt-1 text-foreground">{widgetInformation.coachUse}</p>
                   </section>

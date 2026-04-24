@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -102,7 +103,7 @@ export function ScenarioWorkspaceScreen({
                   onClick={onReviewCoachView}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
-                  Review Coach View
+                  Review Staff View
                   <ChevronRight className="h-4 w-4" />
                 </button>
                 <button
@@ -190,6 +191,7 @@ function WidgetListZone({
   widgets: WidgetConfig[]
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: zoneContainerIds[zoneId] })
+  const [showPreviews, setShowPreviews] = useState(true)
 
   return (
     <section
@@ -199,9 +201,18 @@ function WidgetListZone({
       }`}
     >
       <div className="border-b border-border px-4 py-4">
-        <div className="flex items-center gap-2">
-          <EyeOff className="h-4 w-4 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground">{zoneTitles[zoneId]}</h2>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <EyeOff className="h-4 w-4 text-primary" />
+            <h2 className="text-sm font-semibold text-foreground">{zoneTitles[zoneId]}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowPreviews((current) => !current)}
+            className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            {showPreviews ? "Hide Previews" : "See Previews"}
+          </button>
         </div>
         <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions[zoneId]}</p>
       </div>
@@ -209,7 +220,7 @@ function WidgetListZone({
       <div className="min-h-[440px] p-3 xl:h-[680px] xl:overflow-y-auto">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[400px] items-center justify-center rounded-xl border border-dashed border-border px-6 text-center text-sm text-muted-foreground">
-            Drop widgets here when they should not appear on the coach view.
+            Drop widgets here when they should not appear in the staff view.
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -218,6 +229,7 @@ function WidgetListZone({
                 key={widget.id}
                 deviceType={deviceType}
                 scenarioId={scenarioId}
+                showPreview={showPreviews}
                 sportCategory={sportCategory}
                 widget={widget}
               />
@@ -265,7 +277,7 @@ function ShareZone({
             <Eye className="h-8 w-8 text-muted-foreground" />
             <h3 className="mt-4 text-lg font-semibold text-foreground">No Shared Widgets Yet</h3>
             <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-              Drag widgets here when you want the coach to have view-only access during this scenario.
+              Drag widgets here when you want staff to have view-only access during this scenario.
             </p>
           </div>
         ) : (

@@ -17,7 +17,7 @@ import {
   type ZoneId,
   type ZonesState,
 } from "@/components/study/types"
-import { getScenarioGroupId, getScenariosForParticipant, type Scenario, scenarios } from "@/lib/scenarios"
+import { getScenariosForParticipant, type Scenario, scenarios } from "@/lib/scenarios"
 import { getWidgetsForSportCategory } from "@/lib/widget-selection"
 
 function shuffleWidgets(widgets: WidgetConfig[]) {
@@ -328,10 +328,9 @@ export function useStudySession() {
       if (!widget) return currentZones
 
       const nextNotDisplayed = currentZones.not_displayed.filter((item) => item.id !== widgetId)
-      nextNotDisplayed.push(widget)
 
       return {
-        not_displayed: nextNotDisplayed,
+        not_displayed: [widget, ...nextNotDisplayed],
         share: currentZones.share.filter((item) => item.id !== widgetId),
       }
     })
@@ -398,10 +397,6 @@ export function useStudySession() {
     ]
     const isLastScenario = scenarioIndex === assignedScenarios.length - 1
     const nextScenarioIndex = isLastScenario ? scenarioIndex : scenarioIndex + 1
-    const nextScenario = assignedScenarios[nextScenarioIndex]
-    const shouldCarryZonesForward =
-      nextScenario &&
-      getScenarioGroupId(currentScenario.id) === getScenarioGroupId(nextScenario.id)
 
     setSavedRows(nextRows)
     persistRowsToFile(scenarioRows)
@@ -411,14 +406,10 @@ export function useStudySession() {
       return
     }
 
-    setZones(
-      shouldCarryZonesForward
-        ? cloneZones(zones)
-        : createInitialZones(participant.sportCategory, sessionWidgetOrder)
-    )
+    setZones(createInitialZones(participant.sportCategory, sessionWidgetOrder))
     setScenarioIndex(nextScenarioIndex)
     setScenarioView("intro")
-  }, [assignedScenarios, buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, sessionWidgetOrder, zones])
+  }, [assignedScenarios.length, buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioIndex, sessionId, sessionWidgetOrder])
 
   const skipToFinish = useCallback(() => {
     if (!participant || !sessionId) return
