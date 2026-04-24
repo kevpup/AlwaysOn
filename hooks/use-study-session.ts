@@ -49,6 +49,23 @@ function cloneZones(zones: ZonesState): ZonesState {
   }
 }
 
+function reorderZoneItems(items: WidgetConfig[], activeId: WidgetId, overId: string) {
+  const sourceIndex = items.findIndex((item) => item.id === activeId)
+  if (sourceIndex < 0) return items
+
+  const targetIndex =
+    sourceIndex === -1
+      ? -1
+      : items.findIndex((item) => item.id === overId)
+
+  if (targetIndex < 0 || targetIndex === sourceIndex) return items
+
+  const nextItems = [...items]
+  const [movedItem] = nextItems.splice(sourceIndex, 1)
+  nextItems.splice(targetIndex, 0, movedItem)
+  return nextItems
+}
+
 export function useStudySession() {
   const [step, setStep] = useState<StudyStep>("name")
   const [scenarioView, setScenarioView] = useState<ScenarioView>("intro")
@@ -334,6 +351,10 @@ export function useStudySession() {
     if (!targetZone) return
 
     if (sourceZone === targetZone) {
+      setZones((currentZones) => ({
+        ...currentZones,
+        [sourceZone]: reorderZoneItems(currentZones[sourceZone], activeWidgetId, overId),
+      }))
       return
     }
 
