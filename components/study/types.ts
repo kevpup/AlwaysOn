@@ -4,7 +4,8 @@ import { type WidgetConfig, type WidgetId } from "@/lib/mock-data"
 
 export type ZoneId = "not_displayed" | "share"
 export type StudyStep = "name" | "sport" | "device" | "study" | "complete" | "widget-dev"
-export type ScenarioView = "intro" | "workspace" | "recap"
+export type ScenarioView = "intro" | "preview" | "workspace" | "recap"
+export type PreviewContext = "onboarding" | "recap"
 export type DeviceType = "whoop" | "oura" | "apple-watch" | "garmin"
 export type SportCategory = "mens" | "womens"
 
@@ -38,6 +39,7 @@ export interface NavigationSnapshot {
   step: StudyStep
   scenarioView: ScenarioView
   scenarioIndex: number
+  previewContext: PreviewContext
 }
 
 export type { WidgetConfig, WidgetId }

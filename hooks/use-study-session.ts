@@ -8,6 +8,7 @@ import {
   type NavigationSnapshot,
   type ParticipantFormState,
   type ParticipantInfo,
+  type PreviewContext,
   type ScenarioDecisionRow,
   type ScenarioView,
   type SportCategory,
@@ -69,6 +70,7 @@ function reorderZoneItems(items: WidgetConfig[], activeId: WidgetId, overId: str
 export function useStudySession() {
   const [step, setStep] = useState<StudyStep>("name")
   const [scenarioView, setScenarioView] = useState<ScenarioView>("intro")
+  const [previewContext, setPreviewContext] = useState<PreviewContext>("onboarding")
   const [participantForm, setParticipantForm] = useState<ParticipantFormState>({
     name: "",
     sportCategory: null,
@@ -85,6 +87,11 @@ export function useStudySession() {
   const [navigationHistory, setNavigationHistory] = useState<NavigationSnapshot[]>([])
 
   const currentScenario = assignedScenarios[scenarioIndex] ?? null
+  const previewWidgets = useMemo(() => {
+    return sessionWidgetOrder.length
+      ? sessionWidgetOrder
+      : getWidgetsForSportCategory(participant?.sportCategory)
+  }, [participant?.sportCategory, sessionWidgetOrder])
 
   const findZoneForWidget = useCallback((id: WidgetId, currentZones: ZonesState = zones): ZoneId | null => {
     if (currentZones.not_displayed.some((widget) => widget.id === id)) return "not_displayed"
@@ -179,9 +186,10 @@ export function useStudySession() {
         step,
         scenarioView,
         scenarioIndex,
+        previewContext,
       },
     ])
-  }, [scenarioIndex, scenarioView, step])
+  }, [previewContext, scenarioIndex, scenarioView, step])
 
   const goBack = useCallback(() => {
     if (navigationHistory.length === 0) return
@@ -202,6 +210,7 @@ export function useStudySession() {
     setStep(previous.step)
     setScenarioView(previous.scenarioView)
     setScenarioIndex(previous.scenarioIndex)
+    setPreviewContext(previous.previewContext)
     setNavigationHistory((current) => current.slice(0, -1))
   }, [assignedScenarios, buildZonesFromSavedScenario, navigationHistory, scenarioIndex])
 
@@ -230,6 +239,7 @@ export function useStudySession() {
   const resetSession = useCallback(() => {
     setStep("name")
     setScenarioView("intro")
+    setPreviewContext("onboarding")
     setParticipant(null)
     setParticipantForm({ name: "", sportCategory: null, deviceType: null })
     setSessionId(null)
@@ -287,7 +297,8 @@ export function useStudySession() {
     setSessionId(`session-${Date.now()}`)
     setAssignedScenarios(selectedScenarios)
     setScenarioIndex(0)
-    setScenarioView("intro")
+    setScenarioView("preview")
+    setPreviewContext("onboarding")
     setSessionWidgetOrder(randomizedWidgetOrder)
     setZones(createInitialZones(sportCategory, randomizedWidgetOrder))
     setSavedRows([])
@@ -303,6 +314,12 @@ export function useStudySession() {
   const openRecap = useCallback(() => {
     pushNavigationSnapshot()
     setScenarioView("recap")
+  }, [pushNavigationSnapshot])
+
+  const openWidgetPreviewFromRecap = useCallback(() => {
+    pushNavigationSnapshot()
+    setPreviewContext("recap")
+    setScenarioView("preview")
   }, [pushNavigationSnapshot])
 
   const openWidgetDevelopment = useCallback(() => {
@@ -419,7 +436,10 @@ export function useStudySession() {
     let nextRows = savedRows
     let rowsToPersist: ScenarioDecisionRow[] = []
 
-    if (currentScenario && (scenarioView === "workspace" || scenarioView === "recap")) {
+    if (
+      currentScenario &&
+      (scenarioView === "workspace" || scenarioView === "recap" || (scenarioView === "preview" && previewContext === "recap"))
+    ) {
       const scenarioRows = buildScenarioRows(currentScenario, zones)
       nextRows = [
         ...savedRows.filter((row) => row.scenarioId !== currentScenario.id),
@@ -434,12 +454,23 @@ export function useStudySession() {
     }
 
     setStep("complete")
-  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, pushNavigationSnapshot, savedRows, scenarioView, sessionId, zones])
+  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, previewContext, pushNavigationSnapshot, savedRows, scenarioView, sessionId, zones])
+
+  const continueFromWidgetPreview = useCallback(() => {
+    if (previewContext === "recap") {
+      skipToFinish()
+      return
+    }
+
+    pushNavigationSnapshot()
+    setScenarioView("intro")
+  }, [previewContext, pushNavigationSnapshot, skipToFinish])
 
   return {
     activeWidget,
     activeZone,
     canGoBack: navigationHistory.length > 0,
+    continueFromWidgetPreview,
     currentScenario,
     goBack,
     handleDeviceTypeSelect,
@@ -449,11 +480,14 @@ export function useStudySession() {
     handleParticipantNameChange,
     handleSportCategorySelect,
     moveWidgetToNotDisplayed,
+    openWidgetPreviewFromRecap,
     openRecap,
     openWidgetDevelopment,
     openWorkspace,
     participant,
     participantForm,
+    previewContext,
+    previewWidgets,
     resetSession,
     saveScenario,
     scenarioIndex,

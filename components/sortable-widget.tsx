@@ -55,7 +55,9 @@ export function SortableWidget({
       {...attributes}
       {...listeners}
       aria-label={disableSorting ? displayName : `Drag ${displayName}`}
-      className={`group relative aspect-square w-full cursor-grab active:cursor-grabbing ${
+      className={`group relative aspect-square w-full ${
+        disableSorting ? "cursor-default" : "cursor-grab active:cursor-grabbing"
+      } ${
         isDragging ? "z-50 opacity-50" : ""
       }`}
     >

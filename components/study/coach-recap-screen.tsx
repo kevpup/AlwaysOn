@@ -10,6 +10,7 @@ interface CoachRecapScreenProps {
   deviceType: DeviceType
   onBack: () => void
   onContinue: () => void
+  onSeeAllWidgets: () => void
   onSkipToFinish: () => void
   scenario: Scenario
   scenarioIndex: number
@@ -22,6 +23,7 @@ export function CoachRecapScreen({
   deviceType,
   onBack,
   onContinue,
+  onSeeAllWidgets,
   onSkipToFinish,
   scenario,
   scenarioIndex,
@@ -60,6 +62,12 @@ export function CoachRecapScreen({
               >
                 {scenarioIndex === totalScenarios - 1 ? "Save and Finish" : "Next Scenario"}
                 <ChevronRight className="h-4 w-4" />
+              </button>
+              <button
+                onClick={onSeeAllWidgets}
+                className="inline-flex w-full items-center justify-center rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              >
+                See All Widgets
               </button>
               <button
                 onClick={onSkipToFinish}

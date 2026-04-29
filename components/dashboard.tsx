@@ -8,6 +8,7 @@ import { NameScreen } from "@/components/study/name-screen"
 import { ScenarioIntroScreen } from "@/components/study/scenario-intro-screen"
 import { ScenarioWorkspaceScreen } from "@/components/study/scenario-workspace-screen"
 import { SportCategoryScreen } from "@/components/study/sport-category-screen"
+import { WidgetPreviewScreen } from "@/components/study/widget-preview-screen"
 import { useStudySession } from "@/hooks/use-study-session"
 
 export function Dashboard() {
@@ -62,6 +63,20 @@ export function Dashboard() {
 
   if (!session.currentScenario || !session.participant) return null
 
+  if (session.scenarioView === "preview") {
+    return (
+      <WidgetPreviewScreen
+        deviceType={session.participant.deviceType}
+        onBack={session.goBack}
+        onPrimaryAction={session.continueFromWidgetPreview}
+        onSkipToFinish={session.skipToFinish}
+        previewContext={session.previewContext}
+        sportCategory={session.participant.sportCategory}
+        widgets={session.previewWidgets}
+      />
+    )
+  }
+
   if (session.scenarioView === "intro") {
     return (
       <ScenarioIntroScreen
@@ -82,6 +97,7 @@ export function Dashboard() {
         deviceType={session.participant.deviceType}
         onBack={session.goBack}
         onContinue={session.saveScenario}
+        onSeeAllWidgets={session.openWidgetPreviewFromRecap}
         onSkipToFinish={session.skipToFinish}
         scenario={session.currentScenario}
         scenarioIndex={session.scenarioIndex}

@@ -117,21 +117,23 @@ export function ScenarioWorkspaceScreen({
           </div>
         </div>
 
-        <div className="mx-auto grid max-w-[1600px] gap-4 px-4 py-6 md:px-6 xl:grid-cols-[280px_minmax(0,1fr)]">
-          <WidgetListZone
-            deviceType={deviceType}
-            scenarioId={scenario.id}
-            sportCategory={sportCategory}
-            zoneId="not_displayed"
-            widgets={zones.not_displayed}
-          />
-          <ShareZone
-            deviceType={deviceType}
-            scenarioId={scenario.id}
-            widgets={zones.share}
-            onMoveToNotDisplayed={onMoveToNotDisplayed}
-            sportCategory={sportCategory}
-          />
+        <div className="overflow-x-auto px-4 py-6 md:px-6">
+          <div className="mx-auto grid max-w-[1600px] min-w-[880px] grid-cols-[220px_minmax(620px,1fr)] gap-4">
+            <WidgetListZone
+              deviceType={deviceType}
+              scenarioId={scenario.id}
+              sportCategory={sportCategory}
+              zoneId="not_displayed"
+              widgets={zones.not_displayed}
+            />
+            <ShareZone
+              deviceType={deviceType}
+              scenarioId={scenario.id}
+              widgets={zones.share}
+              onMoveToNotDisplayed={onMoveToNotDisplayed}
+              sportCategory={sportCategory}
+            />
+          </div>
         </div>
       </div>
 
@@ -191,7 +193,7 @@ function WidgetListZone({
   widgets: WidgetConfig[]
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: zoneContainerIds[zoneId] })
-  const [showPreviews, setShowPreviews] = useState(true)
+  const [showPreviews, setShowPreviews] = useState(false)
 
   return (
     <section
@@ -217,7 +219,7 @@ function WidgetListZone({
         <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions[zoneId]}</p>
       </div>
 
-      <div className="min-h-[440px] p-3 xl:h-[680px] xl:overflow-y-auto">
+      <div className="min-h-[440px] p-3 lg:h-[680px] lg:overflow-y-auto">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[400px] items-center justify-center rounded-xl border border-dashed border-border px-6 text-center text-sm text-muted-foreground">
             Drop widgets here when they should not appear in the staff view.
@@ -271,7 +273,7 @@ function ShareZone({
         <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions.share}</p>
       </div>
 
-      <div className="min-h-[680px] p-5">
+      <div className="min-h-[680px] p-4 lg:p-5">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[620px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border px-8 text-center">
             <Eye className="h-8 w-8 text-muted-foreground" />
@@ -284,7 +286,7 @@ function ShareZone({
           <SortableContext items={widgets.map((widget) => widget.id)} strategy={rectSortingStrategy}>
             <div className="flex flex-wrap content-start justify-start gap-4">
               {widgets.map((widget) => (
-                <div key={widget.id} className="w-full max-w-[360px] sm:w-[360px]">
+                <div key={widget.id} className="w-[280px] max-w-full sm:w-[300px] lg:w-[320px] xl:w-[340px]">
                   <SortableWidget
                     deviceType={deviceType}
                     scenarioId={scenarioId}
