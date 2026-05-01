@@ -1,6 +1,8 @@
 "use client"
 
-import { ChevronLeft, RotateCcw } from "lucide-react"
+import { CheckCircle2, ChevronLeft, RotateCcw } from "lucide-react"
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 interface CompletionScreenProps {
   canGoBack: boolean
@@ -15,9 +17,16 @@ export function CompletionScreen({ canGoBack, onBack, onResetSession }: Completi
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Thank You</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight">Thank you for participating</h1>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-          Your responses have been recorded. Thank you for taking the time to share your perspective on wearable
-          data and coaching.
+          Thank you for taking the time to share your perspective on wearable data and coaching.
         </p>
+
+        <Alert className="mx-auto mt-6 max-w-2xl border-emerald-500/30 bg-emerald-500/10 text-left text-foreground shadow-sm [&>svg]:text-emerald-600 dark:[&>svg]:text-emerald-400">
+          <CheckCircle2 className="h-4 w-4" />
+          <AlertTitle>Your responses have been recorded</AlertTitle>
+          <AlertDescription>
+            Your session responses were saved successfully and are ready for research use.
+          </AlertDescription>
+        </Alert>
 
         <div className="mt-8 flex flex-wrap gap-3">
           {canGoBack ? (

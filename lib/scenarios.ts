@@ -19,9 +19,9 @@ export interface ScenarioAssignmentPlan {
 export const scenarios: Scenario[] = [
   {
     id: "championship-roster-head-coach",
-    title: "Championship Roster Decision: Head Coach",
+    title: "Championship Roster Decision: Primary Coach",
     prompt:
-      "Imagine you are on the borderline of starting or not starting, and the championship roster will be released in two weeks. The coach making the final roster decision wants to use wearable data to help evaluate athlete readiness.\n\nIn this scenario, what wearable data would you vote to share with this decision-making coach?",
+      "Imagine you are on the borderline of starting or not starting, and the championship roster will be released in two weeks. The primary coach responsible for your training during this period is also part of making the final roster decision and would likely be the person reviewing and interpreting your wearable data.\n\nIn this scenario, what wearable data would you vote to share with this primary coach?",
     facilitatorNotes:
       "Axis: high-power decision-maker with roster authority and team performance responsibility.",
   },

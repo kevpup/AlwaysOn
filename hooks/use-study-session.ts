@@ -21,17 +21,44 @@ import {
 import { getScenariosForParticipant, type Scenario, scenarios } from "@/lib/scenarios"
 import { getWidgetsForSportCategory } from "@/lib/widget-selection"
 
-function shuffleWidgets(widgets: WidgetConfig[]) {
-  const shuffledWidgets = [...widgets]
+const widgetOrderGroups: WidgetId[][] = [
+  ["total-sleep-time", "sleep-score"],
+  ["training-load", "full-workout-report", "activity-hr-graph"],
+  ["full-day-hr", "resting-hr"],
+]
 
-  for (let index = shuffledWidgets.length - 1; index > 0; index -= 1) {
+function shuffleItems<T>(items: T[]) {
+  const shuffledItems = [...items]
+
+  for (let index = shuffledItems.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
-    const currentWidget = shuffledWidgets[index]
-    shuffledWidgets[index] = shuffledWidgets[randomIndex]
-    shuffledWidgets[randomIndex] = currentWidget
+    const currentItem = shuffledItems[index]
+    shuffledItems[index] = shuffledItems[randomIndex]
+    shuffledItems[randomIndex] = currentItem
   }
 
-  return shuffledWidgets
+  return shuffledItems
+}
+
+function shuffleWidgets(widgets: WidgetConfig[]) {
+  const widgetById = new Map(widgets.map((widget) => [widget.id, widget]))
+  const groupedWidgetIds = new Set(widgetOrderGroups.flat())
+
+  const groupedBlocks = widgetOrderGroups
+    .map((groupIds) =>
+      shuffleItems(
+        groupIds
+          .map((widgetId) => widgetById.get(widgetId))
+          .filter((widget): widget is WidgetConfig => Boolean(widget))
+      )
+    )
+    .filter((group) => group.length > 0)
+
+  const singletonBlocks = widgets
+    .filter((widget) => !groupedWidgetIds.has(widget.id))
+    .map((widget) => [widget])
+
+  return shuffleItems([...groupedBlocks, ...singletonBlocks]).flat()
 }
 
 function createInitialZones(sportCategory?: SportCategory | null, orderedWidgets?: WidgetConfig[]): ZonesState {
