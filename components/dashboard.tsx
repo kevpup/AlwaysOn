@@ -19,7 +19,6 @@ export function Dashboard() {
       <NameScreen
         name={session.participantForm.name}
         onNameChange={session.handleParticipantNameChange}
-        onOpenWidgetDevelopment={session.openWidgetDevelopment}
         onSubmit={session.submitName}
       />
     )
