@@ -45,7 +45,7 @@ export function NameScreen({ name, onNameChange, onSubmit }: NameScreenProps) {
               type="submit"
               className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Continue
+              Lets-a-go-a
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
