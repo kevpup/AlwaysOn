@@ -1,7 +1,6 @@
 "use client"
 
 import { WidgetDevelopmentScreen } from "@/components/development/widget-development-screen"
-import { CompletionScreen } from "@/components/study/completion-screen"
 import { CoachRecapScreen } from "@/components/study/coach-recap-screen"
 import { DeviceScreen } from "@/components/study/device-screen"
 import { NameScreen } from "@/components/study/name-screen"
@@ -19,6 +18,7 @@ export function Dashboard() {
       <NameScreen
         name={session.participantForm.name}
         onNameChange={session.handleParticipantNameChange}
+        onOpenWidgetDevelopment={session.openWidgetDevelopment}
         onSubmit={session.submitName}
       />
     )
@@ -50,15 +50,7 @@ export function Dashboard() {
     )
   }
 
-  if (session.step === "complete") {
-    return (
-      <CompletionScreen
-        canGoBack={session.canGoBack}
-        onBack={session.goBack}
-        onResetSession={session.resetSession}
-      />
-    )
-  }
+  if (session.step === "complete") return null
 
   if (!session.currentScenario || !session.participant) return null
 

@@ -4,14 +4,10 @@ import { z } from "zod"
 import { scenarios } from "@/lib/scenarios"
 import { allWidgets, defaultWidgets } from "@/lib/widget-selection"
 
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxQhibrsN32hk95XQgxqBCM1_r_iHtK8HoOY6QbE1KgZb9H5UnP5pEmXChgdEYZ_k9X/exec"
-
 const DEVICE_TYPES = ["whoop", "oura", "apple-watch", "garmin"] as const
 const SPORT_CATEGORIES = ["mens", "womens"] as const
 const MENSTRUAL_CYCLE_WIDGET_TITLE = "Cycle Tracking"
 const MAX_BODY_BYTES = 64 * 1024
-const UPSTREAM_TIMEOUT_MS = 5000
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX_REQUESTS = 30
 const allowedScenarioIds = new Set(scenarios.map((scenario) => scenario.id))
@@ -37,25 +33,6 @@ const persistRequestSchema = z.object({
   deviceType: deviceTypeSchema,
   rows: z.array(scenarioDecisionRowSchema).min(1).max(defaultWidgets.length),
 }).strict()
-
-interface ReplaceScenarioPayload {
-  action: "replaceScenario"
-  sessionId: string
-  participantName: string
-  sportCategory: (typeof SPORT_CATEGORIES)[number]
-  deviceType: (typeof DEVICE_TYPES)[number]
-  scenarioId: string
-  rows: Array<{
-    timestamp: string
-    sessionId: string
-    participantName: string
-    sportCategory: (typeof SPORT_CATEGORIES)[number]
-    deviceType: (typeof DEVICE_TYPES)[number]
-    scenarioId: string
-    widgetTitle: string
-    shared: boolean
-  }>
-}
 
 function jsonNoStore(body: unknown, status = 200) {
   return NextResponse.json(body, {
@@ -216,56 +193,9 @@ export async function POST(request: Request) {
       return jsonNoStore({ error: "Invalid scenario payload." }, 400)
     }
 
-    const { deviceType, participantName, rows, sessionId, sportCategory } = parsedRequest.data
-    const scenarioId = rows[0].scenarioId
-    const timestamp = new Date().toISOString()
-
-    const payload: ReplaceScenarioPayload = {
-      action: "replaceScenario",
-      sessionId,
-      participantName,
-      sportCategory,
-      deviceType,
-      scenarioId,
-      rows: rows.map((row) => ({
-        timestamp,
-        sessionId,
-        participantName,
-        sportCategory,
-        deviceType,
-        scenarioId: row.scenarioId,
-        widgetTitle: row.widgetTitle,
-        shared: row.shared,
-      })),
-    }
-
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-      cache: "no-store",
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
-    })
-
-    if (!response.ok) {
-      console.error("Google Sheets request failed", {
-        scenarioId,
-        sessionId,
-        status: response.status,
-      })
-
-      return jsonNoStore({ error: "Failed to persist scenario rows." }, 502)
-    }
-
-    return jsonNoStore({ ok: true })
+    return jsonNoStore({ ok: true, persisted: false })
   } catch (error) {
-    if (error instanceof Error && error.name === "TimeoutError") {
-      return jsonNoStore({ error: "Scenario persistence timed out." }, 504)
-    }
-
-    console.error("Failed to persist scenario rows to Google Sheets", error)
+    console.error("Failed to validate research scenario rows", error)
     return jsonNoStore({ error: "Failed to persist scenario rows." }, 500)
   }
 }

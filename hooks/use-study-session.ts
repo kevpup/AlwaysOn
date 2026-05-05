@@ -294,12 +294,9 @@ export function useStudySession() {
   const submitName = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const name = participantForm.name.trim()
-    if (!name) return
-
     pushNavigationSnapshot()
     setStep("sport")
-  }, [participantForm.name, pushNavigationSnapshot])
+  }, [pushNavigationSnapshot])
 
   const submitSportCategory = useCallback(() => {
     if (!participantForm.sportCategory) return
@@ -309,11 +306,11 @@ export function useStudySession() {
   }, [participantForm.sportCategory, pushNavigationSnapshot])
 
   const startSession = useCallback(() => {
-    const name = participantForm.name.trim()
+    const name = participantForm.name.trim() || `research-demo-${Date.now()}`
     const sportCategory = participantForm.sportCategory
     const deviceType = participantForm.deviceType
 
-    if (!name || !sportCategory || !deviceType) return
+    if (!sportCategory || !deviceType) return
 
     pushNavigationSnapshot()
 
@@ -446,7 +443,7 @@ export function useStudySession() {
     persistRowsToFile(scenarioRows)
 
     if (isLastScenario) {
-      setStep("complete")
+      resetSession()
       return
     }
 
@@ -480,8 +477,8 @@ export function useStudySession() {
       persistRowsToFile(rowsToPersist)
     }
 
-    setStep("complete")
-  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, previewContext, pushNavigationSnapshot, savedRows, scenarioView, sessionId, zones])
+    resetSession()
+  }, [buildScenarioRows, currentScenario, participant, persistRowsToFile, previewContext, pushNavigationSnapshot, resetSession, savedRows, scenarioView, sessionId, zones])
 
   const continueFromWidgetPreview = useCallback(() => {
     if (previewContext === "recap") {

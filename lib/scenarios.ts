@@ -239,21 +239,7 @@ function chooseWeightedPlan(seed: string) {
 }
 
 export function getScenariosForParticipant(participantId: string) {
-  const selectedPlan = chooseWeightedPlan(`${participantId}:assignment-plan`)
-  const selectedGroups = selectedPlan
-    ? shuffleWithSeed(
-      selectedPlan.groupIds
-        .map((groupId) => scenarioGroups.find((group) => group.id === groupId))
-        .filter((group): group is ScenarioGroup => Boolean(group)),
-      `${participantId}:selected-groups`
-    )
-    : []
-
-  return selectedGroups.flatMap((group) =>
-    shuffleWithSeed(group.scenarioIds, `${participantId}:scenarios:${group.id}`)
-      .map((scenarioId) => scenarioById.get(scenarioId))
-      .filter((scenario): scenario is Scenario => Boolean(scenario))
-  )
+  return scenarios
 }
 
 export function getScenarioGroupId(scenarioId: string) {
