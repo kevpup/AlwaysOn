@@ -16,8 +16,6 @@ export function Dashboard() {
   if (session.step === "name") {
     return (
       <NameScreen
-        name={session.participantForm.name}
-        onNameChange={session.handleParticipantNameChange}
         onOpenWidgetDevelopment={session.openWidgetDevelopment}
         onSubmit={session.submitName}
       />
