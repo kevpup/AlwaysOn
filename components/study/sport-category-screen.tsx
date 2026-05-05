@@ -40,7 +40,7 @@ export function SportCategoryScreen({
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Sport Category</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-            Do you primarily support men's or women's sports?
+            Do you primarily coach men's or women's sports?
           </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             This helps us show the wearable data examples that are relevant to this session.
