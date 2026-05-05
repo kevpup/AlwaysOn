@@ -15,12 +15,12 @@ export function NameScreen({ name, onNameChange, onSubmit }: NameScreenProps) {
       <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card/70 p-6 shadow-2xl md:p-8">
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
-            Student-athlete wearable research - participatory design
+            Coaching staff wearable research - participatory design
           </p>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            Welcome to the participatory design. You will be presented with different scenarios that you might face,
-            or have faced as a student-athlete. During those times you will be asked to select what kind of data
-            from a wearable device you would want to share with your coaching staff. Enter your participant ID to begin.
+            Welcome to the participatory design. You will be presented with different scenarios involving wearable
+            technology in sport. During those scenarios, you will be asked to identify what kinds of wearable data
+            would be valuable for coaching staff to view. Enter your participant ID to begin.
           </p>
         </div>
 

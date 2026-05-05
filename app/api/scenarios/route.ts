@@ -5,7 +5,7 @@ import { scenarios } from "@/lib/scenarios"
 import { allWidgets, defaultWidgets } from "@/lib/widget-selection"
 
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxQhibrsN32hk95XQgxqBCM1_r_iHtK8HoOY6QbE1KgZb9H5UnP5pEmXChgdEYZ_k9X/exec"
+  "https://script.google.com/macros/s/AKfycbyc5SNRO9ZI10SVgh1GqwAKbSGm5UlZKryVnEFPLGbAeRursvSAGK9cvJVVAy-i5uGL/exec"
 
 const DEVICE_TYPES = ["whoop", "oura", "apple-watch", "garmin"] as const
 const SPORT_CATEGORIES = ["mens", "womens"] as const

@@ -103,7 +103,7 @@ export function ScenarioWorkspaceScreen({
                   onClick={onReviewCoachView}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
-                  Review Staff View
+                  Review Coaching Staff View
                   <ChevronRight className="h-4 w-4" />
                 </button>
                 <button
@@ -222,7 +222,7 @@ function WidgetListZone({
       <div className="min-h-[440px] p-3 lg:h-[680px] lg:overflow-y-auto">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[400px] items-center justify-center rounded-xl border border-dashed border-border px-6 text-center text-sm text-muted-foreground">
-            Drop widgets here when they should not appear in the staff view.
+            Drop widgets here when they should not appear in the coaching staff view.
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -277,9 +277,9 @@ function ShareZone({
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[620px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border px-8 text-center">
             <Eye className="h-8 w-8 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-semibold text-foreground">No Shared Widgets Yet</h3>
+            <h3 className="mt-4 text-lg font-semibold text-foreground">No Coaching Widgets Yet</h3>
             <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-              Drag widgets here when you want staff to have view-only access during this scenario.
+              Drag widgets here when you think the information would be valuable for coaching staff in this scenario.
             </p>
           </div>
         ) : (

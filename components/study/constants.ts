@@ -16,12 +16,12 @@ export const zoneContainerIds: Record<ZoneId, string> = {
 
 export const zoneTitles: Record<ZoneId, string> = {
   not_displayed: "Not Displayed",
-  share: "Share With Staff",
+  share: "Valuable to Coaching Staff",
 }
 
 export const zoneDescriptions: Record<ZoneId, string> = {
-  not_displayed: "Widgets in this area are not visible to staff during this scenario.",
-  share: "Arrange shared widgets for staff during this scenario.",
+  not_displayed: "Widgets in this area are not included in the coaching staff view for this scenario.",
+  share: "Arrange the wearable information that would be valuable for coaching staff in this scenario.",
 }
 
 export const deviceOptions: DeviceOption[] = [
