@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronLeft, ChevronRight, Mars, Venus } from "lucide-react"
+import { ChevronLeft, ChevronRight, Mars, Users, Venus } from "lucide-react"
 
 import { type SportCategory } from "@/components/study/types"
 
@@ -18,6 +18,11 @@ const sportCategoryOptions: Array<{
     id: "womens",
     label: "Women's sports",
     icon: Venus,
+  },
+  {
+    id: "both",
+    label: "Both",
+    icon: Users,
   },
 ]
 
@@ -47,7 +52,7 @@ export function SportCategoryScreen({
           </p>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
           {sportCategoryOptions.map((option) => {
             const Icon = option.icon
             const isSelected = selectedSportCategory === option.id

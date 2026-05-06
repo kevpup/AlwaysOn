@@ -7,7 +7,7 @@ export type StudyStep = "name" | "sport" | "device" | "study" | "complete" | "wi
 export type ScenarioView = "intro" | "preview" | "workspace" | "recap"
 export type PreviewContext = "onboarding" | "recap"
 export type DeviceType = "whoop" | "oura" | "apple-watch" | "garmin"
-export type SportCategory = "mens" | "womens"
+export type SportCategory = "mens" | "womens" | "both"
 
 export interface ParticipantInfo {
   name: string

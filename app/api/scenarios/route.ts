@@ -8,7 +8,7 @@ const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbyc5SNRO9ZI10SVgh1GqwAKbSGm5UlZKryVnEFPLGbAeRursvSAGK9cvJVVAy-i5uGL/exec"
 
 const DEVICE_TYPES = ["whoop", "oura", "apple-watch", "garmin"] as const
-const SPORT_CATEGORIES = ["mens", "womens"] as const
+const SPORT_CATEGORIES = ["mens", "womens", "both"] as const
 const MENSTRUAL_CYCLE_WIDGET_TITLE = "Cycle Tracking"
 const MAX_BODY_BYTES = 64 * 1024
 const UPSTREAM_TIMEOUT_MS = 5000
@@ -129,7 +129,7 @@ function hasValidScenarioState(
       return false
     }
 
-    if (sportCategory !== "womens" && row.widgetTitle === MENSTRUAL_CYCLE_WIDGET_TITLE) {
+    if (sportCategory === "mens" && row.widgetTitle === MENSTRUAL_CYCLE_WIDGET_TITLE) {
       return false
     }
   }
