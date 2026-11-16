@@ -3,7 +3,7 @@
 import { WidgetDevelopmentScreen } from "@/components/development/widget-development-screen"
 import { CoachRecapScreen } from "@/components/study/coach-recap-screen"
 import { DeviceScreen } from "@/components/study/device-screen"
-import { NameScreen } from "@/components/study/name-screen"
+import { ProtocolScreen } from "@/components/study/protocol-screen"
 import { ScenarioIntroScreen } from "@/components/study/scenario-intro-screen"
 import { ScenarioWorkspaceScreen } from "@/components/study/scenario-workspace-screen"
 import { SportCategoryScreen } from "@/components/study/sport-category-screen"
@@ -13,11 +13,13 @@ import { useStudySession } from "@/hooks/use-study-session"
 export function Dashboard() {
   const session = useStudySession()
 
-  if (session.step === "name") {
+  if (session.step === "protocol") {
     return (
-      <NameScreen
+      <ProtocolScreen
+        selectedProtocol={session.participantForm.protocol}
+        onSelectProtocol={session.handleProtocolSelect}
+        onContinue={session.submitProtocol}
         onOpenWidgetDevelopment={session.openWidgetDevelopment}
-        onSubmit={session.submitName}
       />
     )
   }
@@ -29,6 +31,7 @@ export function Dashboard() {
   if (session.step === "sport") {
     return (
       <SportCategoryScreen
+        protocol={session.participantForm.protocol!}
         selectedSportCategory={session.participantForm.sportCategory}
         onSelectSportCategory={session.handleSportCategorySelect}
         onBack={session.goBack}
@@ -48,14 +51,13 @@ export function Dashboard() {
     )
   }
 
-  if (session.step === "complete") return null
-
   if (!session.currentScenario || !session.participant) return null
 
   if (session.scenarioView === "preview") {
     return (
       <WidgetPreviewScreen
         deviceType={session.participant.deviceType}
+        protocol={session.participant.protocol}
         onBack={session.goBack}
         onPrimaryAction={session.continueFromWidgetPreview}
         onSkipToFinish={session.skipToFinish}
@@ -73,6 +75,7 @@ export function Dashboard() {
         onBack={session.goBack}
         onBuildDashboard={session.openWorkspace}
         onSkipToFinish={session.skipToFinish}
+        protocol={session.participant.protocol}
         scenario={session.currentScenario}
         scenarioIndex={session.scenarioIndex}
         totalScenarios={session.totalScenarios}
@@ -84,8 +87,9 @@ export function Dashboard() {
     return (
       <CoachRecapScreen
         deviceType={session.participant.deviceType}
+        protocol={session.participant.protocol}
         onBack={session.goBack}
-        onContinue={session.saveScenario}
+        onContinue={session.continueScenario}
         onSeeAllWidgets={session.openWidgetPreviewFromRecap}
         onSkipToFinish={session.skipToFinish}
         scenario={session.currentScenario}
@@ -103,6 +107,7 @@ export function Dashboard() {
       activeZone={session.activeZone}
       canGoBack={session.canGoBack}
       deviceType={session.participant.deviceType}
+    protocol={session.participant.protocol}
       onBack={session.goBack}
       onDragCancel={session.handleDragCancel}
       onDragEnd={session.handleDragEnd}

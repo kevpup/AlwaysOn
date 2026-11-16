@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, Info } from "lucide-react"
 
 import { SortableWidget } from "@/components/sortable-widget"
-import { type DeviceType, type PreviewContext, type SportCategory, type WidgetConfig } from "@/components/study/types"
+import { type DeviceType, type PreviewContext, type SportCategory, type StudyProtocol, type WidgetConfig } from "@/components/study/types"
 
 interface WidgetPreviewScreenProps {
   deviceType: DeviceType
@@ -11,6 +11,7 @@ interface WidgetPreviewScreenProps {
   onPrimaryAction: () => void
   onSkipToFinish: () => void
   previewContext: PreviewContext
+  protocol: StudyProtocol
   sportCategory: SportCategory
   widgets: WidgetConfig[]
 }
@@ -21,6 +22,7 @@ export function WidgetPreviewScreen({
   onPrimaryAction,
   onSkipToFinish,
   previewContext,
+  protocol,
   sportCategory,
   widgets,
 }: WidgetPreviewScreenProps) {
@@ -71,7 +73,7 @@ export function WidgetPreviewScreen({
               <h2 className="text-sm font-semibold text-foreground">Widget Reference</h2>
             </div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              These are the widgets participants may work with in the scenarios. Open any card to read what it shows, why staff might use it, and what might influence it.
+              These are the widgets participants may work with in the scenarios. Open any card to read what it shows, why {protocol === "coaching-staff" ? "coaching staff" : "staff"} might use it, and what might influence it.
             </p>
           </div>
 
@@ -81,6 +83,7 @@ export function WidgetPreviewScreen({
                 <div key={widget.id} className="w-full max-w-[340px] sm:w-[320px] lg:w-[340px]">
                   <SortableWidget
                     deviceType={deviceType}
+                    protocol={protocol}
                     widget={widget}
                     disableSorting
                     sportCategory={sportCategory}

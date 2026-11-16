@@ -1,6 +1,6 @@
 "use client"
 
-import { type DeviceType, type ZoneId } from "@/components/study/types"
+import { type DeviceType, type StudyProtocol, type ZoneId } from "@/components/study/types"
 
 export interface DeviceOption {
   id: DeviceType
@@ -22,6 +22,20 @@ export const zoneTitles: Record<ZoneId, string> = {
 export const zoneDescriptions: Record<ZoneId, string> = {
   not_displayed: "Widgets in this area are not visible to staff during this scenario.",
   share: "Arrange shared widgets for staff during this scenario.",
+}
+
+export function getZoneTitle(zoneId: ZoneId, protocol: StudyProtocol) {
+  if (protocol === "coaching-staff" && zoneId === "share") return "Valuable to Coaching Staff"
+  return zoneTitles[zoneId]
+}
+
+export function getZoneDescription(zoneId: ZoneId, protocol: StudyProtocol) {
+  if (protocol === "coaching-staff") {
+    return zoneId === "not_displayed"
+      ? "Widgets in this area are not included in the coaching staff view for this scenario."
+      : "Arrange the wearable information that would be valuable for coaching staff in this scenario."
+  }
+  return zoneDescriptions[zoneId]
 }
 
 export const deviceOptions: DeviceOption[] = [

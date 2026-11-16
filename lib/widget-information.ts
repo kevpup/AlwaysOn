@@ -103,3 +103,25 @@ export const widgetInformationById: Record<WidgetId, WidgetInformation> = {
     influences: "Altitude, respiratory illness, sleep position, sensor fit, movement, circulation, nail polish, and device measurement quality.",
   },
 }
+
+export const coachingStaffWidgetUseById: Partial<Record<WidgetId, string>> = {
+  steps: "Coaching staff might use this to understand general activity, movement consistency, or recovery-day behavior outside formal training.",
+  "full-day-hr": "Coaching staff might use this to notice physiological strain, unusual stress, or how someone responds across a full day.",
+  "activity-hr-graph": "Coaching staff might use this to evaluate workout intensity, pacing, and how someone responded to a session.",
+  "activity-hr-zones": "Coaching staff might use this to compare planned intensity with actual intensity and adjust future training.",
+  "resting-hr": "Coaching staff might use this as one signal of recovery, fatigue, illness, or adaptation to training.",
+  "hrv-status": "Coaching staff might use this to interpret recovery status, readiness, or whether training load should be adjusted.",
+  "calories-active-energy": "Coaching staff might use this to understand workload, fueling needs, or total activity outside scheduled training.",
+  "vo2-max": "Coaching staff might use this to discuss endurance capacity, conditioning progress, or training adaptation.",
+  "total-sleep-time": "Coaching staff might use this for in-depth insights about recovery habits, travel effects, or to personalize training.",
+  "sleep-stages-cycles": "Coaching staff might use this to talk about sleep quality, recovery routines, or whether someone appears to be getting restorative sleep.",
+  "sleep-score": "Coaching staff might use this as a simplified recovery indicator to modify training or prompt discussions.",
+  "respiratory-rate": "Coaching staff might use this as a possible sign of recovery status, illness, or unusual physiological strain.",
+  "training-load": "Coaching staff might use this to view training intensity, set intensity targets, and review long-term trends.",
+  "recovery-readiness": "Coaching staff might use this to discuss whether someone appears ready for training or may need adjustment.",
+  "cycle-tracking": "Coaching staff might use this to discuss individualized training, symptoms, or recovery needs during different hormonal phases.",
+  "activity-workout-minutes": "Coaching staff might use this to understand training exposure, activity consistency, or unscheduled workload.",
+  "full-workout-report": "Coaching staff might use this to review training history, compare planned and completed work, or discuss specific sessions.",
+  "temperature-deviation": "Coaching staff might use this as one possible signal of illness, recovery disruption, or physiological change.",
+  "blood-oxygen": "Coaching staff might use this to discuss altitude response, illness, breathing concerns, or unusual overnight patterns.",
+}

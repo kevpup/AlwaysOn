@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+import { type StudyProtocol } from "@/components/study/types"
 import { type Scenario } from "@/lib/scenarios"
 
 interface ScenarioIntroScreenProps {
@@ -9,6 +10,7 @@ interface ScenarioIntroScreenProps {
   onBack: () => void
   onBuildDashboard: () => void
   onSkipToFinish: () => void
+  protocol: StudyProtocol
   scenario: Scenario
   scenarioIndex: number
   totalScenarios: number
@@ -19,6 +21,7 @@ export function ScenarioIntroScreen({
   onBack,
   onBuildDashboard,
   onSkipToFinish,
+  protocol,
   scenario,
   scenarioIndex,
   totalScenarios,
@@ -50,7 +53,7 @@ export function ScenarioIntroScreen({
                 onClick={onBuildDashboard}
                 className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                Build Dashboard
+                {protocol === "coaching-staff" ? "Build Coaching View" : "Build Dashboard"}
                 <ChevronRight className="h-4 w-4" />
               </button>
               <button

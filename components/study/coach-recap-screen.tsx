@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react"
 
 import { SortableWidget } from "@/components/sortable-widget"
-import { type DeviceType, type SportCategory, type WidgetConfig } from "@/components/study/types"
+import { type DeviceType, type SportCategory, type StudyProtocol, type WidgetConfig } from "@/components/study/types"
 import { type Scenario } from "@/lib/scenarios"
 
 interface CoachRecapScreenProps {
@@ -12,6 +12,7 @@ interface CoachRecapScreenProps {
   onContinue: () => void
   onSeeAllWidgets: () => void
   onSkipToFinish: () => void
+  protocol: StudyProtocol
   scenario: Scenario
   scenarioIndex: number
   sharedWidgets: WidgetConfig[]
@@ -25,12 +26,15 @@ export function CoachRecapScreen({
   onContinue,
   onSeeAllWidgets,
   onSkipToFinish,
+  protocol,
   scenario,
   scenarioIndex,
   sharedWidgets,
   sportCategory,
   totalScenarios,
 }: CoachRecapScreenProps) {
+  const isCoachingStaff = protocol === "coaching-staff"
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="border-b border-border bg-card/60 backdrop-blur-sm">
@@ -39,11 +43,15 @@ export function CoachRecapScreen({
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
               Scenario {scenarioIndex + 1} of {totalScenarios}
             </p>
-            <h1 className="mt-2 text-2xl font-semibold tracking-tight">Staff View Recap</h1>
+            <h1 className="mt-2 text-2xl font-semibold tracking-tight">
+              {isCoachingStaff ? "Coaching Staff View Recap" : "Staff View Recap"}
+            </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-              This is the view staff would see for{" "}
-              <span className="font-medium text-foreground">{scenario.title}</span>. Use this page to discuss the
-              design, then continue or go back to make changes.
+              {isCoachingStaff ? (
+                <>This is the coaching staff view for <span className="font-medium text-foreground">{scenario.title}</span>. Use this page to discuss what information appears most valuable in the scenario, then continue or go back to make changes.</>
+              ) : (
+                <>This is the view staff would see for <span className="font-medium text-foreground">{scenario.title}</span>. Use this page to discuss the design, then continue or go back to make changes.</>
+              )}
             </p>
           </div>
 
@@ -60,7 +68,7 @@ export function CoachRecapScreen({
                 onClick={onContinue}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                {scenarioIndex === totalScenarios - 1 ? "Save and Finish" : "Next Scenario"}
+                {scenarioIndex === totalScenarios - 1 ? "Finish Protocol" : "Next Scenario"}
                 <ChevronRight className="h-4 w-4" />
               </button>
               <button
@@ -85,10 +93,14 @@ export function CoachRecapScreen({
           <div className="border-b border-border px-5 py-4">
             <div className="flex items-center gap-2">
               <Eye className="h-4 w-4 text-primary" />
-              <h2 className="text-sm font-semibold text-foreground">Staff View</h2>
+              <h2 className="text-sm font-semibold text-foreground">
+                {isCoachingStaff ? "Coaching Staff View" : "Staff View"}
+              </h2>
             </div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              These are the widgets currently shared with staff for this scenario.
+              {isCoachingStaff
+                ? "These are the wearable widgets currently included in the coaching staff view for this scenario."
+                : "These are the widgets currently shared with staff for this scenario."}
             </p>
           </div>
 
@@ -96,10 +108,13 @@ export function CoachRecapScreen({
             {sharedWidgets.length === 0 ? (
               <div className="flex h-full min-h-[660px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border px-8 text-center">
                 <EyeOff className="h-8 w-8 text-muted-foreground" />
-                <h3 className="mt-4 text-lg font-semibold text-foreground">No Shared Widgets</h3>
+                <h3 className="mt-4 text-lg font-semibold text-foreground">
+                  {isCoachingStaff ? "No Coaching View Widgets" : "No Shared Widgets"}
+                </h3>
                 <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                  Right now staff would not see any wearable widgets for this scenario. Go back if you want to
-                  revise that view.
+                  {isCoachingStaff
+                    ? "Right now the coaching staff view does not include any wearable widgets for this scenario. Go back if you want to revise that view."
+                    : "Right now staff would not see any wearable widgets for this scenario. Go back if you want to revise that view."}
                 </p>
               </div>
             ) : (
@@ -108,6 +123,7 @@ export function CoachRecapScreen({
                   <div key={widget.id} className="w-full max-w-[360px] sm:w-[360px]">
                     <SortableWidget
                       deviceType={deviceType}
+                      protocol={protocol}
                       scenarioId={scenario.id}
                       widget={widget}
                       disableSorting

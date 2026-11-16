@@ -1,8 +1,8 @@
 "use client"
 
-import { ChevronLeft, ChevronRight, Mars, Venus } from "lucide-react"
+import { ChevronLeft, ChevronRight, Mars, Users, Venus } from "lucide-react"
 
-import { type SportCategory } from "@/components/study/types"
+import { type SportCategory, type StudyProtocol } from "@/components/study/types"
 
 const sportCategoryOptions: Array<{
   id: SportCategory
@@ -19,9 +19,15 @@ const sportCategoryOptions: Array<{
     label: "Women's sports",
     icon: Venus,
   },
+  {
+    id: "both",
+    label: "Both",
+    icon: Users,
+  },
 ]
 
 interface SportCategoryScreenProps {
+  protocol: StudyProtocol
   selectedSportCategory: SportCategory | null
   onSelectSportCategory: (sportCategory: SportCategory) => void
   onBack: () => void
@@ -29,26 +35,33 @@ interface SportCategoryScreenProps {
 }
 
 export function SportCategoryScreen({
+  protocol,
   selectedSportCategory,
   onSelectSportCategory,
   onBack,
   onContinue,
 }: SportCategoryScreenProps) {
+  const options = protocol === "coaching-staff"
+    ? sportCategoryOptions
+    : sportCategoryOptions.filter((option) => option.id !== "both")
+
   return (
     <div className="min-h-screen bg-background px-4 py-10 text-foreground md:px-6">
       <div className="mx-auto max-w-4xl rounded-3xl border border-border bg-card/70 p-6 shadow-2xl md:p-8">
         <div className="max-w-2xl">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">Sport Category</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-            Do you participate in men's or women's sports?
+            {protocol === "coaching-staff"
+              ? "Do you primarily support men's or women's sports?"
+              : "Do you participate in men's or women's sports?"}
           </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             This helps us show the wearable data examples that are relevant to this session.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {sportCategoryOptions.map((option) => {
+        <div className={`mt-8 grid gap-4 ${options.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
+          {options.map((option) => {
             const Icon = option.icon
             const isSelected = selectedSportCategory === option.id
 

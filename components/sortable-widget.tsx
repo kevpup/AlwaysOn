@@ -5,13 +5,14 @@ import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { type WidgetConfig } from "@/lib/mock-data"
 import { getWidgetDisplayName } from "@/lib/widget-display-names"
-import { widgetInformationById } from "@/lib/widget-information"
+import { coachingStaffWidgetUseById, widgetInformationById } from "@/lib/widget-information"
 import { WidgetRenderer } from "@/components/widgets/widget-renderer"
-import { type DeviceType, type SportCategory } from "@/components/study/types"
+import { type DeviceType, type SportCategory, type StudyProtocol } from "@/components/study/types"
 import { EyeOff, Info, RotateCcw } from "lucide-react"
 
 interface SortableWidgetProps {
   deviceType: DeviceType
+  protocol: StudyProtocol
   scenarioId?: string
   widget: WidgetConfig
   disableSorting?: boolean
@@ -21,6 +22,7 @@ interface SortableWidgetProps {
 
 export function SortableWidget({
   deviceType,
+  protocol,
   scenarioId,
   widget,
   disableSorting = false,
@@ -42,6 +44,9 @@ export function SortableWidget({
   }
   const displayName = getWidgetDisplayName(widget, { deviceType, scenarioId })
   const widgetInformation = widgetInformationById[widget.id]
+  const widgetUse = protocol === "coaching-staff"
+    ? coachingStaffWidgetUseById[widget.id] ?? widgetInformation?.coachUse
+    : widgetInformation?.coachUse
   const [showInformation, setShowInformation] = useState(false)
 
   function stopControlDrag(event: React.PointerEvent<HTMLButtonElement>) {
@@ -106,7 +111,7 @@ export function SortableWidget({
                       className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:text-foreground"
                     >
                       <EyeOff className="h-3 w-3" />
-                      Hide from Staff
+                      {protocol === "coaching-staff" ? "Remove from Coaching View" : "Hide from Staff"}
                     </button>
                   )}
                 </div>
@@ -155,9 +160,9 @@ export function SortableWidget({
                   </section>
                   <section>
                     <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      Why staff might use it
+                      {protocol === "coaching-staff" ? "Why coaching staff might use it" : "Why staff might use it"}
                     </h4>
-                    <p className="mt-1 text-foreground">{widgetInformation.coachUse}</p>
+                    <p className="mt-1 text-foreground">{widgetUse}</p>
                   </section>
                   <section>
                     <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">

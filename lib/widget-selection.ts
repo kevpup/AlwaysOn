@@ -20,5 +20,5 @@ export const defaultWidgets = getEnabledWidgets()
 export const cycleTrackingWidget = allWidgets.find((widget) => widget.id === "cycle-tracking")
 
 export function getWidgetsForSportCategory(sportCategory: SportCategory | null | undefined) {
-  return defaultWidgets.filter((widget) => sportCategory === "womens" || widget.id !== "cycle-tracking")
+  return defaultWidgets.filter((widget) => sportCategory === "womens" || sportCategory === "both" || widget.id !== "cycle-tracking")
 }

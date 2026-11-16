@@ -11,12 +11,7 @@ export interface ScenarioGroup {
   scenarioIds: string[]
 }
 
-export interface ScenarioAssignmentPlan {
-  groupIds: string[]
-  weight: number
-}
-
-export const scenarios: Scenario[] = [
+export const studentAthleteScenarios: Scenario[] = [
   {
     id: "championship-roster-head-coach",
     title: "Championship Roster Decision: Primary Coach",
@@ -107,7 +102,7 @@ export const scenarios: Scenario[] = [
   },
 ]
 
-export const scenarioGroups: ScenarioGroup[] = [
+export const studentAthleteScenarioGroups: ScenarioGroup[] = [
   {
     id: "championship-roster-power",
     label: "Championship roster power relationship",
@@ -145,103 +140,92 @@ export const scenarioGroups: ScenarioGroup[] = [
   },
 ]
 
-export const MAX_SCENARIOS_TO_ASSIGN = 7
-
-export const scenarioAssignmentPlans: ScenarioAssignmentPlan[] = [
+export const coachingStaffScenarios: Scenario[] = [
   {
-    groupIds: ["championship-roster-power", "season-training-timing"],
-    weight: 1,
+    id: "offseason-data-access",
+    title: "Data Access During the Offseason",
+    prompt:
+      "Imagine your program is implementing wearable technology and is deciding what student-athlete data coaching staff may want to access during different points in the season. During the offseason, what, if any, wearable data would you want to view from the student-athletes you support?",
   },
   {
-    groupIds: ["season-training-timing", "sc-technology-orientation"],
-    weight: 1,
+    id: "critical-season-data-access",
+    title: "Data Access During a Critical Part of the Season",
+    prompt:
+      "Imagine your program is implementing wearable technology and is deciding what student-athlete data coaching staff may want to access during different points in the season. During a critical part of the season, such as the week leading up to a championship, what, if any, wearable data would you want to view from the student-athletes you support?",
   },
   {
-    groupIds: ["season-training-timing", "sc-transparency-visibility"],
-    weight: 1,
+    id: "core-training-block-data-access",
+    title: "Data Access During a Core Training Block",
+    prompt:
+      "Imagine your program is implementing wearable technology and is deciding what student-athlete data coaching staff may want to access during different points in the season. During a core training block, what, if any, wearable data would you want to view from the student-athletes you support?",
   },
   {
-    groupIds: [
-      "championship-roster-power",
-      "sc-technology-orientation",
-      "sc-transparency-visibility",
-    ],
-    weight: 2,
+    id: "sport-injury-data-access",
+    title: "Data Access During a Sport-Related Injury",
+    prompt:
+      "Imagine your program is implementing wearable technology and is deciding what student-athlete data coaching staff may want to access in different situations. If one of your student-athletes experienced a sport-related injury, such as a torn ACL, and was going through rehab, what, if any, wearable data would you want to view to support that student-athlete?",
+  },
+  {
+    id: "data-driven-athlete-access",
+    title: "Data Access for a Data-Driven Student-Athlete",
+    prompt:
+      "Imagine one of the student-athletes you support is highly engaged with wearable technology. They like reviewing their numbers, tracking trends, and using data to understand their training, recovery, and performance.\n\nIn this scenario, what, if any, wearable data would you want to view from this student-athlete? And how would you want to use it most effectively?",
+  },
+  {
+    id: "intuitive-athlete-access",
+    title: "Data Access for an Intuitive Student-Athlete",
+    prompt:
+      "Imagine one of the student-athletes you support does not rely heavily on wearable data to understand their training, recovery, or performance. They may prefer to focus more on how they feel and on guidance from staff rather than studying the data themselves.\n\nIn this scenario, the student-athlete still wears a wearable device. What, if any, wearable data would you want to view from this student-athlete? And how would you want to use it most effectively?",
   },
 ]
 
-const scenarioById = new Map(scenarios.map((scenario) => [scenario.id, scenario]))
-const scenarioGroupIdByScenarioId = new Map(
-  scenarioGroups.flatMap((group) => group.scenarioIds.map((scenarioId) => [scenarioId, group.id] as const))
-)
+export const coachingStaffScenarioGroups: ScenarioGroup[] = [
+  {
+    id: "season-situation-timing",
+    label: "Season and situational timing",
+    scenarioIds: [
+      "offseason-data-access",
+      "critical-season-data-access",
+      "core-training-block-data-access",
+      "sport-injury-data-access",
+    ],
+  },
+  {
+    id: "student-athlete-data-orientation",
+    label: "Student-athlete orientation toward data",
+    scenarioIds: ["data-driven-athlete-access", "intuitive-athlete-access"],
+  },
+]
 
-function hashSeed(seed: string) {
-  let hash = 2166136261
-
-  for (let index = 0; index < seed.length; index += 1) {
-    hash ^= seed.charCodeAt(index)
-    hash = Math.imul(hash, 16777619)
+function shuffle<T>(items: T[]) {
+  const result = [...items]
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1))
+    const current = result[index]
+    result[index] = result[swapIndex]
+    result[swapIndex] = current
   }
-
-  return hash >>> 0
+  return result
 }
 
-function createSeededRandom(seed: string) {
-  let state = hashSeed(seed) || 1
+export function getScenariosForProtocol(protocol: "student-athlete" | "coaching-staff") {
+  const protocolScenarios = protocol === "coaching-staff" ? coachingStaffScenarios : studentAthleteScenarios
+  const groups = protocol === "coaching-staff" ? coachingStaffScenarioGroups : studentAthleteScenarioGroups
+  const scenarioById = new Map(protocolScenarios.map((scenario) => [scenario.id, scenario]))
+  let orderedGroups: ScenarioGroup[]
 
-  return () => {
-    state = Math.imul(1664525, state) + 1013904223
-    return (state >>> 0) / 4294967296
-  }
-}
-
-function shuffleWithSeed<T>(items: T[], seed: string) {
-  const random = createSeededRandom(seed)
-  const shuffled = [...items]
-
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(random() * (index + 1))
-    const current = shuffled[index]
-    shuffled[index] = shuffled[swapIndex]
-    shuffled[swapIndex] = current
+  if (protocol === "coaching-staff") {
+    const [timingGroup, dataOrientationGroup] = groups
+    orderedGroups = Math.random() < 2 / 3
+      ? [timingGroup, dataOrientationGroup]
+      : [dataOrientationGroup, timingGroup]
+  } else {
+    orderedGroups = shuffle(groups)
   }
 
-  return shuffled
-}
-
-function chooseWeightedPlan(seed: string) {
-  const validPlans = scenarioAssignmentPlans.filter((plan) => {
-    const scenarioCount = plan.groupIds.reduce((total, groupId) => {
-      const group = scenarioGroups.find((candidate) => candidate.id === groupId)
-      return total + (group?.scenarioIds.length ?? 0)
-    }, 0)
-
-    return scenarioCount <= MAX_SCENARIOS_TO_ASSIGN && plan.weight > 0
-  })
-
-  if (validPlans.length === 0) {
-    return null
-  }
-
-  const totalWeight = validPlans.reduce((total, plan) => total + plan.weight, 0)
-  const random = createSeededRandom(seed)
-  let threshold = random() * totalWeight
-
-  for (const plan of validPlans) {
-    threshold -= plan.weight
-
-    if (threshold <= 0) {
-      return plan
-    }
-  }
-
-  return validPlans[validPlans.length - 1]
-}
-
-export function getScenariosForParticipant(participantId: string) {
-  return scenarios
-}
-
-export function getScenarioGroupId(scenarioId: string) {
-  return scenarioGroupIdByScenarioId.get(scenarioId) ?? null
+  return orderedGroups.flatMap((group) =>
+    shuffle(group.scenarioIds)
+      .map((scenarioId) => scenarioById.get(scenarioId))
+      .filter((scenario): scenario is Scenario => Boolean(scenario))
+  )
 }

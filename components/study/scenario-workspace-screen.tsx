@@ -16,8 +16,8 @@ import {
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import { ChevronLeft, ChevronRight, Eye, EyeOff, LayoutGrid } from "lucide-react"
 
-import { zoneContainerIds, zoneDescriptions, zoneTitles } from "@/components/study/constants"
-import { type DeviceType, type SportCategory, type WidgetConfig, type WidgetId } from "@/components/study/types"
+import { getZoneDescription, getZoneTitle, zoneContainerIds } from "@/components/study/constants"
+import { type DeviceType, type SportCategory, type StudyProtocol, type WidgetConfig, type WidgetId } from "@/components/study/types"
 import { DraggableBankItem } from "@/components/draggable-bank-item"
 import { SortableWidget } from "@/components/sortable-widget"
 import { WidgetRenderer } from "@/components/widgets/widget-renderer"
@@ -29,6 +29,7 @@ interface ScenarioWorkspaceScreenProps {
   activeZone: "not_displayed" | "share" | null
   canGoBack: boolean
   deviceType: DeviceType
+  protocol: StudyProtocol
   onBack: () => void
   onDragCancel: () => void
   onDragEnd: (event: DragEndEvent) => void
@@ -51,6 +52,7 @@ export function ScenarioWorkspaceScreen({
   activeZone,
   canGoBack,
   deviceType,
+  protocol,
   onBack,
   onDragCancel,
   onDragEnd,
@@ -103,7 +105,7 @@ export function ScenarioWorkspaceScreen({
                   onClick={onReviewCoachView}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
-                  Review Staff View
+                  {protocol === "coaching-staff" ? "Review Coaching Staff View" : "Review Staff View"}
                   <ChevronRight className="h-4 w-4" />
                 </button>
                 <button
@@ -121,6 +123,7 @@ export function ScenarioWorkspaceScreen({
           <div className="mx-auto grid max-w-[1600px] min-w-[880px] grid-cols-[220px_minmax(620px,1fr)] gap-4">
             <WidgetListZone
               deviceType={deviceType}
+              protocol={protocol}
               scenarioId={scenario.id}
               sportCategory={sportCategory}
               zoneId="not_displayed"
@@ -128,6 +131,7 @@ export function ScenarioWorkspaceScreen({
             />
             <ShareZone
               deviceType={deviceType}
+              protocol={protocol}
               scenarioId={scenario.id}
               widgets={zones.share}
               onMoveToNotDisplayed={onMoveToNotDisplayed}
@@ -181,12 +185,14 @@ export function ScenarioWorkspaceScreen({
 
 function WidgetListZone({
   deviceType,
+  protocol,
   scenarioId,
   sportCategory,
   zoneId,
   widgets,
 }: {
   deviceType: DeviceType
+  protocol: StudyProtocol
   scenarioId: string
   sportCategory: SportCategory
   zoneId: "not_displayed"
@@ -206,7 +212,7 @@ function WidgetListZone({
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <EyeOff className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold text-foreground">{zoneTitles[zoneId]}</h2>
+            <h2 className="text-sm font-semibold text-foreground">{getZoneTitle(zoneId, protocol)}</h2>
           </div>
           <button
             type="button"
@@ -216,13 +222,15 @@ function WidgetListZone({
             {showPreviews ? "Hide Previews" : "See Previews"}
           </button>
         </div>
-        <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions[zoneId]}</p>
+        <p className="mt-2 text-xs leading-5 text-muted-foreground">{getZoneDescription(zoneId, protocol)}</p>
       </div>
 
       <div className="min-h-[440px] p-3 lg:h-[680px] lg:overflow-y-auto">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[400px] items-center justify-center rounded-xl border border-dashed border-border px-6 text-center text-sm text-muted-foreground">
-            Drop widgets here when they should not appear in the staff view.
+            {protocol === "coaching-staff"
+              ? "Drop widgets here when they should not appear in the coaching staff view."
+              : "Drop widgets here when they should not appear in the staff view."}
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -245,12 +253,14 @@ function WidgetListZone({
 
 function ShareZone({
   deviceType,
+  protocol,
   scenarioId,
   widgets,
   onMoveToNotDisplayed,
   sportCategory,
 }: {
   deviceType: DeviceType
+  protocol: StudyProtocol
   scenarioId: string
   widgets: WidgetConfig[]
   onMoveToNotDisplayed: (id: WidgetId) => void
@@ -268,18 +278,22 @@ function ShareZone({
       <div className="border-b border-border px-5 py-4">
         <div className="flex items-center gap-2">
           <Eye className="h-4 w-4 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground">{zoneTitles.share}</h2>
+          <h2 className="text-sm font-semibold text-foreground">{getZoneTitle("share", protocol)}</h2>
         </div>
-        <p className="mt-2 text-xs leading-5 text-muted-foreground">{zoneDescriptions.share}</p>
+        <p className="mt-2 text-xs leading-5 text-muted-foreground">{getZoneDescription("share", protocol)}</p>
       </div>
 
       <div className="min-h-[680px] p-4 lg:p-5">
         {widgets.length === 0 ? (
           <div className="flex h-full min-h-[620px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border px-8 text-center">
             <Eye className="h-8 w-8 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-semibold text-foreground">No Shared Widgets Yet</h3>
+            <h3 className="mt-4 text-lg font-semibold text-foreground">
+              {protocol === "coaching-staff" ? "No Coaching Widgets Yet" : "No Shared Widgets Yet"}
+            </h3>
             <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-              Drag widgets here when you want staff to have view-only access during this scenario.
+              {protocol === "coaching-staff"
+                ? "Drag widgets here when you think the information would be valuable for coaching staff in this scenario."
+                : "Drag widgets here when you want staff to have view-only access during this scenario."}
             </p>
           </div>
         ) : (
@@ -289,6 +303,7 @@ function ShareZone({
                 <div key={widget.id} className="w-[280px] max-w-full sm:w-[300px] lg:w-[320px] xl:w-[340px]">
                   <SortableWidget
                     deviceType={deviceType}
+                    protocol={protocol}
                     scenarioId={scenarioId}
                     widget={widget}
                     onMoveToNotDisplayed={() => onMoveToNotDisplayed(widget.id)}
