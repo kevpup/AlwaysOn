@@ -1,5 +1,8 @@
 "use client"
 
+import { type ReactNode } from "react"
+import { House } from "lucide-react"
+
 import { WidgetDevelopmentScreen } from "@/components/development/widget-development-screen"
 import { CoachRecapScreen } from "@/components/study/coach-recap-screen"
 import { DeviceScreen } from "@/components/study/device-screen"
@@ -12,9 +15,10 @@ import { useStudySession } from "@/hooks/use-study-session"
 
 export function Dashboard() {
   const session = useStudySession()
+  let screen: ReactNode = null
 
   if (session.step === "protocol") {
-    return (
+    screen = (
       <ProtocolScreen
         selectedProtocol={session.participantForm.protocol}
         onSelectProtocol={session.handleProtocolSelect}
@@ -22,14 +26,10 @@ export function Dashboard() {
         onOpenWidgetDevelopment={session.openWidgetDevelopment}
       />
     )
-  }
-
-  if (session.step === "widget-dev") {
-    return <WidgetDevelopmentScreen onBack={session.goBack} />
-  }
-
-  if (session.step === "sport") {
-    return (
+  } else if (session.step === "widget-dev") {
+    screen = <WidgetDevelopmentScreen onBack={session.goBack} />
+  } else if (session.step === "sport") {
+    screen = (
       <SportCategoryScreen
         protocol={session.participantForm.protocol!}
         selectedSportCategory={session.participantForm.sportCategory}
@@ -38,10 +38,8 @@ export function Dashboard() {
         onContinue={session.submitSportCategory}
       />
     )
-  }
-
-  if (session.step === "device") {
-    return (
+  } else if (session.step === "device") {
+    screen = (
       <DeviceScreen
         selectedDeviceType={session.participantForm.deviceType}
         onSelectDeviceType={session.handleDeviceTypeSelect}
@@ -49,12 +47,8 @@ export function Dashboard() {
         onContinue={session.startSession}
       />
     )
-  }
-
-  if (!session.currentScenario || !session.participant) return null
-
-  if (session.scenarioView === "preview") {
-    return (
+  } else if (session.currentScenario && session.participant && session.scenarioView === "preview") {
+    screen = (
       <WidgetPreviewScreen
         deviceType={session.participant.deviceType}
         protocol={session.participant.protocol}
@@ -66,10 +60,8 @@ export function Dashboard() {
         widgets={session.previewWidgets}
       />
     )
-  }
-
-  if (session.scenarioView === "intro") {
-    return (
+  } else if (session.currentScenario && session.participant && session.scenarioView === "intro") {
+    screen = (
       <ScenarioIntroScreen
         canGoBack={session.canGoBack}
         onBack={session.goBack}
@@ -81,10 +73,8 @@ export function Dashboard() {
         totalScenarios={session.totalScenarios}
       />
     )
-  }
-
-  if (session.scenarioView === "recap") {
-    return (
+  } else if (session.currentScenario && session.participant && session.scenarioView === "recap") {
+    screen = (
       <CoachRecapScreen
         deviceType={session.participant.deviceType}
         protocol={session.participant.protocol}
@@ -99,27 +89,45 @@ export function Dashboard() {
         totalScenarios={session.totalScenarios}
       />
     )
+  } else if (session.currentScenario && session.participant) {
+    screen = (
+      <ScenarioWorkspaceScreen
+        activeWidget={session.activeWidget}
+        activeZone={session.activeZone}
+        canGoBack={session.canGoBack}
+        deviceType={session.participant.deviceType}
+        protocol={session.participant.protocol}
+        onBack={session.goBack}
+        onDragCancel={session.handleDragCancel}
+        onDragEnd={session.handleDragEnd}
+        onDragStart={session.handleDragStart}
+        onMoveToNotDisplayed={session.moveWidgetToNotDisplayed}
+        onReviewCoachView={session.openRecap}
+        onSkipToFinish={session.skipToFinish}
+        scenario={session.currentScenario}
+        scenarioIndex={session.scenarioIndex}
+        sportCategory={session.participant.sportCategory}
+        totalScenarios={session.totalScenarios}
+        zones={session.zones}
+      />
+    )
   }
 
   return (
-    <ScenarioWorkspaceScreen
-      activeWidget={session.activeWidget}
-      activeZone={session.activeZone}
-      canGoBack={session.canGoBack}
-      deviceType={session.participant.deviceType}
-    protocol={session.participant.protocol}
-      onBack={session.goBack}
-      onDragCancel={session.handleDragCancel}
-      onDragEnd={session.handleDragEnd}
-      onDragStart={session.handleDragStart}
-      onMoveToNotDisplayed={session.moveWidgetToNotDisplayed}
-      onReviewCoachView={session.openRecap}
-      onSkipToFinish={session.skipToFinish}
-      scenario={session.currentScenario}
-      scenarioIndex={session.scenarioIndex}
-      sportCategory={session.participant.sportCategory}
-      totalScenarios={session.totalScenarios}
-      zones={session.zones}
-    />
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 flex h-14 items-center border-b border-border/70 bg-background/95 px-4 backdrop-blur">
+        <button
+          type="button"
+          onClick={session.resetSession}
+          aria-label="Return to protocol selection"
+          title="Return to protocol selection"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card/80 px-3 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <House className="h-4 w-4" aria-hidden="true" />
+          Home
+        </button>
+      </header>
+      {screen}
+    </div>
   )
 }
